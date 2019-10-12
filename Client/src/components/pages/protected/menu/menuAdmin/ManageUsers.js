@@ -5,25 +5,24 @@ import axios from 'axios';
 
 function ManageUsers(props) {
 
- 
-
     const [userList, setUserList] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect( () => {
 
-        const header = {
-                      headers: {
-                          authorization : localStorage.getItem('x')
-                      }
-                  }
-
         const x = async()=>{
             try{
+            
+                const header = {
+                    headers: {
+                        authorization : localStorage.getItem('x')
+                    }
+                }
+
                 const result = await axios.post('http://localhost:4040/api/getaccounts',{},header);
                 setUserList(result.data.sqlResult);
             } catch(err) {
-                props.history.push('/')
+                history.push('/')
             }
             
         }
@@ -31,30 +30,71 @@ function ManageUsers(props) {
         
       }, []);
     
-
     const { match, location, history } = props
     
+
+    const setAccountState = async(acc_id) => {
+        try{
+            
+            const header = {
+                headers: {
+                    authorization : localStorage.getItem('x')
+                }
+            }
+
+            // INSERT 
+            const result1 = await axios.post('http://localhost:4040/api/accounts/state/set',{acc_id},header);
+            
+            const result = await axios.post('http://localhost:4040/api/getaccounts',{},header);
+
+            setUserList(result.data.sqlResult);
+        } catch(err) {
+            history.push('/')
+        }
+
+    }
+
+    const setAccountLock = async(acc_id) => {
+        console.log(acc_id)
+        try{
+            
+            const header = {
+                headers: {
+                    authorization : localStorage.getItem('x')
+                }
+            }
+
+            // INSERT 
+            const result1 = await axios.post('http://localhost:4040/api/accounts/islocked/set',{acc_id},header);
+            
+            const result = await axios.post('http://localhost:4040/api/getaccounts',{},header);
+
+            setUserList(result.data.sqlResult);
+        } catch(err) {
+            history.push('/')
+        }
+    }
+
+
 
     const x = userList.map((it, idx) => {
         return(
         <Table.Row key={it.id}>
             <Table.Cell>  
-              <Radio toggle defaultChecked={it.state==='1'?true:false}/>
+              <Radio toggle onClick={()=>{setAccountState(it.id)}}   checked={it.state==='1'?true:false}/>
             </Table.Cell>
-            <Table.Cell onClick={()=>{console.log(userList)}}>{it.user_type_id}</Table.Cell>
+            <Table.Cell>{it.user_type_id}</Table.Cell>
             <Table.Cell>{it.username}</Table.Cell>
             <Table.Cell>{it.lastname}</Table.Cell>
             <Table.Cell>{it.firstname}</Table.Cell>
             <Table.Cell>{it.middlename}</Table.Cell>
             <Table.Cell>  
-              <Radio toggle defaultChecked={it.is_locked===1?true:false}/>
+              <Radio toggle onClick={()=>{setAccountLock(it.id)}} checked={it.is_locked===1?true:false}/>
             </Table.Cell>
             <Table.Cell>{it.contact_number}</Table.Cell>
             <Table.Cell>{it.updated_at}</Table.Cell>
         </Table.Row>)
     })
-
-
 
     return(
 
