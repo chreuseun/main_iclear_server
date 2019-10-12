@@ -3,10 +3,6 @@ import { Table, Segment, Dropdown, Container, Modal, Radio, Button, Form, Label,
 import { withRouter } from 'react-router-dom'
 import axios from 'axios';
 
-// Loader
-import Loader from '../../../../../reuse/loader';
-import { access } from 'fs';
-
 function ManageAcadYear(props) {
 
     const { match, location, history } = props
