@@ -69,7 +69,7 @@ function ManageUsers(props) {
             }
             }
 
-            isMember === 1 ? api_uri.action = `http://localhost:4040/api/departments/users/delete`
+            isMember === "1" ? api_uri.action = `http://localhost:4040/api/departments/users/delete`
                            : api_uri.action = `http://localhost:4040/api/departments/users/add`
 
 
@@ -95,7 +95,7 @@ function ManageUsers(props) {
         <Table.Row key={it.acc_id}>
 
             <Table.Cell>  
-              <Radio toggle onClick={ () => {RefreshUserList(it.is_member,it.acc_id)}} checked={it.is_member===1? true : false}/>
+              <Radio toggle onClick={ () => {RefreshUserList(it.is_member,it.acc_id)}} checked={it.is_member==="1"? true : false}/>
             </Table.Cell>
 
             <Table.Cell>{it.username}</Table.Cell>
