@@ -39,7 +39,7 @@ function ManageUsers(props) {
                 }
 
             } catch(err) {
-                props.history.push('/')
+                history.push('/')
             }   
         }
 
