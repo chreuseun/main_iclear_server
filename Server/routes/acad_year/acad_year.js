@@ -23,36 +23,46 @@ router.get('/acad_year/get', (req, res) => {
     console.log('> POST - /api/menu/acad_year/get')
 })
 
-// router.post('/departmentinsert', (req, res) => {
+router.post('/acad_year/set', (req, res) => {
 
-//     // let body = [
-//     //     req.body.valDeptName,
-//     //     req.body.valType,
-//     //     req.body.valAcadLevel,
-//     //     req.body.valCourse ,
-//     //     req.body.valYearLevel,
-//     //     req.body.valHeadOff 
-//     // ]
+    const insertAcadYear = require('./functions/setAcadYear');
 
-//     // const insertDepartment = require('./functions/insertNewDepartments');
-
-//     // let token = req.headers.authorization
+    let token = req.headers.authorization
     
-//     // let params = [
-//     //    body 
-//     // ]
+    let params = [
+        req.body.base_year
+    ]   
 
+    args = {
+        res, 
+        token ,
+        params
+    }
 
-//     // args = {
-//     //     res, 
-//     //     token ,
-//     //     params
-//     // }
-
-//     // insertDepartment(args)
+    insertAcadYear(args)
  
-//     // console.log('> POST - /api/menu/departmentinsert')
-// })
+    console.log('> POST - /api/menu/acad_year/insert')
+})
+
+router.post('/acad_year/insert', (req, res) => {
+
+    const insertAcadYear = require('./functions/insertAddAcadYear');
+
+    let token = req.headers.authorization
+    
+    let params = [
+    ]
+
+    args = {
+        res, 
+        token ,
+        params
+    }
+
+    insertAcadYear(args)
+ 
+    console.log('> POST - /api/menu/acad_year/insert')
+})
 
 
 module.exports = router

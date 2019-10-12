@@ -20,8 +20,8 @@ app.use('/api',require('./routes/users/login'));  // USERS
 app.use('/api', require('./routes/menu/menu')); // MENU
 app.use('/api', require('./routes/educ_level/educ_level')) // EDUC_LEVEL
 app.use('/api', require('./routes/departments/departments'))  // DEPARTMENTS
-// app.use('/api',require('./routes/acad_year/acad_year')) // ACAD_YEAR
-// app.use('/api',require('./routes/semester/semester')) // SEMESTER
+app.use('/api',require('./routes/acad_year/acad_year')) // ACAD_YEAR
+app.use('/api',require('./routes/semester/semester')) // SEMESTER
 app.use('/',require('./routes/test/test'))
 
 

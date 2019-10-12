@@ -10,7 +10,7 @@ var query = require('../../reuse/query')
 
 var sql = require('../../../mysql/queries/accounts/Login')
 
-const asyncSetAcadYear = async ({res, token, params}) => {
+const asyncGetCourseLevel = async ({res, token, params}) => {
     
     let error  = false;    
     let jwtResult;
@@ -32,11 +32,11 @@ const asyncSetAcadYear = async ({res, token, params}) => {
         error  = true; 
     }
     
-    // set acadYear
+    // get acadYear
     try{
         if(sqlResult[0].is_token === 'AUTH') {
 
-            let sql = `UPDATE acad_year SET state = IF(base_year = ?, '1', '0')`;
+            let sql = `UPDATE semester SET state = IF(name = ?, '1', '0')`;
 
             sqlResult = await query(sql, params[0])
         }
@@ -46,7 +46,7 @@ const asyncSetAcadYear = async ({res, token, params}) => {
 
     error ? 
         res.sendStatus(401) : 
-        res.json({ data:sqlResult.insertId})
+        res.json({ data:sqlResult})
 }
 
-module.exports =  asyncSetAcadYear
+module.exports =  asyncGetCourseLevel
