@@ -107,7 +107,7 @@ router.post('/auth', (req,res)=>{
 })
 
 router.post('/getaccounts', (req, res) => {
-    console.log(req.headers.authorization)
+    
     let getaccounts = require('./functions/getAccounts');
 
     let arg = {
@@ -120,6 +120,42 @@ router.post('/getaccounts', (req, res) => {
 
     console.log('> POST - /api/getaccounts')
 })
+
+router.post('/accounts/state/set', (req, res) => {
+
+    let setState = require('./functions/setState');
+
+    let arg = {
+        res,
+        token : req.headers.authorization,
+        params : [
+            [req.body.acc_id , req.body.acc_id ] 
+        ]
+    }
+
+    setState(arg);
+
+    console.log('> POST - /api/accounts/state/set')
+})
+
+
+router.post('/accounts/islocked/set', (req, res) => {
+    console.log(`${req.body.acc_id.toString()}`)
+    let setLocked = require('./functions/setIs_Locked');
+
+    let arg = {
+        res,
+        token : req.headers.authorization,
+        params : [
+            `${req.body.acc_id.toString()}`
+        ]
+    }
+
+    setLocked(arg);
+
+    console.log('> POST - /api/accounts/islocked/set')
+})
+
 
 module.exports = router
 
