@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Menu ,Icon, Container, Dropdown, Table, Button, Checkbox } from 'semantic-ui-react'
+import { Menu, Input ,Icon, Container, Dropdown, Table, Button, Checkbox } from 'semantic-ui-react'
 
 
 import Item from './variation'
@@ -68,15 +68,27 @@ export default class MenuExampleStackable extends Component {
                 primary
                 size='small'
               >
+
+
                 <Icon name='user' /> Add User
               </Button>
               <Button size='small'>Approve</Button>
               <Button disabled size='small'>
                 Approve All
               </Button>
+
+
+              <Input
+                type="file"
+                hidden
+                placeholder="Choose .csv file"
+                onChange={this.fileChange}
+              />
             </Table.HeaderCell>
           </Table.Row>
         </Table.Footer>
+
+        
       </Table>
        
       
