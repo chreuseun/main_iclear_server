@@ -5,6 +5,9 @@ const router = require('express').Router();
 
 router.post('/student/csv/insert', (req, res) => {
 
+    console.log(req.body.values);
+
+
     const getEducLevel = require('./functions/insertBulkStudentFromCSV');
 
     let token = req.headers.authorization
@@ -12,7 +15,7 @@ router.post('/student/csv/insert', (req, res) => {
     args = {
         res, 
         token ,
-        params : []
+        params : [req.body.values]
     }
 
     getEducLevel(args)

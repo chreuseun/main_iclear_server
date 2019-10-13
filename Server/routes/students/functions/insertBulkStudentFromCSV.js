@@ -39,7 +39,7 @@ const asyncStudentInsertBulkCSV = async ({res, token, params}) => {
             let sql = `INSERT INTO user_type (id)
                         VALUES ?`;
 
-            sqlResult = await query(_sql.insertStudentBulkCSV, [] );
+            sqlResult = await query(_sql.insertStudentBulkCSV, params );
         }
     } catch (err){
         error  = true;  
