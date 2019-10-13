@@ -17,6 +17,9 @@ import ManageDepartments from './../../../pages/protected/menu/menuDepartment/Ma
 import ManageAcadYear from './../../../pages/protected/menu/menuAcadYear/AcadYear/ManageAcadYear';
 import ManageSemester from './../../../pages/protected/menu/menuAcadYear/Semester/MangeSemester';
 
+// ** STUDENT
+import UploadStudent from './../../../pages/protected/menu/menuStudent/UploadCSV';
+
 class NavbarAdmin extends Component {
 
     render() {
@@ -73,6 +76,15 @@ class NavbarAdmin extends Component {
                                 </Dropdown.Menu>
                             </Dropdown>
 
+                            <Dropdown item text='Student'>
+                                <Dropdown.Menu>
+                                  
+                                    <Dropdown.Item as={Link} to={location.pathname + '/uploadstudent'}>Upload CSV</Dropdown.Item>
+                                    <hr/>
+                                    <Dropdown.Item as={Link} to={location.pathname + '/config_semester'}>Manage Students</Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown>
+
                             <Menu.Menu position='right'>                            
                                 <Dropdown item text={'Welcome, ' + this.props.userDetails.username}>
                                     <Dropdown.Menu>
@@ -94,6 +106,8 @@ class NavbarAdmin extends Component {
 
                           <Route path={location.pathname + '/config_semester'} component={ManageSemester}/> 
                           <Route path={location.pathname + '/config_acad_year'} component={ManageAcadYear}/> 
+
+                          <Route path={location.pathname + '/uploadstudent'} component={UploadStudent}/> 
                         </Switch>
                     </Container>
                 </BrowserRouter>

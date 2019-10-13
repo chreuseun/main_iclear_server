@@ -4,17 +4,13 @@ import {  Container, Button } from 'semantic-ui-react'
 
 const Test = (props) => {
 
-  const [Fpath, setFpath] =  useState('');
   const [CsvArr, setCsvArr] =  useState([]);
 
   const parseCSV = async(e) => {
       e.preventDefault()
 
-      // console.log(e.target.files[0])
-
+      // initialize file reader
       var reader = new FileReader();
-
-
 
       function a() {
         return(
@@ -41,7 +37,6 @@ const Test = (props) => {
       let selected_educLevel =  `${1}`; // FROM API
       let activeAcadYear = `${1}`; // FROM API
       let activeSem = `${1}`; // FROM API
-
 
       function b() {
         return(
