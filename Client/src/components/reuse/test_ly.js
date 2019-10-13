@@ -67,10 +67,6 @@ const Test = (props) => {
                 "familyphone" : it.field10, // familyphone
                 "gender" : it.field11, // gender
                 "section" : it.field8,  // section
-                
-               
-                
-                
                 acad_year_id : activeAcadYear, // acad_year_id
                 semester_id : activeSem, // semester_id
 
