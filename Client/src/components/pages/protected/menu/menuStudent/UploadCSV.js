@@ -1,19 +1,16 @@
 import React, { useEffect, useState } from 'react'
-import { Table, Segment, Dropdown, Container, Modal, Button, Form, Label, Divider, Header, Input } from 'semantic-ui-react'
+import {  Segment, Dropdown, Container, Button, Form, Label, Divider, Header, Input } from 'semantic-ui-react'
 import { withRouter } from 'react-router-dom'
 import axios from 'axios';
 import csv from 'csvtojson';
 
 // Loader
 import Loader from '../../../../reuse/loader';
-import { async } from 'q';
-
 
 function ManageDepartment(props) {
 
     const { match, location, history } = props
     const [didMount, setDidMount] = useState(false)
-    const [CsvArr, setCsvArr] =  useState([]);
     const [ActAcadYear,setActAcadYear] = useState('');
     const [ActSemester,setActSemester] = useState('');
     const [ValAcadLevel,setValAcadLevel] = useState(undefined);
@@ -243,6 +240,5 @@ function ManageDepartment(props) {
       </Container>
     )
 }
-
 
 export default withRouter(ManageDepartment)
