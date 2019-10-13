@@ -7,7 +7,6 @@ import csv from 'csvtojson';
 // Loader
 import Loader from '../../../../reuse/loader';
 import { async } from 'q';
-import { userInfo } from 'os';
 
 
 function ManageDepartment(props) {
@@ -17,8 +16,9 @@ function ManageDepartment(props) {
     const [CsvArr, setCsvArr] =  useState([]);
     const [ActAcadYear,setActAcadYear] = useState('');
     const [ActSemester,setActSemester] = useState('');
-    const [ValAcadLevel,setValAcadLevel] = useState({});
+    const [ValAcadLevel,setValAcadLevel] = useState(undefined);
     const [ListEducLevel,setListEducLevel] = useState([]);
+    const [CsvFile,setCsvFile] = useState();
 
     useEffect( () => {
         
@@ -35,10 +35,20 @@ function ManageDepartment(props) {
                 }
 
                 const result = await axios.post('http://localhost:4040/api/educlevel/get',{},header);
-                
+
+                const result1 = await axios.get('http://localhost:4040/api/acad_year/active/get',header);
+
+                const result2 = await axios.get('http://localhost:4040/api/semester/active/get',header);
+                  
+                console.log(result1)
+                console.log(result2)
+
                 if(xa)
                 {
-                    setListEducLevel(result.data.sqlResult)
+                  
+                  setActAcadYear(result1.data.data[0]);
+                  setActSemester(result2.data.data[0]);
+                    setListEducLevel(result.data.sqlResult);
                 }
 
                 
@@ -57,21 +67,33 @@ function ManageDepartment(props) {
         return null
     }
 
-
     // ********** Client Logics
+    
     const parseCSV = async(e) => {
+      try{
         e.preventDefault()
+  
+        console.log('CSV File Set')
+        setCsvFile(e.target.files[0])
+      } catch(err) {
+        console.log('Invalid CSV')
+      }
+    }
+
+    const parse2 = async(file) => {
+      try{
+        setCsvFile(file)
   
         // initialize file reader
         var reader = new FileReader();
   
-        function a() {
+        function readCSVfile() {
           return(
             new Promise((res, rej)=>{
               
-              reader.readAsText(e.target.files[0])
+              reader.readAsText(file)
   
-              reader.onload = function(e) {
+              reader.onload = function() {
                 if(reader.result){
                   res(reader.result)
                 } else {
@@ -82,16 +104,8 @@ function ManageDepartment(props) {
             })
           )
         }
-  
-        let data = await a()
-  
-        let output = await csv({noheader:true, output: "json " }).fromString(data);
-        
-        let selected_educLevel =  `${1}`; // FROM API
-        let activeAcadYear = `${1}`; // FROM API
-        let activeSem = `${1}`; // FROM API
-  
-        function b() {
+
+        function refactorToMySQL() { 
           return(
             new Promise((res, rej) => {
               
@@ -102,8 +116,8 @@ function ManageDepartment(props) {
                       return (
                                 [
                                   it.field1, // id
-                                  selected_educLevel, // educ_level_id
-                                  `GS${it.field1}`, // username
+                                  `${ValAcadLevel.id}`, // educ_level_id
+                                  `${ValAcadLevel.code}${it.field1}`, // username
                                   `$2y$14$0KXJgXTja40eZLNTf7oSy.y6buQOKuuCKcSK87Hh3cNjHzaU95fa6`, // password
                                   it.field2, // image_url
                                   it.field3, // studfname
@@ -115,8 +129,8 @@ function ManageDepartment(props) {
                                   it.field10, // familyphone
                                   it.field11, // gender
                                   it.field8,  // section
-                                  activeAcadYear, // acad_year_id
-                                  activeSem, // semester_id
+                                  `${ActAcadYear.id}`, // acad_year_id
+                                  `${ActSemester.id}`, // semester_id
                                 ]
                       )
                     }    
@@ -131,32 +145,34 @@ function ManageDepartment(props) {
             })
           )
         }
+
+        let data = await readCSVfile()
   
-        setCsvArr( await b());
-  
-        console.log(CsvArr)
-    }
+        let output = await csv({noheader:true, output: "json " }).fromString(data);
+        
+        refactorToMySQL()
+        .then(async(data)=>{
+          const header = {
+              headers: {
+                  authorization : localStorage.getItem('x')
+              }
+          }
 
-    const uploadCSV = async(e) => {
-        try{
+          const body = {
+              values : data
+          }
 
-            const header = {
-                headers: {
-                    authorization : localStorage.getItem('x')
-                }
-            }
-
-            const body = {
-                values : CsvArr
-            }
-
-            const result = await axios.post('http://localhost:4040/api/student/csv/insert',body,header);
-      
-            console.log(result.data);
-            
-        } catch(err) {
-            props.history.push('/')
-        }
+          const result = await axios.post('http://localhost:4040/api/student/csv/insert',body,header);
+          console.log('CSV to Mysql Uploaded')
+          console.log(result.data.data);
+          
+        })
+        .catch(()=>{
+          console.log('Invalid CSV')
+        })
+      } catch(err) {
+        console.log('Invalid CSV')
+      }
     }
 
     const acadlevel_handleChange = (e, { value, text }) => {
@@ -174,30 +190,7 @@ function ManageDepartment(props) {
             }
             
         })
-        
-        // setValAcadLevel(value)
-      
-        // setValYearLevel('');
-        // setValCourse('');
 
-        // let filter=( subdata.course.filter((item)=> {
-        //   return item.educ_level_id === value
-        // }) )
-
-        // let filter1=( subdata.yearlevel.filter((item)=> {
-        //   return item.educ_level_id === value
-        // }) )
-  
-        // setCourse(filter.map((it, idx) => { 
-        //   console.log(it)
-        //   return {key:it.course,value:it.course, text: it.course }
-        // }))
-
-        // setYearLevel(filter1.map((it, idx) => { 
-        //   console.log(it)
-        //   return {key:it.yearlevel,value:it.yearlevel, text: it.yearlevel }
-        // }))
- 
     }
 
     return(
@@ -210,15 +203,27 @@ function ManageDepartment(props) {
 
           <Form>
 
+            
+            <Form.Field >
+              <Label as='a' color='blue'  ribbon>Active School Year</Label>
+              <Input value={ActAcadYear.name}/>
+            </Form.Field>
+
+            <Form.Field >
+              <Label as='a' color='blue'  ribbon>Active Semester</Label>
+              <Input value={ActSemester.name}/>
+            </Form.Field>
+
+
             <Form.Field >
               <Label as='a' color='blue'  ribbon>Acadamic Level</Label>
                   <Dropdown
-                  placeholder='Acadamic Level'
-                  fluid
-                  onChange={acadlevel_handleChange}
-                  search
-                  selection
-                  options={ListEducLevel}
+                    placeholder='Acadamic Level'
+                    fluid
+                    onChange={acadlevel_handleChange}
+                    search
+                    selection
+                    options={ListEducLevel}
                   />
             </Form.Field>
 
@@ -226,12 +231,12 @@ function ManageDepartment(props) {
 
             <Form.Field >
               <Label as='a' color='blue'  ribbon>Upload .csv file</Label>
-              <Input onChange={(e)=> {parseCSV(e)}}  required  type="file" />
+              <Input disabled={ValAcadLevel? false:true} onChange={(e)=> {parseCSV(e)}}  required  type="file" />
             </Form.Field>
 
             <Divider/>
 
-            <Button onClick={()=>{console.log(ValAcadLevel);}} color='blue'>Upload</Button>
+            <Button onClick={()=>{/*uploadCSV()*/ parse2(CsvFile);}} color='blue'>Upload</Button>
           </Form>
         </Segment>
 
