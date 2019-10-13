@@ -48,7 +48,7 @@ const asyncStudentInsertBulkCSV = async ({res, token, params}) => {
 
     error ? 
     res.sendStatus(401) : 
-    res.json({ sqlResult })
+    res.json({ data:sqlResult })
 }
 
 let _sql = {

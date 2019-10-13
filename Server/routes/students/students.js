@@ -1,8 +1,6 @@
 // STATUS : WORKING
 const router = require('express').Router();
 
-
-
 router.post('/student/csv/insert', (req, res) => {
 
     console.log(req.body.values);
