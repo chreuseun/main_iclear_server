@@ -1,85 +1,136 @@
-import React, { Component } from 'react'
-import { Menu ,Icon, Container, Dropdown, Table, Button, Checkbox } from 'semantic-ui-react'
+import React, { useState } from 'react'
+import csv from 'csvtojson';
+import {  Container } from 'semantic-ui-react'
+import { async } from 'q';
+
+const Test = (props) => {
+
+  const [Fpath, setFpath] =  useState('');
+  const [CsvArr, setCsvArr] =  useState([]);
+
+  const parseCSV = async(e) => {
+      e.preventDefault()
+
+      // console.log(e.target.files[0])
+
+      var reader = new FileReader();
 
 
-import Item from './variation'
-import InputUser from './insert_new_user'
 
-export default class MenuExampleStackable extends Component {
-  state = {}
+      function a() {
+        return(
+          new Promise((res, rej)=>{
+            
+            reader.readAsText(e.target.files[0])
 
-  handleItemClick = (e, { name }) => this.setState({ activeItem: name })
+            reader.onload = function(e) {
+              if(reader.result){
+                res(reader.result)
+              } else {
+                rej('');
+              }
+            }
 
-  render() {
-    const { activeItem } = this.state
+          })
+        )
+      }
 
-    
+      let data = await a()
 
-    return (
-        <Table compact celled definition>
-        <Table.Header>
-          <Table.Row>
-            <Table.HeaderCell />
-            <Table.HeaderCell>Name</Table.HeaderCell>
-            <Table.HeaderCell>Registration Date</Table.HeaderCell>
-            <Table.HeaderCell>E-mail address</Table.HeaderCell>
-            <Table.HeaderCell>Premium Plan</Table.HeaderCell>
-          </Table.Row>
-        </Table.Header>
-    
-        <Table.Body>
-          <Table.Row>
-            <Table.Cell collapsing>
-              <Checkbox slider />
-            </Table.Cell>
-            <Table.Cell>John Lilki</Table.Cell>
-            <Table.Cell>September 14, 2013</Table.Cell>
-            <Table.Cell>jhlilk22@yahoo.com</Table.Cell>
-            <Table.Cell>No</Table.Cell>
-          </Table.Row>
-          <Table.Row>
-            <Table.Cell collapsing>
-              <Checkbox slider />
-            </Table.Cell>
-            <Table.Cell>Jamie Harington</Table.Cell>
-            <Table.Cell>January 11, 2014</Table.Cell>
-            <Table.Cell>jamieharingonton@yahoo.com</Table.Cell>
-            <Table.Cell>Yes</Table.Cell>
-          </Table.Row>
-          <Table.Row>
-            <Table.Cell collapsing>
-              <Checkbox slider />
-            </Table.Cell>
-            <Table.Cell>Jill Lewis</Table.Cell>
-            <Table.Cell>May 11, 2014</Table.Cell>
-            <Table.Cell>jilsewris22@yahoo.com</Table.Cell>
-            <Table.Cell>Yes</Table.Cell>
-          </Table.Row>
-        </Table.Body>
-    
-        <Table.Footer fullWidth>
-          <Table.Row>
-            <Table.HeaderCell />
-            <Table.HeaderCell colSpan='4'>
-              <Button
-                floated='right'
-                icon
-                labelPosition='left'
-                primary
-                size='small'
-              >
-                <Icon name='user' /> Add User
-              </Button>
-              <Button size='small'>Approve</Button>
-              <Button disabled size='small'>
-                Approve All
-              </Button>
-            </Table.HeaderCell>
-          </Table.Row>
-        </Table.Footer>
-      </Table>
-       
-      
-    )
+      csv({noheader:true, output: "json " })
+      .fromString(data)
+      .then((csvRow)=>{ 
+          console.log(csvRow) 
+          // console.log(csvRow.slice(1, csvRow.length))
+          setCsvArr(csvRow)
+
+
+          let selected_educLevel =  `${1}`;
+          let activeAcadYear = `${1}`;
+          let activeSem = `${1}`;
+
+          let data2 = csvRow.slice(1, csvRow.length).map((it, ix) => {
+
+            if(it.field1 !== "") {
+              return ({
+                "id" : it.field1, // id
+                "educ_level_id" : selected_educLevel, // educ_level_id
+                "username" : `GS${it.field1}`, // username
+                "password" : `$2y$14$0KXJgXTja40eZLNTf7oSy.y6buQOKuuCKcSK87Hh3cNjHzaU95fa6`, // password
+                "image_url" : it.field2, // image_url
+                "studfname" : it.field3, // studfname
+                "studmname" : it.field4, // studmname
+                "studlname" : it.field5, // studlname
+                "course" : it.field6, // course
+                "yearlevel" : it.field7, // yearlevel
+                "cpnum" : it.field9, // cpnum
+                "familyphone" : it.field10, // familyphone
+                "gender" : it.field11, // gender
+                "section" : it.field8,  // section
+                
+               
+                
+                
+                acad_year_id : activeAcadYear, // acad_year_id
+                semester_id : activeSem, // semester_id
+
+                /*
+                  id
+                  educ_level_id
+                  username
+                  password
+                  image_url
+                  studfname
+                  studmname
+                  studlname
+                  course
+                  yearlevel
+                  cpnum
+                  familyphone
+                  gender
+                  section
+                  acad_year_id
+                  semester_id
+                */
+              })
+            }
+          })
+
+          console.log(data2)
+      })
+     
+     
+      // let data =  
+
+
+      console.log(data)
+      // csv({
+      //   noheader:true,
+      //   output: "csv"
+      // })
+      // .fromString(Fpath)
+      // .then((csvRow)=>{ 
+      //     console.log(csvRow) // => [["1","2","3"], ["4","5","6"], ["7","8","9"]]
+      // })
   }
+
+
+    // console.log(e.target.files[0])
+    
+
+
+
+
+  return(
+    <div>
+      <Container textAlign="center">
+        CSV to JSON
+        <hr/>
+
+        <input type="file" onChange={(e)=>{parseCSV(e)}}/>
+      </Container>
+    </div>
+  ) 
 }
+
+export default Test;
