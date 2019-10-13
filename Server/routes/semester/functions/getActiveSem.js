@@ -10,7 +10,7 @@ var query = require('../../reuse/query')
 
 var sql = require('../../../mysql/queries/accounts/Login')
 
-const asynGetDeptType = async ({res, token, params}) => {
+const getActiveSem = async ({res, token, params}) => {
     
     let error  = false;    
     let jwtResult;
@@ -32,18 +32,12 @@ const asynGetDeptType = async ({res, token, params}) => {
         error  = true; 
     }
     
-    // get departments type
+    // get acadYear
     try{
         if(sqlResult[0].is_token === 'AUTH') {
 
-            let sql = `SELECT 
-                            id as 'key',
-                            name as 'text',
-                            id as 'value',
-                            code
-                        FROM iclear_svms_db.educ_level
-                        
-                        WHERE state = 1`
+            let sql = `SELECT id, name, level, state 
+                            FROM semester WHERE state = '1'`;
 
             sqlResult = await query(sql, [])
         }
@@ -53,7 +47,7 @@ const asynGetDeptType = async ({res, token, params}) => {
 
     error ? 
         res.sendStatus(401) : 
-        res.json({sqlResult})
+        res.json({ data:sqlResult})
 }
 
-module.exports =  asynGetDeptType
+module.exports =  getActiveSem

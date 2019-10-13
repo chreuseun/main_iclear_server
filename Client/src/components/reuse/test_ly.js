@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import csv from 'csvtojson';
-import {  Container } from 'semantic-ui-react'
-import { async } from 'q';
+import {  Container, Button } from 'semantic-ui-react'
 
 const Test = (props) => {
 
@@ -37,85 +36,58 @@ const Test = (props) => {
 
       let data = await a()
 
-      csv({noheader:true, output: "json " })
-      .fromString(data)
-      .then((csvRow)=>{ 
-          console.log(csvRow) 
-          // console.log(csvRow.slice(1, csvRow.length))
-          setCsvArr(csvRow)
+      let output = await csv({noheader:true, output: "json " }).fromString(data);
+      
+      let selected_educLevel =  `${1}`; // FROM API
+      let activeAcadYear = `${1}`; // FROM API
+      let activeSem = `${1}`; // FROM API
 
 
-          let selected_educLevel =  `${1}`;
-          let activeAcadYear = `${1}`;
-          let activeSem = `${1}`;
+      function b() {
+        return(
+          new Promise((res, rej) => {
+            
+            if(output){
+              let data2= ( output.slice( 1, output.length).map((it, ix) => {
 
-          let data2 = csvRow.slice(1, csvRow.length).map((it, ix) => {
+                  if(it.field1 !== "") {
+                    return (
+                              [
+                                it.field1, // id
+                                selected_educLevel, // educ_level_id
+                                `GS${it.field1}`, // username
+                                `$2y$14$0KXJgXTja40eZLNTf7oSy.y6buQOKuuCKcSK87Hh3cNjHzaU95fa6`, // password
+                                it.field2, // image_url
+                                it.field3, // studfname
+                                it.field4, // studmname
+                                it.field5, // studlname
+                                it.field6, // course
+                                it.field7, // yearlevel
+                                it.field9, // cpnum
+                                it.field10, // familyphone
+                                it.field11, // gender
+                                it.field8,  // section
+                                activeAcadYear, // acad_year_id
+                                activeSem, // semester_id
+                              ]
+                    )
+                  }    
+                })
+              );
 
-            if(it.field1 !== "") {
-              return ({
-                "id" : it.field1, // id
-                "educ_level_id" : selected_educLevel, // educ_level_id
-                "username" : `GS${it.field1}`, // username
-                "password" : `$2y$14$0KXJgXTja40eZLNTf7oSy.y6buQOKuuCKcSK87Hh3cNjHzaU95fa6`, // password
-                "image_url" : it.field2, // image_url
-                "studfname" : it.field3, // studfname
-                "studmname" : it.field4, // studmname
-                "studlname" : it.field5, // studlname
-                "course" : it.field6, // course
-                "yearlevel" : it.field7, // yearlevel
-                "cpnum" : it.field9, // cpnum
-                "familyphone" : it.field10, // familyphone
-                "gender" : it.field11, // gender
-                "section" : it.field8,  // section
-                acad_year_id : activeAcadYear, // acad_year_id
-                semester_id : activeSem, // semester_id
-
-                /*
-                  id
-                  educ_level_id
-                  username
-                  password
-                  image_url
-                  studfname
-                  studmname
-                  studlname
-                  course
-                  yearlevel
-                  cpnum
-                  familyphone
-                  gender
-                  section
-                  acad_year_id
-                  semester_id
-                */
-              })
+              res(data2)
+            } else {
+              rej([])
             }
+
           })
+        )
+      }
 
-          console.log(data2)
-      })
-     
-     
-      // let data =  
+      setCsvArr( await b());
 
-
-      console.log(data)
-      // csv({
-      //   noheader:true,
-      //   output: "csv"
-      // })
-      // .fromString(Fpath)
-      // .then((csvRow)=>{ 
-      //     console.log(csvRow) // => [["1","2","3"], ["4","5","6"], ["7","8","9"]]
-      // })
+      console.log(CsvArr)
   }
-
-
-    // console.log(e.target.files[0])
-    
-
-
-
 
   return(
     <div>
@@ -124,6 +96,7 @@ const Test = (props) => {
         <hr/>
 
         <input type="file" onChange={(e)=>{parseCSV(e)}}/>
+        <Button onClick={()=>{console.log(CsvArr)}}>Click</Button>
       </Container>
     </div>
   ) 

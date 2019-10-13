@@ -1,7 +1,3 @@
-// 'http://localhost:4040/api/acad_year/get
-// http://localhost:4040/api/acad_year/set
-//'http://localhost:4040/api/acad_year/insert
-
 // STATUS : WORKING
 
 const router = require('express').Router();
@@ -9,6 +5,23 @@ const router = require('express').Router();
 router.get('/acad_year/get', (req, res) => {
 
     const getAcadYear = require('./functions/getAcadYear');
+
+    let token = req.headers.authorization
+ 
+    args = {
+        res, 
+        token ,
+        params : []
+    }
+
+    getAcadYear(args)
+
+    console.log('> POST - /api/menu/acad_year/get')
+})
+
+router.get('/acad_year/active/get', (req, res) => {
+
+    const getAcadYear = require('./functions/getActiveAcadYear');
 
     let token = req.headers.authorization
  
