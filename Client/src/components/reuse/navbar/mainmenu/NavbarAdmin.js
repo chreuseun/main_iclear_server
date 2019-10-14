@@ -29,7 +29,7 @@ class NavbarAdmin extends Component {
             <React.Fragment>
 
                 <BrowserRouter>
-                    <Menu color="black" stackable inverted  fixed='top'>
+                    <Menu color="blue" stackable inverted  fixed='top'>
                         <Container>
 
                             <Link to="/menu">

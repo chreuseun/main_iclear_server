@@ -1,9 +1,4 @@
-/*
-    http://localhost:4040/api/semester/get
-*/
-
 // STATUS : WORKING
-
 const router = require('express').Router();
 
 router.get('/semester/get', (req, res) => {

@@ -1,13 +1,5 @@
-/*
-    STATUS : NOT
-*/
-
-// Requries 'Bearer TOKENxxxxx'
 var jwtVerify = require('../../reuse/jwtVerify');
-
-// Requires < SQL > , < ARRAY_PARAMETER >
 var query = require('../../reuse/query')
-
 var sql = require('../../../mysql/queries/accounts/Login')
 
 const asyncGetCourseLevel = async ({res, token, params}) => {

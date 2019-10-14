@@ -26,7 +26,7 @@ class NavbarUser extends Component {
             <React.Fragment>
 
                 <BrowserRouter>
-                    <Menu style={{}} stackable inverted >
+                    <Menu color='blue' style={{}} stackable inverted  fixed='top'>
                         <Container>
 
                             <Link to="/menu">

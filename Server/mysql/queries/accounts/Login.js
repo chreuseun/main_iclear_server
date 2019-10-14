@@ -28,12 +28,12 @@ const login = {
     select_blacklist_token : `SELECT
                             IF(COUNT(bt.id) > 0, 'DENY', 'AUTH') AS 'is_token'
                             
-                        FROM account AS ac
-                        LEFT JOIN blacklist_token AS bt ON bt.account_id = ac.id
-                            AND bt.token = ?
-                        WHERE ac.id = ? AND ac.state = 1 AND ac.is_locked = 0
-                            AND ac.user_type_id = 'ADMIN'
-                        GROUP BY ac.id`,
+                            FROM account AS ac
+                            LEFT JOIN blacklist_token AS bt ON bt.account_id = ac.id
+                                AND bt.token = ?
+                            WHERE ac.id = ? AND ac.state = 1 AND ac.is_locked = 0
+                                AND ac.user_type_id = 'ADMIN'
+                            GROUP BY ac.id`,
 
     insert_new_user :  `INSERT INTO account
                         (
