@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {Segment, Dimmer, Loader as Ld } from 'semantic-ui-react'
 
 import IsLogged from '../../../auth/api/isLogged'
 import _Login from '../../../auth/api/login'
@@ -12,7 +13,8 @@ export default class Login extends Component {
     state = {
         us:'',
         pw:'',
-        isLoading: true
+        isLoading: true,
+        load : false
     }
 
     componentDidMount() {
@@ -52,7 +54,14 @@ export default class Login extends Component {
     }
 
     onClick = () => {
+
+        this.setState({
+            load:true
+        })
+
         if( this.state.us !== '' && this.state.pw !== '' ) {
+
+            
 
             let arg = {
                 us: this.state.us,
@@ -61,8 +70,13 @@ export default class Login extends Component {
             }
 
             _Login(arg)
+
+           
         }
         
+        this.setState({
+            load: false
+        })
  
     }
     // 
@@ -75,7 +89,17 @@ export default class Login extends Component {
         } 
 
         return(
-            <LoginForm usSend={this.usSend} pwSend={this.pwSend} onClick={this.onClick}/>
+
+
+            <Segment>
+                    <Dimmer active={this.state.load}>
+                        <Ld/>
+                    </Dimmer>
+
+                 <LoginForm usSend={this.usSend} pwSend={this.pwSend} onClick={this.onClick}/>
+            </Segment>
+
+           
         );
     }
 }

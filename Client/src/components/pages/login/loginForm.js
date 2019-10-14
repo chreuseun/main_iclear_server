@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Form, Grid, Header, Segment } from 'semantic-ui-react'
+import { Button, Form, Grid, Header, Segment ,Dimmer, Loader} from 'semantic-ui-react'
 
 
 export default class LoginForm extends Component {
@@ -25,6 +25,7 @@ export default class LoginForm extends Component {
 
         return(
             <Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
+
               <Grid.Column style={{ maxWidth: 450 }}>
 
                 <Header as='h2' color='blue' textAlign='center'>
@@ -32,7 +33,7 @@ export default class LoginForm extends Component {
                 </Header>
                 <Form size='large'>
                   <Segment stacked>
-                  
+
                     <input onChange={usChange}   type="text"  placeholder="Username" style={{marginBottom:"10px"}}/>
                     
                     <input onChange={pwChange}   type="password"  placeholder="password" style={{marginBottom:"10px"}}/>

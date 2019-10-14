@@ -23,7 +23,7 @@ import UploadStudent from './../../../pages/protected/menu/menuStudent/UploadCSV
 class NavbarAdmin extends Component {
 
     render() {
-        const { match, location, history } = this.props
+        const { location, history } = this.props
 
         return(
             <React.Fragment>
