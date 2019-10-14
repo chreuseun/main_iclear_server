@@ -4,9 +4,6 @@ import { withRouter } from 'react-router-dom'
 import axios from 'axios';
 import csv from 'csvtojson';
 
-// Loader
-
-
 function ManageDepartment(props) {
 
     const { match, location, history } = props
