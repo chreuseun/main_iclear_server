@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react'
-import {  Segment, Dropdown, Container, Button, Form, Label, Divider, Header, Input } from 'semantic-ui-react'
+import {  Segment, Dropdown, Container, Button, Form, Label, Divider, Header, Input, Dimmer, Loader } from 'semantic-ui-react'
 import { withRouter } from 'react-router-dom'
 import axios from 'axios';
 import csv from 'csvtojson';
 
 // Loader
-import Loader from '../../../../reuse/loader';
+
 
 function ManageDepartment(props) {
 
     const { match, location, history } = props
+    const [IsLoading,setIsLoading] = useState(true);
     const [didMount, setDidMount] = useState(false)
     const [ActAcadYear,setActAcadYear] = useState('');
     const [ActSemester,setActSemester] = useState('');
@@ -42,10 +43,10 @@ function ManageDepartment(props) {
 
                 if(xa)
                 {
-                  
+                  setIsLoading(false);
                   setActAcadYear(result1.data.data[0]);
                   setActSemester(result2.data.data[0]);
-                    setListEducLevel(result.data.sqlResult);
+                  setListEducLevel(result.data.sqlResult);
                 }
 
                 
@@ -56,7 +57,10 @@ function ManageDepartment(props) {
         }
         x();
 
-        return () => (xa=false)
+        return () => {
+          xa=false;
+          
+        }
 
       }, []);
 
@@ -66,6 +70,7 @@ function ManageDepartment(props) {
 
     // ********** Client Logics
     
+    // Input = file onChange
     const parseCSV = async(e) => {
       try{
         e.preventDefault()
@@ -77,8 +82,11 @@ function ManageDepartment(props) {
       }
     }
 
+    // 
     const parse2 = async(file) => {
       try{
+        setIsLoading(true);
+
         setCsvFile(file)
   
         // initialize file reader
@@ -168,8 +176,11 @@ function ManageDepartment(props) {
           console.log('Invalid CSV')
         })
       } catch(err) {
+
         console.log('Invalid CSV')
       }
+
+      setIsLoading(false);
     }
 
     const acadlevel_handleChange = (e, { value, text }) => {
@@ -192,7 +203,15 @@ function ManageDepartment(props) {
 
     return(
         <Container textAlign="left" style={{marginTop:100}}  >
+
+        <Dimmer active={IsLoading}>
+          <Loader/>
+        </Dimmer>
+
         <Segment  style={{ maxWidth: 600 ,margin:"auto"}}> 
+
+    
+
       
           <Header textAlign="center"   icon>
             <h2>Upload CSV</h2>
