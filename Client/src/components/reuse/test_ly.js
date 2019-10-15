@@ -49,6 +49,7 @@ HorizontalSidebar.propTypes = {
 
 const VerticalSidebar = ({ animation, direction, visible }) => (
   <Sidebar
+    color='blue'
     as={Menu}
     animation={animation}
     direction={direction}
