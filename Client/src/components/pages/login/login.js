@@ -61,8 +61,6 @@ export default class Login extends Component {
 
         if( this.state.us !== '' && this.state.pw !== '' ) {
 
-            
-
             let arg = {
                 us: this.state.us,
                 pw: this.state.pw,
@@ -70,8 +68,6 @@ export default class Login extends Component {
             }
 
             _Login(arg)
-
-           
         }
         
         this.setState({

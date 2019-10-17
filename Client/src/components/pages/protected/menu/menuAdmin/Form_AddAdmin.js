@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { Form, Header,Segment, Button,Divider, Label, Container, Dropdown} from 'semantic-ui-react'
 import axios from 'axios';
 import { withRouter, Redirect} from "react-router-dom";
+import baseURL from '../../../../../res/baseuri';
+
 //COMPONENTS
 import Loader from '../../../../reuse/loader';
 
@@ -11,7 +13,7 @@ class FormExampleSubcomponentControl extends Component {
   state = {
     isLoading: true,
   
-    user_type_id : 'ADMIN', 
+    user_type_id : '', 
     username : '',
     password : '',
     lastname : '',
@@ -19,6 +21,11 @@ class FormExampleSubcomponentControl extends Component {
     middlename : '',
     contact_number : '',
     retypePassword : ''
+  }
+
+  uri={
+    auth: `${baseURL}/api/auth`,
+    register: `${baseURL}/api/register`
   }
 
   componentDidMount() {
@@ -35,7 +42,7 @@ class FormExampleSubcomponentControl extends Component {
 
       const init = async() =>{
           try {
-              response = await axios.post('http://localhost:4040/api/auth',{} ,header)
+              response = await axios.post(this.uri.auth,{} ,header)
 
               if(response.data.msg !== 'auth' || !response) {
                   localStorage.clear();
@@ -74,6 +81,7 @@ class FormExampleSubcomponentControl extends Component {
           this.state.lastname.trim()  === ''  ||
           this.state.firstname.trim()  === ''  ||
           this.state.contact_number.trim()  === '' ||
+          this.state.user_type_id.trim() === '' ||
           this.state.retypePassword.trim()  !== this.state.password.trim() 
       ) {
         alert("Please suppliment required fields")
@@ -103,7 +111,7 @@ class FormExampleSubcomponentControl extends Component {
         this.setState({
           isLoading:true
         })
-        data=await axios.post('http://localhost:4040/api/register',body ,headers)   
+        data=await axios.post(this.uri.register,body ,headers)   
         
         this.setState({
           username : '',
@@ -115,7 +123,7 @@ class FormExampleSubcomponentControl extends Component {
           retypePassword : ''
         })
 
-        alert("Admin Added");
+        alert("User Added");
 
         this.setState({
           isLoading:false
@@ -128,6 +136,13 @@ class FormExampleSubcomponentControl extends Component {
       }         
     }
 
+    const onChangeUserType = async(e, {value}) => {
+      console.log(value)
+      this.setState({
+        user_type_id: value
+      })
+    }
+
     if(this.state.isLoading) {
       return (<Loader/>)
     }
@@ -136,11 +151,39 @@ class FormExampleSubcomponentControl extends Component {
       <Container textAlign="left" style={{marginTop:20}}  >
       <Segment  style={{ maxWidth: 600 ,margin:"auto"}}> 
     
-        <Header textAlign="center"  color='blue' icon>
-          Add Admin
+        <Header textAlign="center"   icon>
+          Add User Account
         </Header>
 
         <Form>
+
+        <Form.Field >
+            <Label as='a' color='grey' ribbon>Type</Label>
+            <Dropdown
+              placeholder='User Type'
+              fluid
+              onChange={onChangeUserType}
+              search
+              selection
+              options={[
+                {
+                  key: 'ADMIN',
+                  text: 'ADMIN',
+                  value: 'ADMIN',
+                },
+                {
+                  key: 'USER',
+                  text: 'USER',
+                  value: 'USER',
+                },
+                {
+                  key: 'SUBJECT',
+                  text: 'SUBJECT',
+                  value: 'SUBJECT',
+                }
+              ]}
+            />
+          </Form.Field>
 
           <Form.Field >
             <Label as='a' color='grey' ribbon>Lastname</Label>
@@ -212,31 +255,6 @@ class FormExampleSubcomponentControl extends Component {
                     retypePassword: e.target.value
                   })
               }}/>
-          </Form.Field>
-
-
-
-           <Form.Field >
-            <Label as='a' color='grey' ribbon>Type</Label>
-            <Dropdown
-              placeholder='User Type'
-              fluid
-              
-              search
-              selection
-              options={[
-                {
-                  key: 'ADMIN',
-                  text: 'ADMIN',
-                  value: 'ADMIN',
-                },
-                {
-                  key: 'USER',
-                  text: 'USER',
-                  value: 'USER',
-                }
-              ]}
-            />
           </Form.Field>
 
           <Divider/>

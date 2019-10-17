@@ -1,7 +1,7 @@
 const express = require('express');
 var bodyParser = require('body-parser')
 var cors = require('cors');
-
+const ip_v4 = '192.168.254.154';
 // JUST ERROR MESSAGE
 var error = {message: "error"}
 
@@ -12,8 +12,8 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }))
 // parse application/json
 app.use(bodyParser.json())
-app.use(cors({origin: 'http://localhost:3000',
-optionsSuccessStatus: 200}))
+app.use(cors())
+
 
 // ROUTES
 app.use('/api',require('./routes/users/login'));  // USERS
@@ -27,4 +27,7 @@ app.use('/api', require('./routes/students/students')) // STUDENTS
 app.use('/',require('./routes/test/test')) // TEST FOR TESTING
 
 
-app.listen(4040, () => {console.log('Server Started on PORT:4040')});
+app.listen(4040,ip_v4);
+//10.83.19.175
+
+console.log('Server is Running')

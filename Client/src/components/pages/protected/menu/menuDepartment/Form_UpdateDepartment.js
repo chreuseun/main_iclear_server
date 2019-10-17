@@ -1,7 +1,8 @@
 import React, {  useState, useEffect } from 'react'
-import { Form, Header,Segment, Button,Divider, Label, Container, Dropdown} from 'semantic-ui-react'
+import { Form,Segment, Button,Divider, Label, Container, Dropdown} from 'semantic-ui-react'
 import axios from 'axios';
-import { withRouter, Redirect} from "react-router-dom";
+import baseURL from '../../../../../res/baseuri'
+import { withRouter} from "react-router-dom";
 //COMPONENTS
 import Loader from '../../../../reuse/loader';
 
@@ -26,7 +27,13 @@ function FormExampleSubcomponentControl (props) {
     const [valStatus, setValStatus] = useState('');
 
   
+  
     
+    useEffect(() => {
+ 
+      const ac = new AbortController();
+
+          
     const x = async()=>{
       try{
 
@@ -36,19 +43,19 @@ function FormExampleSubcomponentControl (props) {
               },
           }
 
-          let result = await axios.post('http://localhost:4040/api/departmentstype/get',{},header);
+          let result = await axios.post(`${baseURL}/api/departmentstype/get`,{},header);
           setType(result.data.sqlResult)
           // console.log('TYPE OK');
 
-          result = await axios.post('http://localhost:4040/api/educlevel/get',{},header);
+          result = await axios.post(`${baseURL}/api/educlevel/get`,{},header);
           setAcadLevel(result.data.sqlResult)
           // console.log('acadlevel OK');
 
-          result = await axios.post('http://localhost:4040/api/educcourselevel/get',{},header);
+          result = await axios.post(`${baseURL}/api/educcourselevel/get`,{},header);
           setSubDate(result.data.sqlResult)
           // console.log('yr_cors OK');
 
-          result = await axios.post('http://localhost:4040/api/department/getone',{id:props.deptKey},header);
+          result = await axios.post(`${baseURL}/api/department/getone`,{id:props.deptKey},header);
           // console.log( result.data.sqlResult[0]);
 
           let sqlResult = result.data.sqlResult[0];
@@ -57,7 +64,7 @@ function FormExampleSubcomponentControl (props) {
           setValType(sqlResult.d_type);
 
           setValAcadLevel(sqlResult.el_id);
-          let initResult = await axios.post('http://localhost:4040/api/initeduccourselevel',{id:sqlResult.el_id},header);
+          let initResult = await axios.post(`${baseURL}/api/initeduccourselevel`,{id:sqlResult.el_id},header);
            
           setInitData(initResult.data.sqlResult);
 
@@ -78,13 +85,7 @@ function FormExampleSubcomponentControl (props) {
       } catch(err) {
               props.history.push('/')
       } 
-  }
-    
-    useEffect(() => {
- 
-      const ac = new AbortController();
-
-       
+    }
 
 
         x();
@@ -124,7 +125,7 @@ function FormExampleSubcomponentControl (props) {
           }
         }
   
-        let response = await axios.post('http://localhost:4040/api/department/update', body, headers)
+        let response = await axios.post(`${baseURL}/api/department/update`, body, headers)
   
         if(response) {
           console.log(props.location)

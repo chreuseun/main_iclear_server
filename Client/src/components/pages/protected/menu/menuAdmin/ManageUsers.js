@@ -2,8 +2,13 @@ import React, { useEffect, useState } from 'react'
 import { Table, Segment, Radio, Container } from 'semantic-ui-react'
 import { withRouter } from 'react-router-dom'
 import axios from 'axios';
+import baseURL from '../../../../../res/baseuri'
 
 function ManageUsers(props) {
+
+    const uri = {
+        getAccounts:`${baseURL}/api/getaccounts`
+    }
 
     const [userList, setUserList] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -19,7 +24,7 @@ function ManageUsers(props) {
                     }
                 }
 
-                const result = await axios.post('http://localhost:4040/api/getaccounts',{},header);
+                const result = await axios.post(uri.getAccounts,{},header);
                 setUserList(result.data.sqlResult);
             } catch(err) {
                 history.push('/')
@@ -43,9 +48,9 @@ function ManageUsers(props) {
             }
 
             // INSERT 
-            const result1 = await axios.post('http://localhost:4040/api/accounts/state/set',{acc_id},header);
+            const result1 = await axios.post(`${baseURL}/api/accounts/state/set`,{acc_id},header);
             
-            const result = await axios.post('http://localhost:4040/api/getaccounts',{},header);
+            const result = await axios.post(`${baseURL}:4040/api/getaccounts`,{},header);
 
             setUserList(result.data.sqlResult);
         } catch(err) {
@@ -65,9 +70,9 @@ function ManageUsers(props) {
             }
 
             // INSERT 
-            const result1 = await axios.post('http://localhost:4040/api/accounts/islocked/set',{acc_id},header);
+            const result1 = await axios.post(`${baseURL}/api/accounts/islocked/set`,{acc_id},header);
             
-            const result = await axios.post('http://localhost:4040/api/getaccounts',{},header);
+            const result = await axios.post(`${baseURL}/api/getaccounts`,{},header);
 
             setUserList(result.data.sqlResult);
         } catch(err) {

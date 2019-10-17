@@ -1,4 +1,5 @@
 import axios from 'axios';
+import baseURL from '../../res/baseuri'
 
 function isLogged({cb=()=>{}, cbf=()=>{}}) {
     
@@ -8,7 +9,7 @@ function isLogged({cb=()=>{}, cbf=()=>{}}) {
         }
     }
     
-    axios.post('http://localhost:4040/api/auth',{} ,header)
+    axios.post(`${baseURL}/api/auth`,{} ,header)
     .then((response)=> {
         if(response.data.msg === 'auth') {
             cb()

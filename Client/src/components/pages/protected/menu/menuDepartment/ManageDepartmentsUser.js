@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Table, Segment, Radio, Container } from 'semantic-ui-react'
 import { withRouter } from 'react-router-dom'
 import axios from 'axios';
+import baseURL from '../../../../../res/baseuri';
 
 // peripheral components
 import Loader from '../../../../reuse/loader';
@@ -28,7 +29,7 @@ function ManageUsers(props) {
                     }
                 }
 
-                const result = await axios.get(`http://localhost:4040/api/departments/${props.deptKey}/users`,header);
+                const result = await axios.get(`${baseURL}/api/departments/${props.deptKey}/users`,header);
 
                 console.log()
 
@@ -69,15 +70,15 @@ function ManageUsers(props) {
             }
             }
 
-            isMember === "1" ? api_uri.action = `http://localhost:4040/api/departments/users/delete`
-                           : api_uri.action = `http://localhost:4040/api/departments/users/add`
+            isMember === "1" ? api_uri.action = `${baseURL}/api/departments/users/delete`
+                           : api_uri.action = `${baseURL}/api/departments/users/add`
 
 
             const deptUserResult = await axios.post(api_uri.action, { acc_id:acc_id, dep_id:props.deptKey },header);
 
             console.log(deptUserResult.data)
 
-            const result = await axios.get(`http://localhost:4040/api/departments/${props.deptKey}/users`,header);
+            const result = await axios.get(`${baseURL}/api/departments/${props.deptKey}/users`,header);
 
             
 
@@ -111,7 +112,6 @@ function ManageUsers(props) {
     if(isLoading) {
         return(<Loader/>)
     }
-    
 
     return(
         <Container>

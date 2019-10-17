@@ -8,6 +8,7 @@ import Loader from '../../../reuse/loader';
 // Navbar for ADMIN
 import NavbarAdmin from '../../../reuse/navbar/mainmenu/NavbarAdmin';
 import NavbarUser from '../../../reuse/navbar/mainmenu/NavbarUser';
+import baseURL from '../../../../res/baseuri';
 
 export default class Menu extends Component {
     _isMounted = false;
@@ -15,6 +16,10 @@ export default class Menu extends Component {
     state={
         isLoading: true,
         userDetails: {}
+    }
+
+    uri = {
+        auth:`${baseURL}/api/auth`
     }
 
     componentDidMount() {
@@ -31,7 +36,7 @@ export default class Menu extends Component {
 
             const init = async() =>{
                 try {
-                    response = await axios.post('http://localhost:4040/api/auth',{} ,header)
+                    response = await axios.post(this.uri.auth,{} ,header)
 
                     if(response.data.msg !== 'auth' || !response) {
                         localStorage.clear();
@@ -66,14 +71,13 @@ export default class Menu extends Component {
     }
 
     render() {
-        console.log(this.state.userDetails)
 
         if(!this.state.isLoading) {
             if(this.state.userDetails.user_type_id === 'ADMIN'){
                 return <NavbarAdmin userDetails={this.state.userDetails}/>
             }
 
-            if(this.state.userDetails.user_type_id === 'USER'){
+            if(this.state.userDetails.user_type_id === 'USER' || 'SUBJECT'){
                 return <NavbarUser userDetails={this.state.userDetails}/>
             }
             

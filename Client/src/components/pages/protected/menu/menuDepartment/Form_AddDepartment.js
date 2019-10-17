@@ -1,6 +1,7 @@
 import React, {  useState, useEffect } from 'react'
 import { Form, Header,Segment, Button,Divider, Label, Container, Dropdown} from 'semantic-ui-react'
 import axios from 'axios';
+import baseURL from '../../../../../res/baseuri';
 import { withRouter, Redirect} from "react-router-dom";
 //COMPONENTS
 import Loader from '../../../../reuse/loader';
@@ -39,17 +40,17 @@ function FormExampleSubcomponentControl (props) {
 
         const x = async()=>{
             try{
-                let result = await axios.post('http://localhost:4040/api/departmentstype/get',{},header);
+                let result = await axios.post(`${baseURL}/api/departmentstype/get`,{},header);
                 setType(result.data.sqlResult)
                 console.log('TYPE OK');
 
                 // 
 
-                result = await axios.post('http://localhost:4040/api/educlevel/get',{},header);
+                result = await axios.post(`${baseURL}/api/educlevel/get`,{},header);
                 setAcadLevel(result.data.sqlResult)
                 console.log('acadlevel OK');
 
-                result = await axios.post('http://localhost:4040/api/educcourselevel/get',{},header);
+                result = await axios.post(`${baseURL}/api/educcourselevel/get`,{},header);
                 setSubDate(result.data.sqlResult)
                 console.log('yr_cors OK');
 
@@ -95,7 +96,7 @@ function FormExampleSubcomponentControl (props) {
           }
         }
   
-        let response = await axios.post('http://localhost:4040/api/departmentinsert', body, headers)
+        let response = await axios.post(`${baseURL}/api/departmentinsert`, body, headers)
   
         if(response) {
           setValDeptName('');
@@ -249,47 +250,3 @@ function FormExampleSubcomponentControl (props) {
 }
 
 export default withRouter(FormExampleSubcomponentControl);
-
-
-  
-
-//   componentDidMount() {
-//     this._isMounted = true;
-
-//     try {
-//       let response;
-
-//       const header = {
-//           headers: {
-//               authorization : localStorage.getItem('x')
-//           }
-//       }
-
-//       const init = async() =>{
-//           try {
-//               response = await axios.post('http://localhost:4040/api/auth',{} ,header)
-
-//               if(response.data.msg !== 'auth' || !response) {
-//                   localStorage.clear();
-//                   this.props.history.push("/");
-//               }
-              
-//               if(this._isMounted) {
-//                   this.setState({
-//                       isLoading:false
-//                   })
-//               }                  
-//           } catch(err){
-//           }  
-//       }
-
-//           init();
-//     } catch(err) {
-//         localStorage.clear();
-//         this.props.history.push("/");
-//     } 
-//   }
-
-//   componentWillUnmount() {
-//     this._isMounted = false;
-//   }

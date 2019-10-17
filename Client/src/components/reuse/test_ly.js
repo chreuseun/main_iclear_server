@@ -49,7 +49,7 @@ HorizontalSidebar.propTypes = {
 
 const VerticalSidebar = ({ animation, direction, visible }) => (
   <Sidebar
-    color='blue'
+    style={{background:'#afc2cb' }}
     as={Menu}
     animation={animation}
     direction={direction}
@@ -59,8 +59,8 @@ const VerticalSidebar = ({ animation, direction, visible }) => (
     visible={visible}
     width='thin'
   >
-      <Container color='blue'>
-        <h1 >Menu</h1>
+      <Container >
+        <h1 style={{color:'#ffffff',paddingTop:'5px',paddingBottom:'5px'}}>Menu</h1>
       </Container>
       <Menu.Item as='a'>
         Home
@@ -98,103 +98,34 @@ export default class SidebarExampleTransitions extends Component {
     this.setState({ direction, visible: false })
 
   render() {
-    const { animation, dimmed, direction, visible } = this.state
+    const {  dimmed, direction, visible } = this.state
     const vertical = direction === 'bottom' || direction === 'top'
 
     return (
-      <Container >
+<Grid columns={3} divided>
+      <Grid.Row stretched>
+      <Container style={{height:'100%'}}>
 
-        <Checkbox
-          checked={dimmed}
-          label='Dim Page'
-          onChange={this.handleDimmedChange}
-          toggle
-        />
+        <Sidebar.Pushable style={{height:'100%'}} as={Segment}>
 
-        <Header as='h5'>Direction</Header>
-          <Button.Group>
-            <Button
-              active={direction === 'left'}
-              onClick={this.handleDirectionChange('left')}
-            >
-              Left
-            </Button>
-            <Button
-              active={direction === 'right'}
-              onClick={this.handleDirectionChange('right')}
-            >
-              Right
-            </Button>
-            <Button
-              active={direction === 'top'}
-              onClick={this.handleDirectionChange('top')}
-            >
-              Top
-            </Button>
-            <Button
-              active={direction === 'bottom'}
-              onClick={this.handleDirectionChange('bottom')}
-            >
-              Bottom
-            </Button>
-          </Button.Group>
-
-        <Header as='h5'>All Direction Animations</Header>
-          <Button onClick={this.handleAnimationChange('overlay')}>Overlay</Button>
-          <Button onClick={this.handleAnimationChange('push')}>Push</Button>
-          <Button onClick={this.handleAnimationChange('scale down')}>
-            Scale Down
-          </Button>
-
-        <Header as='h5'>Vertical-Only Animations</Header>
-        
-          <Button
-            disabled={vertical}
-            onClick={this.handleAnimationChange('uncover')}
-          >
-            Uncover
-          </Button>
-
-          <Button
-            disabled={vertical}
-            onClick={this.handleAnimationChange('slide along')}
-          >
-            Slide Along
-          </Button>
-
-          <Button
-            disabled={vertical}
-            onClick={this.handleAnimationChange('slide out')}
-          >
-            Slide Out
-          </Button>
-
-        <Sidebar.Pushable as={Segment}>
-          {vertical ? (
-            <HorizontalSidebar
-              animation={animation}
-              direction={direction}
-              visible={visible}
-            />
-          ) : null}
-          {vertical ? null : (
             <VerticalSidebar
-              animation={animation}
+              animation={'push'}
               direction={direction}
-              visible={visible}
+              visible={true}
             />
-          )}
+       
 
           <Sidebar.Pusher dimmed={dimmed && visible}>
-            <Segment basic>
+            <Segment stretched style={{height:'100%'}} basic>
               <Header as='h3'>Application Content</Header>
               <Image src='https://react.semantic-ui.com/images/wireframe/paragraph.png' />
             </Segment>
           </Sidebar.Pusher>
-          
         </Sidebar.Pushable>
 
       </Container>
+      </Grid.Row>
+      </Grid>
     )
   }
 }

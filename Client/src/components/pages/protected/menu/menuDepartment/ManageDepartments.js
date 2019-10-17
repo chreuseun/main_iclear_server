@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Table, Segment, Dropdown, Container, Modal, Button, Form, Label, Divider, Header } from 'semantic-ui-react'
 import { withRouter } from 'react-router-dom'
+import baseURL from '../../../../../res/baseuri'
 import axios from 'axios';
 
 // Loader
@@ -32,7 +33,7 @@ function ManageDepartment(props) {
                     }
                 }
 
-                const result = await axios.get('http://localhost:4040/api/department/get',header);
+                const result = await axios.get(`${baseURL}/api/department/get`,header);
                 
                 if(xa)
                 {
@@ -64,7 +65,7 @@ function ManageDepartment(props) {
                 }
             }
 
-            const result = await axios.get('http://localhost:4040/api/department/get',header);
+            const result = await axios.get(`${baseURL}/api/department/get`,header);
                
                 setDeptList(result.data.sqlResult);
     

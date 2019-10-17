@@ -2,6 +2,7 @@
 
 const router = require('express').Router();
 
+// ADMIN
 router.post('/departmentstype/get', (req, res) => {
 
     const getDepartments = require('./functions/getDepartmentType');
@@ -86,7 +87,6 @@ router.post('/department/getone', (req, res) => {
     console.log('> POST - /api/menu/department/getone')
 })
 
-
 router.get('/departments/:dept_id/users', (req, res) => {
     
     console.log(req.params.dept_id)
@@ -148,5 +148,56 @@ router.post('/departments/users/delete', (req, res) => {
  
     console.log('> POST - /api/menu/departments/users/delete')
 })
+
+router.post(`/department/update`,(req, res) => {
+    
+    
+    let data = [
+        req.body.valDeptName,
+        req.body.valAcadLevel,
+        req.body.valType,
+        req.body.valCourse,
+        req.body.valYearLevel,
+        req.body.valHeadOff,
+        `${req.body.valStatus}`,
+        req.body.valDepartment_id   
+    ]
+
+    let token = req.headers.authorization
+
+    console.log(req.body)
+    const depUpdate = require('./functions/updateDepartment');
+
+    args = {
+        res, 
+        token ,
+        params: data
+    }
+
+    depUpdate(args)
+    
+    console.log('> POST - /api/menu/departments/users/delete')
+})
+
+// USER
+router.get('/departments/user', (req, res) => {
+    
+    const getDeptByAccId = require('./functions/getDeptByAccId');
+    
+    let token = req.headers.authorization
+
+    args = {
+        res, 
+        token ,
+        params:[
+        ]
+    }
+
+    getDeptByAccId(args)
+ 
+    console.log('> POST - /api/menu/departments/users/:acc_id')
+})
+
+
 
 module.exports = router

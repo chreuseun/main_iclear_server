@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { withRouter, BrowserRouter, Route, Switch, Redirect, Link} from "react-router-dom";
+import { withRouter, BrowserRouter, Route, Switch, Link} from "react-router-dom";
 import { Menu , Container, Dropdown } from 'semantic-ui-react';
 
 //componets
 
 // *** USERS
-import InsertNewUser from '../../../../components/pages/protected/menu/menuAdmin/Form_AddUser';
 import InsertNewAdmin from '../../../../components/pages/protected/menu/menuAdmin/Form_AddAdmin';
 import ManageUser from '../../../../components/pages/protected/menu/menuAdmin/ManageUsers';
 
@@ -40,13 +39,8 @@ class NavbarAdmin extends Component {
 
                             <Dropdown item text='Users'>
                                 <Dropdown.Menu>
-                                    
+                                                                        
                                     <Dropdown.Item as={Link} to={location.pathname + '/newuser'} style={{color:'black'}}>
-                                        Add User
-                                    </Dropdown.Item>
-                                   
-                                    
-                                    <Dropdown.Item as={Link} to={location.pathname + '/newadmin'} style={{color:'black'}}>
                                         Add Admin
                                     </Dropdown.Item>
                                                                   
@@ -97,8 +91,7 @@ class NavbarAdmin extends Component {
                     
                     <Container style={{marginTop:"50px"}}>
                         <Switch>
-                          <Route path={location.pathname + '/newuser'} component={InsertNewUser}/>  
-                          <Route path={location.pathname + '/newadmin'} component={InsertNewAdmin}/>  
+                          <Route path={location.pathname + '/newuser'} component={InsertNewAdmin}/> 
                           <Route path={location.pathname + '/configaccount'} component={ManageUser}/> 
 
                           <Route path={location.pathname + '/newdepartment'} component={InsertNewDepartment}/> 

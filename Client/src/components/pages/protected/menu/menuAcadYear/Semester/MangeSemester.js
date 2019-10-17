@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Table, Segment, Dropdown, Container, Modal, Radio, Button, Form, Label, Divider, Header, Tab } from 'semantic-ui-react'
 import { withRouter } from 'react-router-dom'
 import axios from 'axios';
+import baseURL from '../../../../../../res/baseuri';
 
 function ManageAcadYear(props) {
 
@@ -26,7 +27,7 @@ function ManageAcadYear(props) {
                     }
                 }
 
-                const result = await axios.get('http://localhost:4040/api/semester/get',header);
+                const result = await axios.get(`${baseURL}/api/semester/get`,header);
                 
                 if(xa)
                 {
@@ -57,7 +58,7 @@ function ManageAcadYear(props) {
                 }
             }
 
-            const result = await axios.get(`http://localhost:4040/api/semester/get`,header);
+            const result = await axios.get(`${baseURL}/api/semester/get`,header);
                
                 setDeptList(result.data.data);
     
@@ -76,9 +77,9 @@ function ManageAcadYear(props) {
                 }
             }
 
-            let result1 = await axios.post('http://localhost:4040/api/semester/set',{sem_name:sem_name},header);
+            let result1 = await axios.post(`${baseURL}/api/semester/set`,{sem_name:sem_name},header);
 
-            let result = await axios.get('http://localhost:4040/api/semester/get',header);
+            let result = await axios.get(`${baseURL}/api/semester/get`,header);
                
             setDeptList(result.data.data);
     

@@ -3,6 +3,7 @@ import {  Segment, Dropdown, Container, Button, Form, Label, Divider, Header, In
 import { withRouter } from 'react-router-dom'
 import axios from 'axios';
 import csv from 'csvtojson';
+import baseURL from '../../../../../res/baseuri'
 
 function ManageDepartment(props) {
 
@@ -29,11 +30,11 @@ function ManageDepartment(props) {
                     }
                 }
 
-                const result = await axios.post('http://localhost:4040/api/educlevel/get',{},header);
+                const result = await axios.post(`${baseURL}/api/educlevel/get`,{},header);
 
-                const result1 = await axios.get('http://localhost:4040/api/acad_year/active/get',header);
+                const result1 = await axios.get(`${baseURL}/api/acad_year/active/get`,header);
 
-                const result2 = await axios.get('http://localhost:4040/api/semester/active/get',header);
+                const result2 = await axios.get(`${baseURL}/api/semester/active/get`,header);
                   
                 console.log(result1)
                 console.log(result2)
@@ -164,20 +165,27 @@ function ManageDepartment(props) {
               values : data
           }
 
-          const result = await axios.post('http://localhost:4040/api/student/csv/insert',body,header);
+          const result = await axios.post(`${baseURL}/api/student/csv/insert`,body,header);
+          
+          alert('Uploading .CSV successful..')
+          setIsLoading(false);
           console.log('CSV to Mysql Uploaded')
           console.log(result.data.data);
           
         })
         .catch(()=>{
           console.log('Invalid CSV')
+          alert('Uploading .CSV failed..')
+          setIsLoading(false);
         })
       } catch(err) {
 
         console.log('Invalid CSV')
+        alert('Uploading .CSV failed..')
+        setIsLoading(false);
       }
 
-      setIsLoading(false);
+      
     }
 
     const acadlevel_handleChange = (e, { value, text }) => {
@@ -201,7 +209,7 @@ function ManageDepartment(props) {
     return(
         <Container textAlign="left" style={{marginTop:100}}  >
 
-        <Dimmer active={IsLoading}>
+        <Dimmer inverted active={IsLoading}>
           <Loader/>
         </Dimmer>
 

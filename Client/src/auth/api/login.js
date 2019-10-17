@@ -1,6 +1,13 @@
 import axios from 'axios';
+import baseURL from '../../res/baseuri'
 
 function login({us, pw, cb}) {
+
+    const uri = {
+        login:`${baseURL}/api/login`,
+
+    }
+    console.log(uri.login)
     
     const body = {
         username : us ,
@@ -14,7 +21,7 @@ function login({us, pw, cb}) {
         }
     }
     
-    axios.post('http://localhost:4040/api/login',body ,header)
+    axios.post(uri.login,body ,header)
     .then((response)=> {
         if(response.data.token) {
             localStorage.setItem('x', 'Bearer ' + response.data.token)
