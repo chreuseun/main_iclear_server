@@ -57,7 +57,14 @@ const MyDepartments = (props) => {
                 
                             <Grid.Column key={1}>
                                 
-                                <Button  onClick={()=>{console.log('Cleerance')}}  inverted color='red'  size='massive' fluid>Clearance</Button>
+                                <Button  
+                                    as={Link}
+                                    to={location.pathname + `/clr`}
+                                    onClick={()=>{console.log('Cleerance')}}
+                                    inverted color='red' 
+                                    size='massive' 
+                                    fluid>Clearance
+                                </Button>
                                                                     
                             </Grid.Column>   
                             

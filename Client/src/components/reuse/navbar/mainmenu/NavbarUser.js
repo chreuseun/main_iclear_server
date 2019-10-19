@@ -5,7 +5,8 @@ import { Menu, Label , Message, Grid, Popup, Container, Dropdown, Button } from 
 //componets
 import SelectionMyDepartments from '../../../pages/protected/menu/menuUser/menuMyDepartments/SelectionMyDepartments'
 import SelectedDepartments from '../../../pages/protected/menu/menuUser/menuMyDepartments/components/SelectedDepartment'
-import manageDeptRequirements from '../../../pages/protected/menu/menuUser/menuMyDepartments/components/manageDeptRequirement.js/manageDeptRequirements';
+import ManageDeptRequirements from '../../../pages/protected/menu/menuUser/menuMyDepartments/components/manageDeptRequirement.js/manageDeptRequirements';
+import MenuDeptClearance from '../../../pages/protected/menu/menuUser/menuDepartmentClearance/menuDepartmentClearance';
 
 class NavbarUser extends Component {
     _isMounted = false;
@@ -53,8 +54,9 @@ class NavbarUser extends Component {
                         <Switch>
                           <Route  exact path={location.pathname } component={SelectionMyDepartments}/> 
                           <Route  exact path={location.pathname + '/:dept'} component={SelectedDepartments}/> 
-                          <Route  exact path={location.pathname + '/:dept/req'} component={manageDeptRequirements}/> 
-                          <Route  exact component={SelectionMyDepartments}/> 
+                          <Route  exact path={location.pathname + '/:dept/req'} component={ManageDeptRequirements}/> 
+                          <Route  exact path={location.pathname + '/:dept/clr'} render={(props) => <MenuDeptClearance {...props} title={`Issue Clearance`} />}/> 
+                          <Route  render={()=>{}}/> 
                         </Switch>
                     </Container>
                 </BrowserRouter>
