@@ -10,8 +10,9 @@ const sqlPoolPromise = (sql, params) => {
                     connection.query( sql ,params,(err, results) => {
                         connection.destroy();
         
-                        if( err  ) {
+                        if(err) {
                             reject('error');
+                            
                         } else {
                             resolve(results);
                         }

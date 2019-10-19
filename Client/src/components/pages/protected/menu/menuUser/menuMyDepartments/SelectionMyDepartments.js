@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {withRouter, Link} from 'react-router-dom';
 import axios from 'axios'
-import {  Grid, Popup, Button } from 'semantic-ui-react';
+import {  Grid, Button } from 'semantic-ui-react';
 import baseURL from '../../../../../../res/baseuri';
 
 const MyDepartments = (props) => {
@@ -14,9 +14,11 @@ const MyDepartments = (props) => {
     useEffect(()=>{
         setDidMount(true);
         let xa = true;
-     
+
+       
         const x = async()=>{
             try{
+                
 
                 const header = {
                     headers: {
@@ -65,7 +67,7 @@ const MyDepartmentsItem = (props) => {
                             
                             <Button  
                                 as={Link}
-                                to={props.location.pathname + '/id'}
+                                to={props.location.pathname + `/${it.d_id}`}
                                 onClick={()=>{console.log(it.d_id)}}
                                 key={it.d_id} 
                                 inverted 

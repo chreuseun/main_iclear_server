@@ -14,7 +14,6 @@ const GetDeptByAccountId = async ({res, token, params}) => {
     } catch(err) {
         error  = true; 
     }
-    console.log(jwtResult)
     if(!jwtResult) {
         error  = true; 
     }

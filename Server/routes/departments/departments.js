@@ -69,7 +69,7 @@ router.get('/department/get', (req, res) => {
 })
 
 router.post('/department/getone', (req, res) => {
-    console.log(req.body)
+
     const getDepartments = require('./functions/getOneDepartments');
     
     let token = req.headers.authorization
@@ -179,7 +179,7 @@ router.post(`/department/update`,(req, res) => {
     console.log('> POST - /api/menu/departments/users/delete')
 })
 
-// USER
+// USER ============================================================================
 router.get('/departments/user', (req, res) => {
     
     const getDeptByAccId = require('./functions/getDeptByAccId');
@@ -198,6 +198,67 @@ router.get('/departments/user', (req, res) => {
     console.log('> POST - /api/menu/departments/users/:acc_id')
 })
 
+router.get('/departments/:d_id/req/get', (req, res) => {
 
+    let token = req.headers.authorization
+
+    const getDeptReq = require('./functions/getDeptRequirements');
+
+    args = {
+        res, 
+        token ,
+        params: [req.params.d_id]
+    }
+
+    getDeptReq(args)
+    
+    console.log('> POST - /api/menu/:d_id/req/get')
+})
+
+router.post('/departments/req/add', (req, res) => {
+
+    
+    let data = [
+        req.body.d_id,
+        req.body.context
+    ]
+
+    console.log(data)
+    let token = req.headers.authorization
+
+    const AddRequirements = require('./functions/AddDeptReq');
+
+    args = {
+        res, 
+        token ,
+        params: data
+    }
+
+    AddRequirements(args)
+    
+    console.log('> POST - /api/menu/departments/req/add')
+})
+
+router.get('/departments/:dep/std', (req, res) => {
+
+    let data = [
+        req.params.dep
+    ]
+
+    console.log(data)
+    let token = req.headers.authorization
+
+    const AddRequirements = require('./functions/getDepStudent');
+
+    args = {
+        res, 
+        token ,
+        params: data
+    }
+
+    AddRequirements(args)
+    
+    console.log('> POST - /api/menu/departments/:dep/std')
+})
 
 module.exports = router

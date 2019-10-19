@@ -10,13 +10,15 @@ const MyDepartments = (props) => {
     const [D, setD] = useState('');
     const [didMount, setDidMount] = useState(false);
     const [myDeptList, setMyDeptList] = useState([]);
-
+    
     useEffect(()=>{
         setDidMount(true);
         let xa = true;
-     
+
+       
         const x = async()=>{
             try{
+                
 
                 const header = {
                     headers: {
@@ -24,12 +26,12 @@ const MyDepartments = (props) => {
                     }
                 }
 
-                const result = await axios.get(`${baseURL}/api/departments/user`, header);
-                
+                const result = await axios.post(`${baseURL}/api/department/getone`, {id:match.params.dept}, header);
+                console.log(result.data.sqlResult[0]   )
                 if(xa)
                 {
                     // setDeptList(result.data.data);
-                    setMyDeptList(result.data.data);
+                    setMyDeptList(result.data.sqlResult[0]);
                 }
                 console.log(result.data.data)
                 
@@ -47,7 +49,7 @@ const MyDepartments = (props) => {
         <React.Fragment>
             <Grid.Column textAlign='center' style={{maxWidth:'700px', margin:'auto'}}>
                     <Header as='h2' attached='top' textAlign='center'  style={{ margin:'auto'}}>
-                            {'Registrar - College'}
+                            {''|| myDeptList.d_name}
                     </Header>
 
                     <Segment attached>
@@ -55,13 +57,20 @@ const MyDepartments = (props) => {
                 
                             <Grid.Column key={1}>
                                 
-                                <Button  onClick={()=>{console.log('issue')}}  inverted color='red'  size='massive' fluid>Clearance</Button>
+                                <Button  onClick={()=>{console.log('Cleerance')}}  inverted color='red'  size='massive' fluid>Clearance</Button>
                                                                     
                             </Grid.Column>   
                             
                             <Grid.Column key={2}>
                                 
-                                <Button  onClick={()=>{console.log('requirements')}}  inverted color='green'  size='massive' fluid>Requirements</Button>
+                                <Button  
+                                    as={Link}
+                                    to={location.pathname + `/req`}
+                                    onClick={()=>{console.log('requirements')}}
+                                    inverted color='green'
+                                    size='massive'
+                                    fluid>Requirements
+                                </Button>
                                                                     
                             </Grid.Column>   
                         </Grid>
