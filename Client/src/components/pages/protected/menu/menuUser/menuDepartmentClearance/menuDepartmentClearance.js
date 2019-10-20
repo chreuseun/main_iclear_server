@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react'
-import { Table, Segment, Container,  Radio, Header, Button, Input,Loader, Dimmer} from 'semantic-ui-react'
+import { Table, Segment, Container,  Radio, Header, Button, Input,Loader, Dimmer, Modal} from 'semantic-ui-react'
 import { withRouter } from 'react-router-dom'
 import axios from 'axios';
 import baseURL from '../../../../../../res/baseuri';
+
+// Component
+import IssueClearanceModal from '../../../../protected/menu/menuUser/menuDepartmentClearance/IssueClearanceModal'
 
 
 function ManageAcadYear(props) {
 
     const { match, location, history } = props
-
     const [didMount, setDidMount] = useState(false)
 
     const [deptList, setDeptList] = useState([]);
@@ -18,8 +20,6 @@ function ManageAcadYear(props) {
     const [depinfo, setDepInfo] = useState({});// 
 
     const [DepStd,setDepStd] = useState([]);
-    
-    
 
     useEffect( () => {
        
@@ -36,10 +36,10 @@ function ManageAcadYear(props) {
                 }
 
 
-                const detStd_ = (await axios.get(`${baseURL}/api/departments/103/std`, header))
+                const detStd_ = (await axios.get(`${baseURL}/api/departments/${match.params.dept}/std`, header))
 
 
-                console.log(detStd_.data.data.students)
+                console.log(detStd_.data.data.dep)
                 if(xa)
                 {
                     setDepInfo(detStd_.data.data.dep);
@@ -64,37 +64,9 @@ function ManageAcadYear(props) {
     }
   
     const ComponentdepStudentsList = DepStd.map((it, idx) => {
-
-        /*
-            "s_id": 1,
-            "s_acd_yr": 1,
-            "s_sem_id": 1,
-            "d_type_id": 2,
-            "d_crs": "-ALL",
-            "d_yr": "-ALL",
-            "el_id": 4,
-            "d_id": 103,
-            "s_username": "CL1",
-            "s_fn": "Jason Marc",
-            "s_mn": "Marinas",
-            "s_ln": "Del Rosario",
-            "s_yr": "1st",
-            "s_sec": "B",
-            "s_crs": "BSCPE",
-            "ay_name": "2019-2020",
-            "sem_name": "1st"
-        */
-
+        
         return(
-            <Table.Row key={it.s_username}  >
-                      
-                <Table.Cell>{it.s_id}</Table.Cell>
-                <Table.Cell>{it.s_username}</Table.Cell>
-                <Table.Cell>{`${it.s_ln}, ${it.s_fn} ${it.s_mn}`}</Table.Cell>
-                <Table.Cell>{it.s_sec}</Table.Cell>
-                <Table.Cell>{`${it.s_crs} - ${it.s_yr}`}</Table.Cell>
-                <Table.Cell>{`${it.ay_name} - ${it.sem_name}`}</Table.Cell>
-            </Table.Row>      
+            <ModalClearancePane userDetails={props.userDetails} key={it.s_username} item={it}/>
         )
     })
 
@@ -148,27 +120,6 @@ function ManageAcadYear(props) {
 
             <Header textAlign='center'>{props.title}: {depinfo.d_name || ''}</Header>
 
-            <Button onClick={addBtnOnClick} positive ={!ShowForm} negative={ShowForm} >{ShowForm?'Cancel':'Add Requirement'}</Button>
-            
-            <Container  style={{marginTop:'15px',maxWidth:'600px',display: ShowForm?'block':'none'}}>
-                <Input  
-                    style={{maxWidth:'500px'}}     
-                    fluid            
-                    placeholder='New Requirement'
-                    value={context}
-                    onChange={
-                        (e) => {
-                            e.preventDefault();
-                            setContext(e.target.value)
-                        }
-                    } 
-                />
-
-                <Button 
-                    onClick={()=>{saveReqOnClick()}}
-                    style={{marginTop:'5px'}} color='green'>Save</Button> 
-            </Container>
-          
             <Segment style={{ overflow: 'auto', maxHeight: '1000vh' }}>
            
                 <Segment.Group horizontal>   
@@ -194,6 +145,36 @@ function ManageAcadYear(props) {
             </Segment>
         </Container>  
         )
+}
+
+
+const ModalClearancePane = (props) => {
+    return(
+        <Modal trigger={StdRow(props.item)} size='fullscreen'>
+            <Modal.Header>Issue Clearance</Modal.Header>
+
+            <Modal.Content >
+                <IssueClearanceModal userDetails={props.userDetails} studentInfo={props.item}/>
+            </Modal.Content>
+
+            <Modal.Actions>
+            
+            </Modal.Actions>
+        </Modal>
+    )
+}
+
+const StdRow = (item) => {
+    return(
+        <Table.Row key={item.s_username}  >
+            <Table.Cell>{item.s_id}</Table.Cell>
+            <Table.Cell>{item.s_username}</Table.Cell>
+            <Table.Cell>{`${item.s_ln}, ${item.s_fn} ${item.s_mn}`}</Table.Cell>
+            <Table.Cell>{item.s_sec}</Table.Cell>
+            <Table.Cell>{`${item.s_crs} - ${item.s_yr}`}</Table.Cell>
+            <Table.Cell>{`${item.ay_name} - ${item.sem_name}`}</Table.Cell>
+        </Table.Row>
+    )
 }
 
 export default withRouter(ManageAcadYear)

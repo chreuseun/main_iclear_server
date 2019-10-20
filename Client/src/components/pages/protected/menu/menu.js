@@ -69,9 +69,10 @@ export default class Menu extends Component {
         localStorage.removeItem('x')
         this.props.history.push("/")
     }
+    
 
     render() {
-
+        
         if(!this.state.isLoading) {
             if(this.state.userDetails.user_type_id === 'ADMIN'){
                 return <NavbarAdmin userDetails={this.state.userDetails}/>

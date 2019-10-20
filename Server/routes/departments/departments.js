@@ -180,6 +180,8 @@ router.post(`/department/update`,(req, res) => {
 })
 
 // USER ============================================================================
+
+//
 router.get('/departments/user', (req, res) => {
     
     const getDeptByAccId = require('./functions/getDeptByAccId');

@@ -1,16 +1,8 @@
-/*
-    STATUS : NOT
-*/
-
-// Requries 'Bearer TOKENxxxxx'
 var jwtVerify = require('../../reuse/jwtVerify');
-
-// Requires < SQL > , < ARRAY_PARAMETER >
 var query = require('../../reuse/query')
-
 var sql = require('../../../mysql/queries/accounts/Login')
 
-const getActiveAcadYear = async ({res, token, params}) => {
+const updateClearanceByID = async ({res, token, params}) => {
     
     let error  = false;    
     let jwtResult;
@@ -36,9 +28,8 @@ const getActiveAcadYear = async ({res, token, params}) => {
     try{
         if(sqlResult[0].is_token === 'AUTH') {
 
-            let sql = `SELECT * FROM acad_year  WHERE state = '1' ORDER BY base_year ASC`;
-
-            sqlResult = await query(sql, [])
+         
+            sqlResult = await query(sql_.updateClearanceByID, [jwtResult.decoded.id, ...params])
         }
     } catch (err){
         error  = true;  
@@ -49,4 +40,12 @@ const getActiveAcadYear = async ({res, token, params}) => {
         res.json({ data:sqlResult})
 }
 
-module.exports =  getActiveAcadYear
+
+const sql_ = {
+    updateClearanceByID: `UPDATE clearance_issue 
+                            SET account_id_status = ?,
+                            status = ?
+                            WHERE id = ?`
+}
+
+module.exports =  updateClearanceByID

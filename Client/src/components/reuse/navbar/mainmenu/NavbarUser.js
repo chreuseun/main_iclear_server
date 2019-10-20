@@ -25,7 +25,7 @@ class NavbarUser extends Component {
 
     render() {
         const { match, location, history } = this.props
-
+        console.log(this.props.userDetails)
         return(
             <React.Fragment>
 
@@ -52,10 +52,10 @@ class NavbarUser extends Component {
                     <Container   style={{marginTop:"100px",background:'#F8F8F8', padding:'20px'}}>
                     
                         <Switch>
-                          <Route  exact path={location.pathname } component={SelectionMyDepartments}/> 
-                          <Route  exact path={location.pathname + '/:dept'} component={SelectedDepartments}/> 
-                          <Route  exact path={location.pathname + '/:dept/req'} component={ManageDeptRequirements}/> 
-                          <Route  exact path={location.pathname + '/:dept/clr'} render={(props) => <MenuDeptClearance {...props} title={`Issue Clearance`} />}/> 
+                          <Route  exact path={location.pathname }               render={(props) => <SelectionMyDepartments {...props} userDetails={this.props.userDetails}/>}/> 
+                          <Route  exact path={location.pathname + '/:dept'}     render={(props) => <SelectedDepartments {...props} userDetails={this.props.userDetails}/>}/> 
+                          <Route  exact path={location.pathname + '/:dept/req'} render={(props) => <ManageDeptRequirements {...props} userDetails={this.props.userDetails}/>}/> 
+                          <Route  exact path={location.pathname + '/:dept/clr'} render={(props) => <MenuDeptClearance {...props} title={`Issue Clearance`} userDetails={this.props.userDetails}/>} /> 
                           <Route  render={()=>{}}/> 
                         </Switch>
                     </Container>

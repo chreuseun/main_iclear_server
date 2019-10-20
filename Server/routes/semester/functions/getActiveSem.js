@@ -27,7 +27,7 @@ const getActiveSem = async ({res, token, params}) => {
     }
 
     try{       
-        sqlResult = await query(sql.select_blacklist_token, [jwtResult.token, jwtResult.decoded.id])
+        sqlResult = await query(sql.select_blacklist_token_all, [jwtResult.token, jwtResult.decoded.id])
     } catch (err) {
         error  = true; 
     }

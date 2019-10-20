@@ -23,6 +23,7 @@ app.use('/api', require('./routes/departments/departments'))  // DEPARTMENTS
 app.use('/api',require('./routes/acad_year/acad_year')) // ACAD_YEAR
 app.use('/api',require('./routes/semester/semester')) // SEMESTER
 app.use('/api', require('./routes/students/students')) // STUDENTS
+app.use('/api', require('./routes/clearance/clearance'));
 
 app.use('/',require('./routes/test/test')) // TEST FOR TESTING
 
