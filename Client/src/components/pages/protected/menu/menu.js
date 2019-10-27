@@ -6,8 +6,9 @@ import axios from 'axios';
 import Loader from '../../../reuse/loader';
 
 // Navbar for ADMIN
-import NavbarAdmin from '../../../reuse/navbar/mainmenu/NavbarAdmin';
-import NavbarUser from '../../../reuse/navbar/mainmenu/NavbarUser';
+import NavbarAdmin from '../../../reuse/navbar/mainmenu/NavbarAdmin'; //ADMIN
+import NavbarUser from '../../../reuse/navbar/mainmenu/NavbarUser';   // USER
+import NavbarSubject from '../../../reuse/navbar/mainmenu/NavbarSubject';   // USER
 import baseURL from '../../../../res/baseuri';
 
 export default class Menu extends Component {
@@ -78,9 +79,15 @@ export default class Menu extends Component {
                 return <NavbarAdmin userDetails={this.state.userDetails}/>
             }
 
-            if(this.state.userDetails.user_type_id === 'USER' || 'SUBJECT'){
+            else if(this.state.userDetails.user_type_id === 'USER'){
                 return <NavbarUser userDetails={this.state.userDetails}/>
             }
+
+            else {
+                return <NavbarSubject userDetails={this.state.userDetails}/>
+            }
+            
+
             
         } else {
             return <Loader loadText={'Loading...'}/>

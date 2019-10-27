@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter, BrowserRouter, Route, Switch, Redirect, Link} from "react-router-dom";
-import { Menu, Label , Message, Grid, Popup, Container, Dropdown, Button } from 'semantic-ui-react';
+import { Menu,  Container, Dropdown, Header } from 'semantic-ui-react';
 
 //componets
 import SelectionMyDepartments from '../../../pages/protected/menu/menuUser/menuMyDepartments/SelectionMyDepartments'
@@ -23,9 +23,31 @@ class NavbarUser extends Component {
         this._isMounted = false;
     }
 
+
     render() {
         const { match, location, history } = this.props
         console.log(this.props.userDetails)
+
+        const RouteUser = () => {
+            return (
+                <Switch>
+                    <Route  exact path={location.pathname }               render={(props) => <SelectionMyDepartments {...props} userDetails={this.props.userDetails}/>}/> 
+                    <Route  exact path={location.pathname + '/:dept'}     render={(props) => <SelectedDepartments {...props} userDetails={this.props.userDetails}/>}/> 
+                    <Route  exact path={location.pathname + '/:dept/req'} render={(props) => <ManageDeptRequirements {...props} userDetails={this.props.userDetails}/>}/> 
+                    <Route  exact path={location.pathname + '/:dept/clr'} render={(props) => <MenuDeptClearance {...props} title={`Issue Clearance`} userDetails={this.props.userDetails}/>} /> 
+                    <Route  render={()=>{}}/> 
+                </Switch>
+            )
+        }
+
+        const RouteSubject = () => {
+            return (
+                <Switch>
+                    
+                </Switch>
+            )
+        }
+
         return(
             <React.Fragment>
 
@@ -39,6 +61,8 @@ class NavbarUser extends Component {
                                 </Menu.Item>
                             </Link>
 
+                           
+
                             <Menu.Menu position='right'>                            
                                 <Dropdown item text={'Welcome, ' + this.props.userDetails.username}>
                                     <Dropdown.Menu>
@@ -50,14 +74,14 @@ class NavbarUser extends Component {
                     </Menu>
 
                     <Container   style={{marginTop:"100px",background:'#F8F8F8', padding:'20px'}}>
+                        
+                        <Header>{this.props.userDetails.user_type_id}</Header>
                     
-                        <Switch>
-                          <Route  exact path={location.pathname }               render={(props) => <SelectionMyDepartments {...props} userDetails={this.props.userDetails}/>}/> 
-                          <Route  exact path={location.pathname + '/:dept'}     render={(props) => <SelectedDepartments {...props} userDetails={this.props.userDetails}/>}/> 
-                          <Route  exact path={location.pathname + '/:dept/req'} render={(props) => <ManageDeptRequirements {...props} userDetails={this.props.userDetails}/>}/> 
-                          <Route  exact path={location.pathname + '/:dept/clr'} render={(props) => <MenuDeptClearance {...props} title={`Issue Clearance`} userDetails={this.props.userDetails}/>} /> 
-                          <Route  render={()=>{}}/> 
-                        </Switch>
+
+                        {this.props.userDetails.user_type_id==='USER'?
+                            <RouteUser/> : <RouteSubject/>}
+                        
+
                     </Container>
                 </BrowserRouter>
             

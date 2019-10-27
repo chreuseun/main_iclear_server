@@ -200,6 +200,24 @@ router.get('/departments/user', (req, res) => {
     console.log('> POST - /api/menu/departments/users/:acc_id')
 })
 
+router.get('/departments/coursedepartment/:el_id', (req,res) => {
+    const getCourseDept = require('./functions/getCourseDepartment');
+    
+    let token = req.headers.authorization
+
+    args = {
+        res, 
+        token ,
+        params:[
+            req.params.el_id
+        ]
+    }
+
+    getCourseDept(args)
+ 
+    console.log(`> POST - /api${req.url}`)
+})
+
 router.get('/departments/:d_id/req/get', (req, res) => {
 
     let token = req.headers.authorization

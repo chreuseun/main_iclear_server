@@ -41,7 +41,7 @@ class NavbarAdmin extends Component {
                                 <Dropdown.Menu>
                                                                         
                                     <Dropdown.Item as={Link} to={location.pathname + '/newuser'} style={{color:'black'}}>
-                                        Add Admin
+                                        Add User
                                     </Dropdown.Item>
                                                                   
                                     

@@ -18,18 +18,11 @@ const asyncGetCourseLevel = async ({res, token, params}) => {
         error  = true; 
     }
 
-    // try{       
-    //     sqlResult = await query(sql.select_blacklist_token, [jwtResult.token, jwtResult.decoded.id])
-    // } catch (err) {
-    //     error  = true; 
-    // }
-    
-    // get acadYear if(sqlResult[0].is_token === 'AUTH') 
     try{
         if(true){
 
             let sql = `SELECT id, name, level, state 
-                            FROM semester`;
+                            FROM semester WHERE name != 'ALL'`;
 
             sqlResult = await query(sql, [])
         }

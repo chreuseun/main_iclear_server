@@ -36,7 +36,7 @@ const asynGetDeptType = async ({res, token, params}) => {
     try{
         if(sqlResult[0].is_token === 'AUTH') {
 
-            let sql = `SELECT id as 'key' , name as 'text' , id as 'value'  FROM iclear_svms_db.departments_type`
+            let sql = `SELECT id as 'key' , name as 'text' , id as 'value'  FROM iclear_svms_db.departments_type WHERE id != 1`
             sqlResult = await query(sql, [])
         }
     } catch (err){

@@ -21,7 +21,8 @@ function FormExampleSubcomponentControl (props) {
     const [ acadlevel , setAcadLevel] = useState([]);  // Academic Level
     const [ course , setCourse ] = useState([]);  // Course
     const [ yearlevel , setYearLevel ] = useState([]);  // Yearlevel
-    const [ subdata , setSubDate ] = useState([]);
+    const [ subdata , setSubDate ] = useState([]); // subdata
+    const [crsDept, setCrsDept] = useState([]); // crsDept
 
     const [ valDeptName, setValDeptName] = useState('');
     const [ valType, setValType ] = useState('');
@@ -29,6 +30,7 @@ function FormExampleSubcomponentControl (props) {
     const [ valCourse, setValCourse ] = useState('');
     const [ valYearLevel, setValYearLevel ] = useState('');
     const [ valHeadOff, setValHeadOff] = useState('');
+    const [ valCrsDept, setValCrsDept ] = useState('');
     
     useEffect(() => {
         
@@ -68,8 +70,6 @@ function FormExampleSubcomponentControl (props) {
     // ON SUBMIT
     const onSubmit = async(e) => {
       e.preventDefault();   
-
-      
 
       if(
         valDeptName.trim() === ''    || valType  === ''   ||
@@ -126,29 +126,34 @@ function FormExampleSubcomponentControl (props) {
     }
 
     // ACADLEVEL CAHNGE
-    const acadlevel_handleChange = (e, { value }) => {
+    const acadlevel_handleChange = async(e, { value }) => {
         setValAcadLevel(value)
-      
+
+        setCrsDept([])
+        setYearLevel([]);
+        setCourse([]);
+
+        setValCrsDept('')
         setValYearLevel('');
         setValCourse('');
 
-        let filter=( subdata.course.filter((item)=> {
-          return item.educ_level_id === value
-        }) )
+        
+        try{
+          const header = {
+            headers: {
+                authorization : localStorage.getItem('x')
+            }
+          }
 
-        let filter1=( subdata.yearlevel.filter((item)=> {
-          return item.educ_level_id === value
-        }) )
-  
-        setCourse(filter.map((it, idx) => { 
-          console.log(it)
-          return {key:it.course,value:it.course, text: it.course }
-        }))
+          let data_crsDept = await axios.get(`${baseURL}/api/departments/coursedepartment/${value}`,header);
+          setCrsDept(data_crsDept.data.data)
 
-        setYearLevel(filter1.map((it, idx) => { 
-          console.log(it)
-          return {key:it.yearlevel,value:it.yearlevel, text: it.yearlevel }
-        }))
+
+        } catch(err) {
+                // props.history.push('/')
+        } 
+
+        
  
     }
 
@@ -162,6 +167,36 @@ function FormExampleSubcomponentControl (props) {
     const yearlevel_handleChange = (e, { value }) => {
       setValYearLevel(value);
       console.log(valYearLevel)
+    }
+
+    const crsDept_handleChange = (e, { value }) => {
+      setValCrsDept(value);
+
+      setYearLevel([]);
+      setCourse([]);
+
+      setValYearLevel('');
+      setValCourse('');
+
+
+      let filter=( subdata.course.filter((item)=> {
+        return item.educ_level_id === valAcadLevel && item.department === value
+      }) )
+
+      let filter1=( subdata.yearlevel.filter((item)=> {
+        return item.educ_level_id === valAcadLevel  
+      }) )
+
+      setCourse(filter.map((it, idx) => { 
+        console.log(it)
+        return {key:it.course,value:it.course, text: it.course }
+      }))
+
+      setYearLevel(filter1.map((it, idx) => { 
+        console.log(it)
+        return {key:it.yearlevel,value:it.yearlevel, text: it.yearlevel }
+      }))
+
     }
 
     if(loader) {
@@ -204,7 +239,21 @@ function FormExampleSubcomponentControl (props) {
                   onChange={acadlevel_handleChange}
                   search
                   selection
+                  value={valAcadLevel}
                   options={acadlevel}
+                  />
+            </Form.Field>
+
+            <Form.Field >
+              <Label as='a' color='blue'  ribbon>Department</Label>
+                  <Dropdown
+                    placeholder='Department'
+                    fluid
+                    search
+                    selection
+                    value={valCrsDept}
+                    onChange={crsDept_handleChange}
+                    options={crsDept}
                   />
             </Form.Field>
 
@@ -214,6 +263,7 @@ function FormExampleSubcomponentControl (props) {
                     placeholder='Course'
                     fluid
                     search
+                    value={valCourse}
                     selection
                     onChange={course_handleChange}
                     options={course}
@@ -227,6 +277,7 @@ function FormExampleSubcomponentControl (props) {
                     fluid
                     search
                     selection
+                    value={valYearLevel}
                     onChange={yearlevel_handleChange}
                     options={yearlevel}
                   />

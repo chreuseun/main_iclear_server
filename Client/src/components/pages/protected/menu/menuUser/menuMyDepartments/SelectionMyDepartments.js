@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {withRouter, Link} from 'react-router-dom';
 import axios from 'axios'
-import {  Grid, Button } from 'semantic-ui-react';
+import {  Grid, Button, Container, Sidebar, Segment, Menu, Header, Image} from 'semantic-ui-react';
 import baseURL from '../../../../../../res/baseuri';
 
 const MyDepartments = (props) => {
@@ -51,7 +51,6 @@ const MyDepartments = (props) => {
                 <MyDepartmentsItem location={location} deptArray={myDeptList}/>
             </Grid>
         </React.Fragment>
-        
     )
     
 }
@@ -60,6 +59,7 @@ const MyDepartmentsItem = (props) => {
 
     return (
         <React.Fragment>
+
             {
                 props.deptArray.map((it, ix)=>{
                     return(
@@ -75,15 +75,20 @@ const MyDepartmentsItem = (props) => {
                                 size='massive'
                                 fluid>{it.d_name}</Button>
                                                                 
-                        </Grid.Column>   
-
-                        
+                        </Grid.Column>          
                  )})
             }
+
+
 
         </React.Fragment>
     )
 }
+
+
+
+
+
 
 export default withRouter(MyDepartments);
 

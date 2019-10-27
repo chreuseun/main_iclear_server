@@ -1,7 +1,7 @@
 const express = require('express');
 var bodyParser = require('body-parser')
 var cors = require('cors');
-const ip_v4 = '192.168.254.154';
+const ip_v4 =  '192.168.254.154';//'10.83.19.88';
 // JUST ERROR MESSAGE
 var error = {message: "error"}
 
@@ -14,7 +14,6 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(cors())
 
-
 // ROUTES
 app.use('/api',require('./routes/users/login'));  // USERS
 app.use('/api', require('./routes/menu/menu')); // MENU
@@ -24,11 +23,11 @@ app.use('/api',require('./routes/acad_year/acad_year')) // ACAD_YEAR
 app.use('/api',require('./routes/semester/semester')) // SEMESTER
 app.use('/api', require('./routes/students/students')) // STUDENTS
 app.use('/api', require('./routes/clearance/clearance'));
+app.use('/api', require('./routes/class/class')); // CLASS
 
 app.use('/',require('./routes/test/test')) // TEST FOR TESTING
-
 
 app.listen(4040,ip_v4);
 //10.83.19.175
 
-console.log('Server is Running')
+console.log(`Server is Running in ${ip_v4}`)

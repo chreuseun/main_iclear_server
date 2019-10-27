@@ -66,9 +66,6 @@ function ManageDepartment(props) {
         return null
     }
 
-    // ********** Client Logics
-    
-    // Input = file onChange
     const parseCSV = async(e) => {
       try{
         e.preventDefault()
@@ -79,8 +76,7 @@ function ManageDepartment(props) {
         console.log('Invalid CSV')
       }
     }
-
-    // 
+ 
     const parse2 = async(file) => {
       try{
         setIsLoading(true);
@@ -134,6 +130,8 @@ function ManageDepartment(props) {
                                   it.field8,  // section
                                   `${ActAcadYear.id}`, // acad_year_id
                                   `${ActSemester.id}`, // semester_id
+                                  `${ValAcadLevel.id}` === '1' || `${ValAcadLevel.id}` === '2' ? 'NONE' : it.field12 || 'NONE',
+                                  `${ValAcadLevel.id}` === '1' || `${ValAcadLevel.id}` === '2' ? 'NONE' : it.field13 || 'NONE',
                                 ]
                       )
                     }    
@@ -150,8 +148,11 @@ function ManageDepartment(props) {
         }
 
         let data = await readCSVfile()
+        console.log(data)
   
         let output = await csv({noheader:true, output: "json " }).fromString(data);
+
+        console.log(output)
         
         refactorToMySQL()
         .then(async(data)=>{
@@ -179,13 +180,10 @@ function ManageDepartment(props) {
           setIsLoading(false);
         })
       } catch(err) {
-
         console.log('Invalid CSV')
         alert('Uploading .CSV failed..')
         setIsLoading(false);
-      }
-
-      
+      } 
     }
 
     const acadlevel_handleChange = (e, { value, text }) => {
@@ -215,16 +213,12 @@ function ManageDepartment(props) {
 
         <Segment  style={{ maxWidth: 600 ,margin:"auto"}}> 
 
-    
-
-      
           <Header textAlign="center"   icon>
             <h2>Upload CSV</h2>
           </Header>
 
           <Form>
 
-            
             <Form.Field >
               <Label as='a' color='blue'  ribbon>Active School Year</Label>
               <Input value={ActAcadYear.name}/>
@@ -234,7 +228,6 @@ function ManageDepartment(props) {
               <Label as='a' color='blue'  ribbon>Active Semester</Label>
               <Input value={ActSemester.name}/>
             </Form.Field>
-
 
             <Form.Field >
               <Label as='a' color='blue'  ribbon>Acadamic Level</Label>
@@ -248,8 +241,6 @@ function ManageDepartment(props) {
                   />
             </Form.Field>
 
-
-
             <Form.Field >
               <Label as='a' color='blue'  ribbon>Upload .csv file</Label>
               <Input disabled={ValAcadLevel? false:true} onChange={(e)=> {parseCSV(e)}}  required  type="file" />
@@ -257,7 +248,7 @@ function ManageDepartment(props) {
 
             <Divider/>
 
-            <Button onClick={()=>{/*uploadCSV()*/ parse2(CsvFile);}} color='blue'>Upload</Button>
+            <Button onClick={()=>{ parse2(CsvFile); }} color='blue'>Upload</Button>
           </Form>
         </Segment>
 

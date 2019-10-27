@@ -68,7 +68,9 @@ let _sql = {
         gender,
         section,
         acad_year_id,
-        semester_id
+        semester_id,
+        department,
+        activity_card_barcode
     )
     
     VALUES ?
@@ -87,7 +89,9 @@ let _sql = {
         gender = VALUES(gender),
         section = VALUES(section),
         acad_year_id = VALUES(acad_year_id),
-        semester_id  = VALUES(semester_id)`
+        semester_id  = VALUES(semester_id),
+        department=VALUES(department),
+        activity_card_barcode=VALUES(activity_card_barcode)`
 }
 
 

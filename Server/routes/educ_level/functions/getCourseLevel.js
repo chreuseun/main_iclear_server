@@ -37,18 +37,21 @@ const asyncGetCourseLevel = async ({res, token, params}) => {
     try{
         if(sqlResult[0].is_token === 'AUTH') {
 
-            let sql = `SELECT  
-                        educ_level_id,
-                        course
-                        
-                    FROM student_
-                    
-                    GROUP BY  educ_level_id, course
-                        
-                    UNION SELECT  1 , 'NONE'
-                    UNION SELECT 2, 'NONE'
-                    UNION SELECT 3, '-ALL'
-                    UNION SELECT  4, '-ALL' ORDER BY educ_level_id ASC, course ASC`
+            let sql = `SELECT *
+            FROM
+            (SELECT  
+            educ_level_id,
+            course,
+            IF(department = 'NONE', 'ALL', department) AS 'department'
+            
+            FROM student_
+            
+            GROUP BY  educ_level_id, course
+            
+            UNION SELECT  1 , 'NONE', 'ALL'
+            UNION SELECT 2, 'NONE', 'ALL'
+            UNION SELECT 3, '-ALL', 'ALL'
+            UNION SELECT  4, '-ALL' , 'ALL') as main ORDER BY educ_level_id ASC, course ASC`
 
             sqlResult = await query(sql, [])
 

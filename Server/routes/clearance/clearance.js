@@ -48,13 +48,6 @@ router.post(`/clearance/issue/get`, (req, res) => {
 
 // Update Clearanc Issue By clearanc Issue ID
 router.post(`/clearance/issue/update/:id/:remarks`, (req, res) => {
-    
-
-    console.log(
-        req.params.id,
-        req.params.remarks,
-    )
-
     const getStudentClearance = require('./functions/updateClearanceByID');
 
     let token = req.headers.authorization
