@@ -1,4 +1,5 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react';
+import {withRouter} from 'react-router-dom';
 import axios from 'axios';
 
 
@@ -11,20 +12,22 @@ import NavbarUser from '../../../reuse/navbar/mainmenu/NavbarUser';   // USER
 import NavbarSubject from '../../../reuse/navbar/mainmenu/NavbarSubject';   // USER
 import baseURL from '../../../../res/baseuri';
 
-export default class Menu extends Component {
-    _isMounted = false;
-    
-    state={
-        isLoading: true,
-        userDetails: {}
-    }
+const Menu_ = (props) => {
 
-    uri = {
+    const { match, location, history } = props
+
+    const [didMount, setDidMount] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const [userDetails, setUserDetails] = useState({});
+
+    const uri = {
         auth:`${baseURL}/api/auth`
     }
 
-    componentDidMount() {
-        this._isMounted = true;
+    useEffect((props)=>{
+
+        setDidMount(true);
+        let _isMounted = true;
 
         try {
             let response;
@@ -37,18 +40,16 @@ export default class Menu extends Component {
 
             const init = async() =>{
                 try {
-                    response = await axios.post(this.uri.auth,{} ,header)
+                    response = await axios.post(uri.auth,{} ,header)
 
                     if(response.data.msg !== 'auth' || !response) {
                         localStorage.clear();
-                        this.props.history.push("/");
+                        props.history.push("/");
                     }
                     
-                    if(this._isMounted) {
-                        this.setState({
-                            isLoading:false,
-                            userDetails: response.data.user_details
-                        })
+                    if(_isMounted) {        
+                        setIsLoading(false);
+                        setUserDetails(response.data.user_details);
                     }                  
                 } catch(err){
                 }  
@@ -57,40 +58,31 @@ export default class Menu extends Component {
             init();
         } catch(err) {
             localStorage.clear();
-            this.props.history.push("/");
+            props.history.push("/");
         } 
+    },[])
+
+    if(!didMount) {
+        return null
     }
-
-    componentWillUnmount() {
-        this._isMounted = false;
-     }
-
-    //just logout...
-    clickLogout = () =>{
-        localStorage.removeItem('x')
-        this.props.history.push("/")
-    }
-    
-
-    render() {
-        
-        if(!this.state.isLoading) {
-            if(this.state.userDetails.user_type_id === 'ADMIN'){
-                return <NavbarAdmin userDetails={this.state.userDetails}/>
-            }
-
-            else if(this.state.userDetails.user_type_id === 'USER'){
-                return <NavbarUser userDetails={this.state.userDetails}/>
-            }
-
-            else {
-                return <NavbarSubject userDetails={this.state.userDetails}/>
-            }
-            
-
-            
-        } else {
-            return <Loader loadText={'Loading...'}/>
+  
+    if(!isLoading) {
+        if(userDetails.user_type_id === 'ADMIN'){
+            return <NavbarAdmin userDetails={userDetails}/>
         }
+
+        else if(userDetails.user_type_id === 'USER'){
+            return <NavbarUser userDetails={userDetails}/>
+        }
+
+        else {
+            return <NavbarSubject userDetails={userDetails}/>
+        }
+
+    } else {
+        return <Loader loadText={'Loading...'}/>
     }
+
 }
+
+export default withRouter(Menu_)

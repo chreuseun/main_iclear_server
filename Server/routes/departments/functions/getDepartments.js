@@ -52,7 +52,9 @@ const asyncGetCourseLevel = async ({res, token, params}) => {
                         
                         FROM departments d
                         JOIN departments_type dt ON dt.id = d.department_type_id
-                        JOIN educ_level el ON el.id = d.educ_level_id`;
+                        JOIN educ_level el ON el.id = d.educ_level_id
+                        
+                        WHERE d.department_type_id != 1 `;
 
             sqlResult = await query(sql, [])
         }

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {  useState, useEffect } from 'react';
 import {Segment, Dimmer, Loader as Ld } from 'semantic-ui-react'
 
 import IsLogged from '../../../auth/api/isLogged'
@@ -8,16 +8,24 @@ import LoginForm from './loginForm'
 import Loader from '../../reuse/loader'
 
 
-export default class Login extends Component {
+const Login = (props) => {
 
-    state = {
-        us:'',
-        pw:'',
-        isLoading: true,
-        load : false
-    }
 
-    componentDidMount() {
+
+    const { match, location, history } = props
+
+    const [didMount, setDidMount] = useState(false)
+
+    const [us, setUs] = useState('');
+    const [pw, setPw] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
+    const [load, setLoad] = useState(false);
+
+
+    useEffect(()=>{
+        setDidMount(true);
+        let setState = true; // xa
+
 
         // Check Token API
         if(localStorage.getItem('x')) {
@@ -27,75 +35,93 @@ export default class Login extends Component {
                 },
                 cbf : ()=> {
                     localStorage.clear()
-                    this.props.history.push("/")
+                    props.history.push("/")
                 }
             }
 
             IsLogged(arg)
         } else {
-            this.setState({
-                isLoading:false
-            })
-        }     
+            setIsLoading(false);
+        }   
+
+    },[])
+
+    if(!didMount) {
+        return null
+    }
+
+
+
+    // componentDidMount() {
+
+    //     // Check Token API
+    //     if(localStorage.getItem('x')) {
+    //         const arg = {
+    //             cb : ()=>{ 
+    //                 this.props.history.push("/menu")
+    //             },
+    //             cbf : ()=> {
+    //                 localStorage.clear()
+    //                 this.props.history.push("/")
+    //             }
+    //         }
+
+    //         IsLogged(arg)
+    //     } else {
+    //         this.setState({
+    //             isLoading:false
+    //         })
+    //     }     
          
+    // }
+
+    const usSend = (us) => {
+        setUs(us)
     }
 
-    usSend = (us) => {
-        this.setState({
-            us:us
-        })
+    const pwSend = (pw) => {      
+        setPw(pw)
     }
 
-    pwSend = (pw) => {
-        this.setState({
-            pw:pw
-        })
+    const onClick = () => {
 
-    }
+        setLoad(true)
 
-    onClick = () => {
-
-        this.setState({
-            load:true
-        })
-
-        if( this.state.us !== '' && this.state.pw !== '' ) {
+        if( us !== '' && pw !== '' ) {
 
             let arg = {
-                us: this.state.us,
-                pw: this.state.pw,
-                cb: () => {this.props.history.push("/menu")}
+                us: us,
+                pw: pw,
+                cb: () => {props.history.push("/menu")}
             }
 
             _Login(arg)
         }
+        setLoad(false)
+    }
+
+
+    if(isLoading){
+        return (
+            <Loader loadText={"Loading"}/>
+        )
+    } 
+
+    return(
+
+        <Segment>
+                <Dimmer active={load}>
+                    <Ld/>
+                </Dimmer>
+
+                <LoginForm usSend={usSend} pwSend={pwSend} onClick={onClick}/>
+        </Segment>
+
         
-        this.setState({
-            load: false
-        })
- 
-    }
-    // 
-    render() {
+    );
 
-        if(this.state.isLoading){
-            return (
-                <Loader loadText={"Loading"}/>
-            )
-        } 
-
-        return(
-
-
-            <Segment>
-                    <Dimmer active={this.state.load}>
-                        <Ld/>
-                    </Dimmer>
-
-                 <LoginForm usSend={this.usSend} pwSend={this.pwSend} onClick={this.onClick}/>
-            </Segment>
-
-           
-        );
-    }
 }
+    
+
+
+export default Login
