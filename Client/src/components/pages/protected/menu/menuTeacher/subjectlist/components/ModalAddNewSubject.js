@@ -240,6 +240,7 @@ const ModalAddNewSubject = (props) =>{
         setValSec(`${value}`)
     }
 
+    // save the Subject to class table
     const onSubmit = (e) =>{
         e.preventDefault();
 

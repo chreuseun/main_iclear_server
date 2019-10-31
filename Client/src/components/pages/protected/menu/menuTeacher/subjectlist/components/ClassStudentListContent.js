@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios';
 import baseURL from '../.../../../../../../../../res/baseuri';
 import { withRouter } from 'react-router-dom';
-import { Modal, Button } from 'semantic-ui-react'
+import { Modal, Button, Table, Tab } from 'semantic-ui-react'
 
 
 const ItemContent = (props) => {
@@ -61,12 +61,32 @@ const ItemContent = (props) => {
             <Modal.Header> Student list</Modal.Header>
 
             <Modal.Content>
-                
-                {classList.map((it,ix)=>{
-                    return(
-                        <div>{it.username}</div>
-                    )
-                })}
+
+                <Table compact>
+                    <Table.Header>
+                        <Table.Row>
+                            <Table.HeaderCell>Name</Table.HeaderCell>
+                            <Table.HeaderCell>Status</Table.HeaderCell>
+                            <Table.HeaderCell>Notes</Table.HeaderCell>
+                        </Table.Row>
+                    </Table.Header>
+                    
+                    <Table.Body>
+                        {classList.map((it,ix)=>{
+                            return(
+
+                                <Table.Row key={it.id}>
+                                    <Table.Cell>{JSON.stringify(it)}</Table.Cell>
+                                    <Table.Cell>Approved</Table.Cell>
+                                    <Table.Cell>Requires call</Table.Cell>
+                                </Table.Row>
+                                
+                            )
+                        })}
+                    </Table.Body>
+
+
+                </Table>
 
             </Modal.Content>
 

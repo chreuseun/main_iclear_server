@@ -27,7 +27,9 @@ function ManageUsers(props) {
                 const result = await axios.post(uri.getAccounts,{},header);
                 setUserList(result.data.sqlResult);
             } catch(err) {
+                localStorage.removeItem('x')
                 history.push('/')
+               
             }
             
         }
@@ -48,9 +50,9 @@ function ManageUsers(props) {
             }
 
             // INSERT 
-            const result1 = await axios.post(`${baseURL}/api/accounts/state/set`,{acc_id},header);
+            await axios.post(`${baseURL}/api/accounts/state/set`,{acc_id},header);
             
-            const result = await axios.post(`${baseURL}:4040/api/getaccounts`,{},header);
+            const result = await axios.post(`${baseURL}/api/getaccounts`,{},header);
 
             setUserList(result.data.sqlResult);
         } catch(err) {

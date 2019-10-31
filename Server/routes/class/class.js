@@ -28,7 +28,8 @@ router.post('/class/insert', (req, res) => {
         el_id,
         course,
         year,
-        section
+        section,
+        el_id
     ]
 
     const insertNewClass = require('./functions/insertNewSubj');

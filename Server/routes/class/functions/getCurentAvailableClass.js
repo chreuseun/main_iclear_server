@@ -44,7 +44,6 @@ let _sql= {
                                     s.educ_level_id,
                                     s.semester_id,
                                     s.acad_year_id,
-                                    
                                     s.course,
                                     s.yearlevel,
                                     s.section,   
@@ -57,8 +56,8 @@ let _sql= {
                                 JOIN acad_year ay ON ay.id = s.acad_year_id
                                 JOIN educ_level el ON el.id = s.educ_level_id
 
-                                WHERE acad_year_id = (SELECT id FROM acad_year  WHERE state = 1 LIMIT 1)
-                                    AND semester_id =  (SELECT id FROM semester  WHERE state = 1 LIMIT 1)
+                                WHERE acad_year_id = (SELECT id FROM acad_year  WHERE state IN (1) LIMIT 1)
+                                    AND semester_id IN  (SELECT id FROM semester  WHERE state IN (1) OR id = 4 )
 
                                 GROUP BY educ_level_id, course, yearlevel, section
 

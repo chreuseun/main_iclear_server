@@ -31,11 +31,11 @@ const Login = (props) => {
         if(localStorage.getItem('x')) {
             const arg = {
                 cb : ()=>{ 
-                    this.props.history.push("/menu")
+                    history.push("/menu")
                 },
                 cbf : ()=> {
                     localStorage.clear()
-                    props.history.push("/")
+                    history.push("/")
                 }
             }
 

@@ -33,7 +33,7 @@ const ClassSubjectList = (props) => {
             </Grid.Row>
         }>
 
-            <ItemContent class_id={id} userDetails={props.userDetails}/>
+            <ItemContent  class_id={id} userDetails={props.userDetails}/>
 
         </Modal>    
     )

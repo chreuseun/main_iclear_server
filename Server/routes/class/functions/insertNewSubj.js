@@ -31,7 +31,7 @@ const InsertNewSubj = async ({res, token, params}) => {
 
             console.log(sqlResult.insertId)
 
-            sqlResult = await query(_sql.insertStudentInClass, [sqlResult.insertId])
+                    sqlResult = await query(_sql.insertStudentInClass, [sqlResult.insertId])
 
             console.log(sqlResult.insertId)
         }
@@ -62,7 +62,7 @@ let _sql= {
                                 ?, 
                                 ?, 
                                 (SELECT id FROM acad_year WHERE state = 1 LIMIT 1), 
-                                (SELECT id FROM semester WHERE state = 1 LIMIT 1),
+                                (SELECT id FROM semester WHERE IF( ? IN (1,2), id = 4, state = 1) LIMIT 1),
                                 ?)`,
     insertStudentInClass : `INSERT INTO class_issue(
         student_username,
@@ -86,8 +86,8 @@ let _sql= {
         'sample context'
         
     FROM student_ st 
-    JOIN class cls ON cls.educ_level_id = st.educ_level_id
-        AND cls.course = st.course
+		JOIN class cls ON cls.course = st.course
+		AND cls.educ_level_id = st.educ_level_id
         AND cls.yearlevel = st.yearlevel
         AND cls.section = st.section
         AND cls.acad_year_id = st.acad_year_id

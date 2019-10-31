@@ -108,7 +108,7 @@ const SubjectList = (props) => {
                         const {id, name, ay_name, sem_name, el_name, yearlevel, course, section} = it || {}
 
                         return(                        
-                            <ClassStudent userDetails={props.userDetails} it={it}/>
+                            <ClassStudent key={id} userDetails={props.userDetails} it={it}/>
                         )
                     })
                 }
