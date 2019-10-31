@@ -79,8 +79,7 @@ const ItemContent = (props) => {
                                     <Table.Cell>{JSON.stringify(it)}</Table.Cell>
                                     <Table.Cell>Approved</Table.Cell>
                                     <Table.Cell>Requires call</Table.Cell>
-                                </Table.Row>
-                                
+                                </Table.Row>                                
                             )
                         })}
                     </Table.Body>
