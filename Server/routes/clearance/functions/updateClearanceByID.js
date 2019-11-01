@@ -43,8 +43,11 @@ const updateClearanceByID = async ({res, token, params}) => {
 
 const sql_ = {
     updateClearanceByID: `UPDATE clearance_issue 
+
                             SET account_id_status = ?,
-                            status = ?
+                            status = ?,
+                            is_upload = '0'
+
                             WHERE id = ?`
 }
 

@@ -1,41 +1,53 @@
 import axios from 'axios';
 import baseURL from '../../res/baseuri'
 
-function login({us, pw, cb}) {
+const login = async({us, pw, cb}) => {
 
     const uri = {
         login:`${baseURL}/api/login`,
 
     }
-    console.log(uri.login)
-    
+
     const body = {
         username : us ,
         password : pw
     }
 
     const header = {
-
-       
         headers: {
         }
     }
-    
-    axios.post(uri.login,body ,header)
-    .then((response)=> {
-        if(response.data.token) {
-            localStorage.setItem('x', 'Bearer ' + response.data.token)
-            // console.log("Login")
-            cb() 
-        } else {
 
-            response.data.msg === 'account locked' ? alert('User Account Locked') : alert('Invalid Username/Password')
+    let returnValue;
+
+    try{
+        let result = await axios.post(uri.login, body ,header);
+
+        if(result.data.token){
+                localStorage.setItem('x', 'Bearer ' + result.data.token)
+                // console.log("Login")
+                cb()  // push to '/menu'
+        } else {
+            result.data.msg === 'account locked' ? alert('User Account Locked') : alert('Invalid Username/Password')
 
             
-            console.log(response.data.msg === 'account locked' ? response.data.msg : null )
+            console.log(result.data.msg === 'account locked' ? result.data.msg : null )
+
+            return(
+                new Promise((resolve, reject)=> {
+                    resolve(false)
+                })
+            )
+
         }
-    })
-    .catch((err)=>{})
+
+    } catch(err){
+        return(
+            new Promise((resolve, reject)=> {
+                resolve(false)
+            })
+        )
+    }
 }
 
 

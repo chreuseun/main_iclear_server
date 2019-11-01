@@ -36,8 +36,13 @@ const Login = (props) => {
 
             IsLogged(arg)
         } else {
-            setIsLoading(false);
+            if(setState){
+                setIsLoading(false);
+            }
         }   
+
+
+        return () => (setState=false)
 
     },[])
 
@@ -53,11 +58,13 @@ const Login = (props) => {
         setPw(pw)
     }
 
-    const onClick = () => {
+    const onClick = async() => {
 
-        setLoad(true)
+        
 
         if( us !== '' && pw !== '' ) {
+
+            setLoad(true)
 
             let arg = {
                 us: us,
@@ -65,9 +72,9 @@ const Login = (props) => {
                 cb: () => {props.history.push("/menu")}
             }
 
-            _Login(arg)
+            setLoad(await _Login(arg))
         }
-        setLoad(false)
+        
     }
 
     if(isLoading){
@@ -78,8 +85,8 @@ const Login = (props) => {
 
     return(
         <Segment>
-            <Dimmer active={load}>
-                <Ld/>
+            <Dimmer inverted  active={load}>
+                <Ld>Logging-in...</Ld>
             </Dimmer>
 
             <LoginForm usSend={usSend} pwSend={pwSend} onClick={onClick}/>

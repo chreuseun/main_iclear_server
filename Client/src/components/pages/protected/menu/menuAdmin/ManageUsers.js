@@ -99,7 +99,6 @@ function ManageUsers(props) {
               <Radio toggle onClick={()=>{setAccountLock(it.id)}} checked={it.is_locked===1?true:false}/>
             </Table.Cell>
             <Table.Cell>{it.contact_number}</Table.Cell>
-            <Table.Cell>{it.updated_at}</Table.Cell>
         </Table.Row>)
     })
 
@@ -121,7 +120,6 @@ function ManageUsers(props) {
                         <Table.HeaderCell>Middlename</Table.HeaderCell>                        
                         <Table.HeaderCell>Locked</Table.HeaderCell>
                         <Table.HeaderCell>Contact #</Table.HeaderCell>
-                        <Table.HeaderCell>Update At</Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
 
