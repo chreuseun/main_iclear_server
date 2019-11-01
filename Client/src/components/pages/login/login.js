@@ -12,12 +12,10 @@ const Login = (props) => {
     const { history } = props
 
     const [didMount, setDidMount] = useState(false)
-
     const [us, setUs] = useState('');
     const [pw, setPw] = useState('');
     const [isLoading, setIsLoading] = useState(true);
     const [load, setLoad] = useState(false);
-
 
     useEffect(()=>{
         setDidMount(true);
