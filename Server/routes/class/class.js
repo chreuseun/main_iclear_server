@@ -81,7 +81,27 @@ router.get('/class/student/:class_id', (req, res) => {
 
     getClassStudentList(args);
 
-    console.log(`> POST - /api${req.url}`)
+    console.log(`> GET - /api${req.url}`)
 })
 
+
+router.post('/class/student/:class_id/issue/:remarks', (req, res) => {
+
+    const getClassStudentList = require('./functions/updateClassIssueRemarks');
+
+    let {class_issue_ids} = req.body // ARRAY
+
+    console.log(class_issue_ids)
+    let token = req.headers.authorization;
+
+    args = {
+        res, 
+        token,
+        params: [req.params.remarks, class_issue_ids]
+    }
+
+    getClassStudentList(args);
+
+    console.log(`> POST - /api${req.url}`)
+})
 module.exports = router

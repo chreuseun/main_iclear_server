@@ -58,6 +58,7 @@ let _sql= {
 
                                 WHERE acad_year_id = (SELECT id FROM acad_year  WHERE state IN (1) LIMIT 1)
                                     AND semester_id IN  (SELECT id FROM semester  WHERE state IN (1) OR id = 4 )
+                                    AND s.educ_level_id IN (1,2)
 
                                 GROUP BY educ_level_id, course, yearlevel, section
 

@@ -7,12 +7,9 @@ import _Login from '../../../auth/api/login'
 import LoginForm from './loginForm'
 import Loader from '../../reuse/loader'
 
-
 const Login = (props) => {
 
-
-
-    const { match, location, history } = props
+    const { history } = props
 
     const [didMount, setDidMount] = useState(false)
 
@@ -50,31 +47,6 @@ const Login = (props) => {
         return null
     }
 
-
-
-    // componentDidMount() {
-
-    //     // Check Token API
-    //     if(localStorage.getItem('x')) {
-    //         const arg = {
-    //             cb : ()=>{ 
-    //                 this.props.history.push("/menu")
-    //             },
-    //             cbf : ()=> {
-    //                 localStorage.clear()
-    //                 this.props.history.push("/")
-    //             }
-    //         }
-
-    //         IsLogged(arg)
-    //     } else {
-    //         this.setState({
-    //             isLoading:false
-    //         })
-    //     }     
-         
-    // }
-
     const usSend = (us) => {
         setUs(us)
     }
@@ -100,7 +72,6 @@ const Login = (props) => {
         setLoad(false)
     }
 
-
     if(isLoading){
         return (
             <Loader loadText={"Loading"}/>
@@ -108,20 +79,14 @@ const Login = (props) => {
     } 
 
     return(
-
         <Segment>
-                <Dimmer active={load}>
-                    <Ld/>
-                </Dimmer>
+            <Dimmer active={load}>
+                <Ld/>
+            </Dimmer>
 
-                <LoginForm usSend={usSend} pwSend={pwSend} onClick={onClick}/>
+            <LoginForm usSend={usSend} pwSend={pwSend} onClick={onClick}/>
         </Segment>
-
-        
     );
-
 }
-    
-
 
 export default Login

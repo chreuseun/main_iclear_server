@@ -7,7 +7,7 @@ import baseURL from '../../../../../../../res/baseuri';
 
 const ModalAddNewSubject = (props) =>{
 
-    const { match, location, history } = props
+    const { history } = props
 
     const [value, setValue] = useState('');
     const [didMount, setDidMount] = useState(false);
