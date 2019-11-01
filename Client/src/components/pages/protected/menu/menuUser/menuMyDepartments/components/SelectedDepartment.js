@@ -48,6 +48,7 @@ const MyDepartments = (props) => {
     return(
         <React.Fragment>
             <Grid.Column textAlign='center' style={{maxWidth:'700px', margin:'auto'}}>
+                    
                     <Header as='h2' attached='top' textAlign='center'  style={{ margin:'auto'}}>
                             {''|| myDeptList.d_name}
                     </Header>
@@ -61,8 +62,8 @@ const MyDepartments = (props) => {
                                     as={Link}
                                     to={location.pathname + `/clr`}
                                     onClick={()=>{console.log('Cleerance')}}
-                                    inverted color='red' 
-                                    size='massive' 
+                                     color='red' 
+                                    size='huge' 
                                     fluid>Clearance
                                 </Button>
                                                                     
@@ -74,24 +75,21 @@ const MyDepartments = (props) => {
                                     as={Link}
                                     to={location.pathname + `/req`}
                                     onClick={()=>{console.log('requirements')}}
-                                    inverted color='green'
-                                    size='massive'
+                                     color='green'
+                                    size='huge' 
                                     fluid>Requirements
                                 </Button>
                                                                     
                             </Grid.Column>   
                         </Grid>
-                    </Segment>             
-                </Grid.Column> 
+                    </Segment> 
 
-            
+                </Grid.Column> 
         </React.Fragment>
         
     )
     
 }
-
-
 
 export default withRouter(MyDepartments);
 

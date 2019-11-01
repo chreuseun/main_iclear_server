@@ -1,13 +1,13 @@
 import React, {useState, useEffect} from 'react';
 import {withRouter, Link} from 'react-router-dom';
 import axios from 'axios'
-import {  Grid, Button, Container, Sidebar, Segment, Menu, Header, Image} from 'semantic-ui-react';
+import {  Grid, Button, Header, Message } from 'semantic-ui-react';
 import baseURL from '../../../../../../res/baseuri';
 
 const MyDepartments = (props) => {
 
-    const { match, location, history } = props
-    const [D, setD] = useState('');
+    const { location, history } = props
+ 
     const [didMount, setDidMount] = useState(false);
     const [myDeptList, setMyDeptList] = useState([]);
 
@@ -45,11 +45,44 @@ const MyDepartments = (props) => {
         return () => (xa=false)
     },[])
 
-    return(
-        <React.Fragment>
+    const MessageEmpty =  () => {
+        return(
+            <Message warning>
+                <Message.Header>Sorry, no departments is assigned to you.</Message.Header>
+                <p>0 Results found, Visit our Admin/IT for your eligibility of dept. assignment</p>
+            </Message>
+        )
+    }
+
+    const MyDepartmentList = () => {
+        return(
             <Grid stackable columns={2}>            
                 <MyDepartmentsItem location={location} deptArray={myDeptList}/>
             </Grid>
+        )
+    }
+
+    return(
+        <React.Fragment>
+
+
+            <div>
+                <Header as='h2'>
+                    Manage Departments
+                    <Header.Subheader>
+                        Manage our Department Clearance records & requirements
+                    </Header.Subheader>
+                </Header>
+                            
+            </div>
+            <hr></hr>
+
+            {
+                myDeptList.length > 0 ?
+                    <MyDepartmentList/>  : <MessageEmpty/>
+            }
+
+            
         </React.Fragment>
     )
     
@@ -59,6 +92,9 @@ const MyDepartmentsItem = (props) => {
 
     return (
         <React.Fragment>
+
+
+            
 
             {
                 props.deptArray.map((it, ix)=>{
@@ -71,8 +107,8 @@ const MyDepartmentsItem = (props) => {
                                 onClick={()=>{console.log(it.d_id)}}
                                 key={it.d_id} 
                                 inverted 
-                                color='blue'
-                                size='massive'
+                                primary
+                                size='huge'
                                 fluid>{it.d_name}</Button>
                                                                 
                         </Grid.Column>          

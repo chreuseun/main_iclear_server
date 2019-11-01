@@ -61,6 +61,7 @@ let _sql= {
                     WHERE acc.state = 1
                         AND acc.is_locked = 0
                         AND d.state = 1
+                        AND d.department_type_id = 2
                         AND acc.id = ?`
 }
 
