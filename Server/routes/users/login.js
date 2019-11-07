@@ -138,7 +138,6 @@ router.post('/accounts/state/set', (req, res) => {
     console.log('> POST - /api/accounts/state/set')
 })
 
-
 router.post('/accounts/islocked/set', (req, res) => {
     console.log(`${req.body.acc_id.toString()}`)
     let setLocked = require('./functions/setIs_Locked');
@@ -155,7 +154,6 @@ router.post('/accounts/islocked/set', (req, res) => {
 
     console.log('> POST - /api/accounts/islocked/set')
 })
-
 
 module.exports = router
 

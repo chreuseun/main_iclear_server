@@ -51,7 +51,6 @@ const _sql = {
                         d.yearlevel  as 'd_yr',
                         d.educ_level_id AS 'el_id',
                         d.id AS 'd_id',
-                        
                         s.username as 's_username',
                         s.studfname as 's_fn',
                         s.studmname as 's_mn',
@@ -59,10 +58,10 @@ const _sql = {
                         s.yearlevel as 's_yr',
                         s.section as 's_sec',
                         s.course as 's_crs',
+                        s.department AS 's_dept',
                         ay.name as 'ay_name',
                         sem.name as 'sem_name' 
-                    
-                    
+
                     FROM departments as d
                     JOIN student_ as s ON s.educ_level_id = d.educ_level_id
                         AND (CASE
@@ -73,7 +72,13 @@ const _sql = {
                                 WHEN d.yearlevel = '-ALL' THEN true
                                 ELSE d.yearlevel = s.yearlevel
                             END)
+                            
+                        AND (CASE
+                                WHEN d.student_department = 'NONE' THEN true
+                                ELSE d.student_department = s.department
+                            END)
                         AND d.state = '1'
+                        AND d.department_type_id = '2'
                         AND d.id = ?
                     JOIN acad_year ay ON ay.id = s.acad_year_id
                     JOIN semester sem ON sem.id = s.semester_id`,

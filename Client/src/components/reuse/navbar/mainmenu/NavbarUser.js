@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { withRouter, BrowserRouter, Route, Switch, Redirect, Link} from "react-router-dom";
+import { withRouter, BrowserRouter, Route, Switch, Link} from "react-router-dom";
 import { Menu,  Container, Dropdown } from 'semantic-ui-react';
 
 //componets TRADIONAL
@@ -10,6 +10,8 @@ import MenuDeptClearance from '../../../pages/protected/menu/menuUser/menuDepart
 
 // Violation
 import MainViolation from '../../../pages/protected/menu/menuUser/menuViolation/MainViolation';
+import SelectedVioDept from '../../../pages/protected/menu/menuUser/menuViolation/components/SelectedVioDept/SelectedVioDept'
+import VioDepSettings from '../../../pages/protected/menu/menuUser/menuViolation/components/SelectedVioDept/components/VioDeptSettings/VioDepSettings'
 
 // Activity Card
 import MainActivityCards from '../../../pages/protected/menu/menuUser/menuActivityCard/MainActCard';
@@ -42,7 +44,10 @@ class NavbarUser extends Component {
                     
                     <Route  exact path={location.pathname }               render={(props) => <SelectionMyDepartments {...props} userDetails={this.props.userDetails}/>}/> 
                     
-                    <Route  exact path={location.pathname + '/viol'} render={(props) => <MainViolation {...props} userDetails={this.props.userDetails}/>}/> 
+                    <Route  exact path={location.pathname + '/viol'} render={(props) => <MainViolation {...props} userDetails={this.props.userDetails}/>}/>
+                    <Route  exact path={location.pathname + '/viol/:dept'} render={(props) => <SelectedVioDept {...props} userDetails={this.props.userDetails}/>}/>  
+                    <Route  exact path={location.pathname + '/viol/:dept/settings'} render={(props) => <VioDepSettings {...props} userDetails={this.props.userDetails}/>}/>  
+
                     <Route  exact path={location.pathname + '/act'} render={(props) => <MainActivityCards {...props} userDetails={this.props.userDetails}/>}/> 
                     
                     <Route  exact path={location.pathname + '/:dept'}     render={(props) => <SelectedDepartments {...props} userDetails={this.props.userDetails}/>}/> 
