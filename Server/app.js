@@ -1,7 +1,7 @@
 const express = require('express');
 var bodyParser = require('body-parser')
 var cors = require('cors');
-const ip_v4 =  '192.168.100.10';//'10.83.19.88';
+const ip_v4 =  '192.168.254.154';//'10.83.19.88';
 // JUST ERROR MESSAGE
 var error = {message: "error"}
 

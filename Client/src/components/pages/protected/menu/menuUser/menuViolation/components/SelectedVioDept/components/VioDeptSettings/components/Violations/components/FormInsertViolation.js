@@ -8,6 +8,7 @@ const FormInsertViolation = (props) => {
     const { location ,match, history } = props
   
     const [didMount, setDidMount] = useState(false);
+    const [open, setOpen] = useState(true);
   
     useEffect(() => {
 
@@ -160,13 +161,20 @@ const FormInsert = (props) => {
 
                 let body = {
                     name,
-                    desc  ,
+                    desc,
                     cls
                 }
                 
                 const addResponse = await axios.post(`${baseURL}/api/violation/user/${match.params.dept}/violations/add`, body, header)
              
                 console.log(addResponse.data.data)
+
+
+                if(addResponse.data.data) {
+                    alert('New Violation added...')
+                    // run a  close modal function 
+                    props.onClose()
+                }
 
             } catch(err) {
                 console.log(err)
@@ -181,6 +189,7 @@ const FormInsert = (props) => {
         ) {
             addViolation();
         } else {
+            alert('All fields required...')
             console.log('No data')
         }
 

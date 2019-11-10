@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Button, Modal, Menu } from 'semantic-ui-react';
+import { Table, Button, Modal, Menu, Message } from 'semantic-ui-react';
 import { withRouter,} from 'react-router-dom';
 import axios from 'axios';
 import baseURL from '../../../../../../../../../../../../res/baseuri';
+
+// ModalAddSanction
+import ModalAddSanction from './components/ModalAddSanction'
 
 
 const ClassList = (props) => {
@@ -57,23 +60,25 @@ const ClassList = (props) => {
 
     return(
         <React.Fragment>   
-
-            <div>
+            {/* Button Add Class */}
+            {/* <div>
                 <Menu secondary>
                     <Menu.Menu position='right'>
                         <Menu.Item>
                             <Button animated='fade' primary>
-                                <Button.Content visible>{'Create Violation'}</Button.Content>
-                                <Button.Content hidden> {'Create Violation'}</Button.Content>
+                                <Button.Content visible>{'Create Class'}</Button.Content>
+                                <Button.Content hidden> {'Create Class'}</Button.Content>
                             </Button>
                         </Menu.Item>
                         
                     </Menu.Menu>
                 </Menu>
-            </div>  
+            </div>   */}
 
+            {/* Table of class list*/}
             <Table compact='very'>
 
+                {/* Column header for the table */}
                 <Table.Header>
                     <Table.Row>
                         <Table.HeaderCell>Name</Table.HeaderCell>
@@ -81,17 +86,16 @@ const ClassList = (props) => {
                     </Table.Row>
                 </Table.Header>
 
+                {/* Rows of the table */}
                 <Table.Body>
-                    {
-                        classList.map(( it, ix ) => {
-                            return(
-                                <ViolationRow key={it.id} 
-                                    rowData={it}
-                                    editOnClick={editOnClick}   
-                                /> 
-                            )
-                        })
-                    } 
+                    { classList.map(( it, ix ) => {
+                        return(
+                            <ClassRow {...props} key={it.id} 
+                                rowData={it}
+                                editOnClick={editOnClick}   
+                             /> 
+                        )
+                    })}
                 </Table.Body>
                 
             </Table>
@@ -100,11 +104,15 @@ const ClassList = (props) => {
     )
 }
 
-const ViolationRow = (props) => {
+// Row Component of the table
+const ClassRow = (props) => {
     return(
         <Table.Row>
+
+            {/* Class name */}
             <Table.Cell>{props.rowData.name}</Table.Cell>
 
+            {/* Modal for Editing the class */}
             <Table.Cell>
                 <Modal closeIcon 
                     size='fullscreen' 
@@ -116,10 +124,9 @@ const ViolationRow = (props) => {
                         >Edit</Button>
                     }
                 >
-                    <Modal.Header>Sanctions: {props.rowData.name}</Modal.Header>
+                    <Modal.Header>Sanctions: {props.rowData.name} {props.rowData.id}</Modal.Header>
                     <Modal.Content>
-                    
-                    
+                        <SanctionList {...props}/>
                     </Modal.Content>
                 </Modal>
             </Table.Cell>
@@ -127,5 +134,151 @@ const ViolationRow = (props) => {
     )
 }
 
+// when modal is clicked then show this records
+const SanctionList = (props) => {
+    
+    
+    const { location ,match, history } = props
+    const [list, setList] = useState([]);
+
+    const [didMount, setDidMount] = useState(false);
+
+    useEffect(() => {
+
+        setDidMount(true);
+        let UpdateHook = true;
+        console.log('history  ', history)
+        console.log('match  ', match)
+        console.log('location  ', location)
+
+        console.log('rowData', props.rowData)
+
+        const fetchData = async() => {
+            try{
+            
+                const header = {
+                    headers: {
+                        authorization : localStorage.getItem('x')
+                    }
+                };
+
+                const classSanction = await axios.get(`${baseURL}/api/violation/user/${match.params.dept}/violations/sanction/${props.rowData.id}`, header)
+      
+                console.log(classSanction.data.data  || '')
+                
+                if(UpdateHook){
+                    setList(classSanction.data.data || [])
+                }
+
+            } catch(err) {
+                console.log(err)
+                history.push('/')
+            }
+        }
+
+        fetchData();
+
+        return () => (UpdateHook=false)
+
+    },[])
+
+
+    const onModalClose = () => {
+        const fetchData = async() => {
+            try{
+            
+                const header = {
+                    headers: {
+                        authorization : localStorage.getItem('x')
+                    }
+                };
+
+                const classSanction = await axios.get(`${baseURL}/api/violation/user/${match.params.dept}/violations/sanction/${props.rowData.id}`, header)
+      
+                console.log(classSanction.data.data  || '')
+                
+                    setList(classSanction.data.data || [])
+              
+
+            } catch(err) {
+                console.log(err)
+                history.push('/')
+            }
+        }
+
+        fetchData();
+    }
+
+
+
+    const DataTable = () => {
+        return(
+            <Table selectable compact='very'>
+
+            {/* Column header for the table */}
+            <Table.Header>
+                <Table.Row>
+                    <Table.HeaderCell>Offence Level</Table.HeaderCell>
+                    <Table.HeaderCell>Description</Table.HeaderCell>
+                    <Table.HeaderCell></Table.HeaderCell>
+                </Table.Row>
+            </Table.Header>
+
+            {/* Rows of the table */}
+            <Table.Body>
+                {
+
+                    list.map((it, ix)=> {
+                        return(
+                        <Table.Row key={it.vs_id}>
+
+                            <Table.Cell>{it.offence_level}</Table.Cell>
+                            <Table.Cell>{it.description}</Table.Cell>
+                        </Table.Row>
+                        )
+                    })
+                    
+                }
+            </Table.Body>
+
+        </Table>
+        
+        )
+    }
+    
+    return(
+        <React.Fragment>
+            
+            {/* Button Add Sanctions */}
+            <div>
+                <Menu secondary>
+                    <Menu.Menu position='right'>
+                        <Menu.Item>
+                                <ModalAddSanction {...props} onClose={onModalClose}/>
+                        </Menu.Item>                        
+                    </Menu.Menu>
+                </Menu>
+            </div>  
+
+            {list && list.length > 0 ? 
+                <DataTable/>:
+                <MessageEmpty/>
+            }
+
+            {/* Table of sanction of the class */}
+
+            
+        </React.Fragment>
+    )
+}
+
+const MessageEmpty =  () => {
+    return(
+        <Message warning>
+            <Message.Header>Sorry, no departments is assigned to you.</Message.Header>
+            <p>0 Results found, Visit our Admin/IT for your eligibility of dept. assignment</p>
+        </Message>
+    )
+}
 
 export default withRouter(ClassList)

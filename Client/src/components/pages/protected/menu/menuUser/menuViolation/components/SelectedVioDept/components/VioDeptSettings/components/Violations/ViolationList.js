@@ -51,6 +51,7 @@ const ViolationList = (props) => {
         return null;
     }
 
+    // refresh list for the violation
     const onClose = () => {
         const fetchData = async() => {
             try{
@@ -83,7 +84,8 @@ const ViolationList = (props) => {
                     <Menu.Menu position='right'>
                         <Menu.Item>
                             
-                            <FormInsertViolation/>
+                            {/* click to display Modal Insert new violation */}
+                            <FormInsertViolation onClose={onClose}/>
                             
                         </Menu.Item>
                         
