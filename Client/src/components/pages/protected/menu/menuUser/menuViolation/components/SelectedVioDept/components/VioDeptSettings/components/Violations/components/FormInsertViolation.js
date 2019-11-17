@@ -205,10 +205,19 @@ const FormInsert = (props) => {
         <Form>  
 
             <Form.Input fluid label='Violation Name' placeholder='Violation Name'
-
                 style={{maxWidth:'300px'}}
                 value={name}
-                onChange={(e)=>{setName(e.target.value)}}
+                onChange={(e)=>{
+                    
+
+                    const { value } = e.target;
+                    
+                    setName(value)
+                    
+                   }
+                    
+                    }
+                maxLength={45}
             />
 
             <Form.Select
@@ -227,7 +236,8 @@ const FormInsert = (props) => {
 
             <Form.TextArea label='Description' placeholder='Tell us more about the violation...'
                 value={desc}
-                onChange={(e)=>{setDesc(e.target.value)}}
+                onChange={(e)=>{setDesc(e.target.value)}} 
+                maxLength={255}
             />
 
             <div>

@@ -129,6 +129,7 @@ const FormUpdateViolations = (props) => {
                     value ={v_name}
                     onChange={(e) => {setV_name(e.target.value)}}
                     style={{maxWidth:'300px'}}
+                    maxLength={45}
                 />
 
                 <Form.Select
@@ -148,7 +149,7 @@ const FormUpdateViolations = (props) => {
                toggle label='Enabled'  checked={isDeleted==='1' && isDeleted? false : true}/>
 
               <Form.TextArea  value={desc} label='Description' placeholder='Tell us more about the violation...'
-               onChange={(e) => {setDesc(e.target.value)}} />
+               onChange={(e) => {setDesc(e.target.value)}}  maxLength={255} />
               
               
                 <div>

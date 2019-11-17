@@ -93,29 +93,31 @@ const ViolationList = (props) => {
                 </Menu>
             </div>
 
-            <Table selectable compact='very'>
-                <Table.Header>
-                    <Table.Row>
-                        <Table.HeaderCell>Violation</Table.HeaderCell>
-                        <Table.HeaderCell>Description</Table.HeaderCell>
-                        <Table.HeaderCell>Class</Table.HeaderCell>
-                        <Table.HeaderCell></Table.HeaderCell>
-                    </Table.Row>
-                </Table.Header>
+            <div style={{ overflowX:'scroll'}}>
+                <Table selectable   compact='very'>
+                    <Table.Header >
+                        <Table.Row>
+                            <Table.HeaderCell>Violation</Table.HeaderCell>
+                            <Table.HeaderCell style={{maxWidth:'300px'}} >Description</Table.HeaderCell>
+                            <Table.HeaderCell>Class</Table.HeaderCell>
+                            <Table.HeaderCell></Table.HeaderCell>
+                        </Table.Row>
+                    </Table.Header>
 
-                <Table.Body>
-                    {
-                        vioDept.map(( it, ix ) => {
-                            return(
-                                <ViolationRow key={it.v_id} 
-                                    rowData={it}
-                                    onClose={onClose}
-                                /> 
-                            )
-                        })
-                    }
-                </Table.Body>
-            </Table>
+                    <Table.Body>
+                        {
+                            vioDept.map(( it, ix ) => {
+                                return(
+                                    <ViolationRow key={it.v_id} 
+                                        rowData={it}
+                                        onClose={onClose}
+                                    /> 
+                                )
+                            })
+                        }
+                    </Table.Body>
+                </Table>
+            </div>
         </React.Fragment>
     )
 }
@@ -125,7 +127,7 @@ const ViolationRow = (props) => {
     return(
         <Table.Row negative={props.rowData.is_deleted==='0'? false : true} positive={props.rowData.is_deleted==='0'? true : false}>
             <Table.Cell>{props.rowData.v_name || ''}</Table.Cell>
-            <Table.Cell>{props.rowData.v_description || ''}</Table.Cell>
+            <Table.Cell  style={{maxWidth:'300px', wordBreak:'break-all'}}>{props.rowData.v_description || ''}</Table.Cell>
             <Table.Cell>{props.rowData.v_class || ''}</Table.Cell>
             <Table.Cell>
                 

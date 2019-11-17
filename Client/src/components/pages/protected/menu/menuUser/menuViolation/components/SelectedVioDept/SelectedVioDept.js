@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Grid, Header, Button, Table, Menu, Message, Segment } from 'semantic-ui-react';
+import { Grid, Header, Button, Table, Menu, Message, Segment, Modal, Divider } from 'semantic-ui-react';
 import { withRouter, Link} from 'react-router-dom';
 import baseURL from '../../../../../../../../res/baseuri';
 import axios from 'axios';
 
-// modalAddNewStudent
+// ModalStudent.js
+import ModalStudent from './ModalStudent';
 
 
 const SelectedVioDept = (props) => {
@@ -13,8 +14,10 @@ const SelectedVioDept = (props) => {
     const { location ,match, history } = props
 
     const [didMount, setDidMount] = useState(false);
+    const [Issue, setIssue] = useState(false);
     const [vioDeptTitle, setVioDeptTitle] = useState({});
     const [studentList, setStudentList] = useState([]);
+    const [selected, setSelected] = useState(undefined);
 
     useEffect(() => {
 
@@ -36,6 +39,8 @@ const SelectedVioDept = (props) => {
                 if(UpdateHook){
                     setVioDeptTitle(violationDept.data.sqlResult[0] || {})
                     setStudentList(result.data.data || [])
+
+                    
                 }
 
             } catch(err) {
@@ -55,24 +60,48 @@ const SelectedVioDept = (props) => {
         return null;
     }
 
+    const TableMain = () => {
+        return(
+            <Table compact>
+            <Table.Header>
+                <Table.Row>
+                    <Table.HeaderCell>UID</Table.HeaderCell>
+                    <Table.HeaderCell>Name</Table.HeaderCell>
+                    <Table.HeaderCell>Yr.</Table.HeaderCell>
+                    <Table.HeaderCell>Section</Table.HeaderCell>
+                    <Table.HeaderCell>Course</Table.HeaderCell>
+                    <Table.HeaderCell>Department</Table.HeaderCell>
+                    <Table.HeaderCell>S.Y.</Table.HeaderCell>
+                    <Table.HeaderCell>Semester</Table.HeaderCell>
+                </Table.Row>
+            </Table.Header>
+
+            <Table.Body>
+
+                
+                {<StudentList/>}
+            </Table.Body>
+        </Table>
+        )
+    }
+    
     const StudentList = () => {
+
+        console.log(studentList)
+
         return(
             <React.Fragment>
+
+
                 {studentList.map((it, ix)=>{
                     return(
-                        <Table.Row key={it.s_username}>
-                            
-                            <Table.Cell>{it.s_username}</Table.Cell>
-                            <Table.Cell>{`${it.s_ln}, ${it.s_fn} ${it.s_mn}`}</Table.Cell>
-                            <Table.Cell>{it.s_yr}</Table.Cell>
-                            <Table.Cell>{it.s_sec}</Table.Cell>
-                            <Table.Cell>{it.s_crs}</Table.Cell>
-                            <Table.Cell>{it.s_dept}</Table.Cell>
-                            <Table.Cell>{it.ay_name}</Table.Cell>
-                            <Table.Cell>{it.sem_name}</Table.Cell>
-                            
-                            {/* <Table.Cell>{JSON.stringify(it)}</Table.Cell> */}
-                        </Table.Row>
+
+                    
+
+                        <ModalStudent key={it.s_username} {...props} it={it}/>
+
+
+
                     )
                 })}
             </React.Fragment>
@@ -87,19 +116,37 @@ const SelectedVioDept = (props) => {
                     <Header.Subheader>
                         Manage our student violation records and dept. settings
                     </Header.Subheader>
-                </Header>
-                            
+                </Header>      
             </div>
 
             <hr></hr>
 
             <br/>
 
+            {/* MENU */}
             <div>
                 <Menu secondary>
+
+                <Menu.Menu position='left'>
+                        <Menu.Item>
+                            <Button animated='fade'
+                                // as={Link}
+                                // to={props.location.pathname + `/settings`}
+                                secondary
+                            >
+                                <Button.Content visible>{'All records'}</Button.Content>
+                                <Button.Content hidden> {'All records'}</Button.Content>
+                            </Button>
+                        </Menu.Item>
+                        
+                    </Menu.Menu>
+
+
+
                     <Menu.Menu position='right'>
                         <Menu.Item>
                             <Button animated='fade'
+                                primary
                                 as={Link}
                                 to={props.location.pathname + `/settings`}
                             >
@@ -120,25 +167,9 @@ const SelectedVioDept = (props) => {
                     <Grid.Column>        
                         <Segment style={{ overflow: 'auto', maxHeight: '1000vh' }}>
                             <Segment.Group horizontal>
-                                
-                                <Table compact>
-                                    <Table.Header>
-                                        <Table.Row>
-                                            <Table.HeaderCell>UID</Table.HeaderCell>
-                                            <Table.HeaderCell>Name</Table.HeaderCell>
-                                            <Table.HeaderCell>Yr.</Table.HeaderCell>
-                                            <Table.HeaderCell>Section</Table.HeaderCell>
-                                            <Table.HeaderCell>Course</Table.HeaderCell>
-                                            <Table.HeaderCell>Department</Table.HeaderCell>
-                                            <Table.HeaderCell>S.Y.</Table.HeaderCell>
-                                            <Table.HeaderCell>Semester</Table.HeaderCell>
-                                        </Table.Row>
-                                    </Table.Header>
-
-                                    <Table.Body>
-                                        {<StudentList/>}
-                                    </Table.Body>
-                                </Table>
+                                {studentList.length > 0?
+                                    <TableMain/> : <MessageEmpty/> }
+                               
 
                             </Segment.Group>
                         </Segment>
@@ -149,11 +180,12 @@ const SelectedVioDept = (props) => {
                 </Grid.Row>
 
             </Grid>
+            
+            {/* <ModalIssueViolationToStudent {...props} it={selected} Issue={Issue} onOpen={modalOpen} onClose={modalClose}/> */}
 
         </React.Fragment>
     )
 }
-
 
 const MessageEmpty =  () => {
     return(

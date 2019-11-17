@@ -1,7 +1,13 @@
 const express = require('express');
 var bodyParser = require('body-parser')
 var cors = require('cors');
-const ip_v4 =  '192.168.254.154';//'10.83.19.88';
+
+const workable = `172.51.1.64`;
+const malis = `192.168.254.154`;
+const marick = `192.168.100.10`;
+
+const ip_v4 = malis;
+
 // JUST ERROR MESSAGE
 var error = {message: "error"}
 
@@ -20,10 +26,11 @@ app.use('/api', require('./routes/menu/menu')); // MENU
 app.use('/api', require('./routes/educ_level/educ_level')) // EDUC_LEVEL
 app.use('/api', require('./routes/departments/departments'))  // DEPARTMENTS
 app.use('/api', require('./routes/violation/violation'))// VIOLATIONS
+app.use('/api', require('./routes/activity/activty'))// ACTIVITY
 app.use('/api',require('./routes/acad_year/acad_year')) // ACAD_YEAR
 app.use('/api',require('./routes/semester/semester')) // SEMESTER
 app.use('/api', require('./routes/students/students')) // STUDENTS
-app.use('/api', require('./routes/clearance/clearance'));
+app.use('/api', require('./routes/clearance/clearance')); // CLEARANCE
 app.use('/api', require('./routes/class/class')); // CLASS
 
 app.use('/',require('./routes/test/test')) // TEST FOR TESTING

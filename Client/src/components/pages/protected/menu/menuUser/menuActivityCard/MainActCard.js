@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {withRouter, Link} from 'react-router-dom';
 import axios from 'axios'
-import {  Grid, Button, Header, Image, Icon } from 'semantic-ui-react';
+import {  Grid, Button, Header, Message } from 'semantic-ui-react';
 import baseURL from '../../../../../../res/baseuri';
 
 const MyActivityCard = (props) => {
@@ -13,34 +13,44 @@ const MyActivityCard = (props) => {
 
     useEffect(()=>{
         setDidMount(true);
-        let xa = true;
+        let updateHook = true;
 
-        const x = async()=>{
+        const fetchApi = async()=>{
             try{
-                // const header = {
-                //     headers: {
-                //         authorization : localStorage.getItem('x')
-                //     }
-                // }
+                const header = {
+                    headers: {
+                        authorization : localStorage.getItem('x')
+                    }
+                }
 
-                // const result = await axios.get(`${baseURL}/api/departments/user`, header);
+                const resultActivity = await axios.get(`${baseURL}/api/activity/user`, header);
                 
-                // if(xa)
-                // {
-                //     // setDeptList(result.data.data);
-                //     setMyDeptList(result.data.data);
-                // }
-                // console.log(result.data.data)
+                if(updateHook)
+                {
+                    // setDeptList(result.data.data);
+                    setMyDeptList(resultActivity.data.data);
+                }
+                console.log( `Activity Card:` ,resultActivity.data.data)
                 
             } catch(err) {
                 // history.push('/')
             }
         }
 
-        x();
+        fetchApi();
 
-        return () => (xa=false)
+        return () => (updateHook = false)
     },[])
+
+    const GridMyActList = () => {
+        
+        return( 
+        <Grid stackable columns={2}>     
+
+            <MyVioDeptItem {...props} location={location} deptArray={myDeptList}/>    
+
+        </Grid>)
+    }
 
     return(
         <React.Fragment>
@@ -54,38 +64,53 @@ const MyActivityCard = (props) => {
                 </Header>
                             
             </div>
-            <hr></hr>
-            <Grid stackable columns={2}>            
+            <hr></hr>            
   
-                <Grid.Column>
-                    <Button>
-                        Violation 1
-                    </Button>
-                </Grid.Column>
-
-                <Grid.Column>
-                    <Button>
-                        Violation 2
-                    </Button>
-                </Grid.Column>
-
-                <Grid.Column>
-                    <Button>
-                        Violation 3
-                    </Button>
-                </Grid.Column>
-
-                <Grid.Column>
-                    <Button>
-                        Violation 4
-                    </Button>
-                </Grid.Column>
+              {
+                myDeptList && myDeptList.length > 0 ?
+                <GridMyActList/> :
+                <MessageEmpty/>
+            }
 
                 {/* <MyDepartmentsItem location={location} deptArray={myDeptList}/> */}
-            </Grid>
+  
         </React.Fragment>
     )   
 }
 
-export default withRouter(MyActivityCard);
 
+const MyVioDeptItem = (props) => {
+
+    return (
+        <React.Fragment>
+            {
+                props.deptArray.map((it, ix)=>{
+                    return(
+                        <Grid.Column key={ix}>
+                            
+                            <Button  
+                                as={Link}
+                                to={props.location.pathname + `/${it.d_id}`}
+                                onClick={()=>{console.log(it.d_name, ' link: ', props.location.pathname + `/${it.d_id}`)}}
+                                key={it.d_id} 
+                                inverted 
+                                primary
+                                size='huge'
+                                fluid>{it.d_name}</Button>                                                                
+                        </Grid.Column>          
+                 )})
+            }
+        </React.Fragment>
+    )
+}
+
+const MessageEmpty =  () => {
+    return(
+        <Message warning>
+            <Message.Header>Sorry, no departments is assigned to you.</Message.Header>
+            <p>0 Results found, Visit our Admin/IT for your eligibility of dept. assignment</p>
+        </Message>
+    )
+}
+
+export default withRouter(MyActivityCard);

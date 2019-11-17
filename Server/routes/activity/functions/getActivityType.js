@@ -1,27 +1,19 @@
-/*
-    STATUS : NOT
-*/
-
-// Requries 'Bearer TOKENxxxxx'
 var jwtVerify = require('../../reuse/jwtVerify');
-
-// Requires < SQL > , < ARRAY_PARAMETER >
 var query = require('../../reuse/query')
-
 var sql = require('../../../mysql/queries/accounts/Login')
 
-const asynGetDeptType = async ({res, token, params}) => {
+const GetActDeptByAccId = async ({res, token, params}) => {
     
     let error  = false;    
     let jwtResult;
     let sqlResult;
+    let dataResult = {};
 
     try{
         jwtResult= await jwtVerify(token);
     } catch(err) {
         error  = true; 
     }
-    
     if(!jwtResult) {
         error  = true; 
     }
@@ -32,20 +24,10 @@ const asynGetDeptType = async ({res, token, params}) => {
         error  = true; 
     }
     
-    // get departments type
+    // get ONE department
     try{
         if(sqlResult[0].is_token === 'AUTH') {
-
-            let sql = `SELECT 
-                            id as 'key',
-                            name as 'text',
-                            id as 'value',
-                            code
-                        FROM iclear_svms_db.educ_level
-                        
-                        WHERE state = 1`
-
-            sqlResult = await query(sql, [])
+            dataResult.getActivityType = await query(_sql.getActivityType, [])
         }
     } catch (err){
         error  = true;  
@@ -53,7 +35,17 @@ const asynGetDeptType = async ({res, token, params}) => {
 
     error ? 
         res.sendStatus(401) : 
-        res.json({sqlResult})
+        res.json({ data: dataResult.getActivityType})
 }
 
-module.exports =  asynGetDeptType
+
+let _sql= {
+    getActivityType : `SELECT 
+                            id AS 'value',
+                            id AS 'key',
+                            name AS 'text'
+                            
+                        FROM events_type;`
+}
+
+module.exports =  GetActDeptByAccId

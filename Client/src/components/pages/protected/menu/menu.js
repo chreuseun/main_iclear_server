@@ -67,14 +67,18 @@ const Menu_ = (props) => {
     }
   
     if(!isLoading) {
+
+        //  Logged as admin
         if(userDetails.user_type_id === 'ADMIN'){
             return <NavbarAdmin userDetails={userDetails}/>
         }
 
+        // logged as user = {dpeartment, violation, activity}
         else if(userDetails.user_type_id === 'USER'){
             return <NavbarUser userDetails={userDetails}/>
         }
 
+        // subject teacher
         else {
             return <NavbarSubject userDetails={userDetails}/>
         }

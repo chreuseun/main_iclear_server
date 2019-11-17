@@ -48,11 +48,8 @@ const MyViolations = (props) => {
 
     const GridMyVioDeptList = () => (
         <Grid stackable columns={2}>            
-  
-               
-
-                <MyVioDeptItem location={location} deptArray={myVioDeptList}/>
-            </Grid>
+            <MyVioDeptItem location={location} deptArray={myVioDeptList}/>
+        </Grid>
     ) 
 
     return(

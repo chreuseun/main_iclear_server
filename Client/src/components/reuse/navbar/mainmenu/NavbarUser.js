@@ -15,7 +15,7 @@ import VioDepSettings from '../../../pages/protected/menu/menuUser/menuViolation
 
 // Activity Card
 import MainActivityCards from '../../../pages/protected/menu/menuUser/menuActivityCard/MainActCard';
-
+import SelectedActDept from '../../../pages/protected/menu/menuUser/menuActivityCard/components/SelectedActDept/SelectedActDept'
 
 class NavbarUser extends Component {
     _isMounted = false;
@@ -32,7 +32,6 @@ class NavbarUser extends Component {
         this._isMounted = false;
     }
 
-
     render() {
 
         const { location, history } = this.props
@@ -41,36 +40,24 @@ class NavbarUser extends Component {
             return (
                 <Switch>
                     
-                    
+                    {/* HOME/INDEX */}
                     <Route  exact path={location.pathname }               render={(props) => <SelectionMyDepartments {...props} userDetails={this.props.userDetails}/>}/> 
                     
+                    {/* VIOLATION SYSTEM */}
                     <Route  exact path={location.pathname + '/viol'} render={(props) => <MainViolation {...props} userDetails={this.props.userDetails}/>}/>
                     <Route  exact path={location.pathname + '/viol/:dept'} render={(props) => <SelectedVioDept {...props} userDetails={this.props.userDetails}/>}/>  
                     <Route  exact path={location.pathname + '/viol/:dept/settings'} render={(props) => <VioDepSettings {...props} userDetails={this.props.userDetails}/>}/>  
 
+                    {/* ACTIVITY */}
                     <Route  exact path={location.pathname + '/act'} render={(props) => <MainActivityCards {...props} userDetails={this.props.userDetails}/>}/> 
+                    <Route  exact path={location.pathname + '/act/:dept'} render={(props) => <SelectedActDept {...props} userDetails={this.props.userDetails}/>}/> 
                     
+                    {/* DEPARTMENTS */}
                     <Route  exact path={location.pathname + '/:dept'}     render={(props) => <SelectedDepartments {...props} userDetails={this.props.userDetails}/>}/> 
                     <Route  exact path={location.pathname + '/:dept/req'} render={(props) => <ManageDeptRequirements {...props} userDetails={this.props.userDetails}/>}/> 
                     <Route  exact  path={location.pathname + '/:dept/clr'} render={(props) => <MenuDeptClearance {...props} title={`Issue Clearance`} userDetails={this.props.userDetails}/>} /> 
                     <Route  render={()=>{}}/> 
                 </Switch>
-            )
-        }
-
-        const RouteViolation = () => {
-            return (
-                
-                    <Route  exact path={location.pathname + '/viol'} render={(props) => <MainViolation {...props} userDetails={this.props.userDetails}/>}/> 
-            )
-        }
-
-
-        const RouteActivity= () => {
-            return (
-                <React.Fragment>                
-                    <Route  exact path={location.pathname + '/act'} render={(props) => <MainActivityCards {...props} userDetails={this.props.userDetails}/>}/> 
-                </React.Fragment>
             )
         }
 

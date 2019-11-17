@@ -118,10 +118,8 @@ router.post('/departments/users/add', (req, res) => {
         token ,
         params:[
             req.body.acc_id,
-            req.body.dep_id, 
-            req.body.acc_id,
-            req.body.dep_id
-        ]
+            req.body.dep_id      
+        ]  
     }
 
     addDeptUser(args)
