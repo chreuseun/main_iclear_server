@@ -18,7 +18,7 @@ const login = async({us, pw, cb}) => {
         }
     }
 
-    let returnValue;
+   
 
     try{
         let result = await axios.post(uri.login, body ,header);
@@ -30,7 +30,6 @@ const login = async({us, pw, cb}) => {
         } else {
             result.data.msg === 'account locked' ? alert('User Account Locked') : alert('Invalid Username/Password')
 
-            
             console.log(result.data.msg === 'account locked' ? result.data.msg : null )
 
             return(
@@ -49,7 +48,6 @@ const login = async({us, pw, cb}) => {
         )
     }
 }
-
 
 export default login
 

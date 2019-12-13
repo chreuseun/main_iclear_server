@@ -16,6 +16,7 @@ const MyViolations = (props) => {
         let UpdateHooks = true;
 
         const axiosAPI = async()=>{
+            console.log('MainViolation.js useEffect() START')
             try{               
                 const header = {
                     headers: {
@@ -23,16 +24,19 @@ const MyViolations = (props) => {
                     }
                 }
 
+                
                 const result = await axios.get(`${baseURL}/api/violation/user`, header);
                 
                 if(UpdateHooks)
                 {
-                    console.log(result.data.data)
                     if(result.data.data){
                         setMyVioDeptList(result.data.data);
-                    }    
+                    } 
+                    console.log('MainViolation.js useEffect() END')   
                 }
             } catch(err) {
+                console.log('MainViolation.js useEffect() ERROR')
+                localStorage.clear();
                 history.push('/')
             }        
         }
@@ -48,7 +52,7 @@ const MyViolations = (props) => {
 
     const GridMyVioDeptList = () => (
         <Grid stackable columns={2}>            
-            <MyVioDeptItem location={location} deptArray={myVioDeptList}/>
+            <MyVioDeptItem pushToLink={props.pushToLink} location={location} deptArray={myVioDeptList}/>
         </Grid>
     ) 
 
@@ -64,6 +68,7 @@ const MyViolations = (props) => {
                 </Header>
                             
             </div>
+
             <hr></hr>
 
             {
@@ -78,6 +83,20 @@ const MyViolations = (props) => {
 
 const MyVioDeptItem = (props) => {
 
+    // to next page
+    const pushTo = (path) => {
+              
+        var pushData = {
+            pathname: `/menu/viol/${path}`,
+            state: { dept: path }
+        }
+
+        // console.log('MainVIolation.js - '  ,pushData)
+        // history.push(pushData)
+
+        props.pushToLink(pushData);
+    }
+
     return (
         <React.Fragment>
             {
@@ -85,10 +104,8 @@ const MyVioDeptItem = (props) => {
                     return(
                         <Grid.Column key={ix}>
                             
-                            <Button  
-                                as={Link}
-                                to={props.location.pathname + `/${it.d_id}`}
-                                onClick={()=>{console.log(it.d_id, it)}}
+                            <Button 
+                                onClick={()=>pushTo(it.d_id)}
                                 key={it.d_id} 
                                 inverted 
                                 primary
@@ -102,7 +119,6 @@ const MyVioDeptItem = (props) => {
     )
 }
 
-
 const MessageEmpty =  () => {
     return(
         <Message warning>
@@ -111,7 +127,6 @@ const MessageEmpty =  () => {
         </Message>
     )
 }
-
 
 export default withRouter(MyViolations);
 

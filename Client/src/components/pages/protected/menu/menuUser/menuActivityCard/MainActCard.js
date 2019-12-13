@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {withRouter, Link} from 'react-router-dom';
 import axios from 'axios'
-import {  Grid, Button, Header, Message } from 'semantic-ui-react';
+import { Grid, Button, Header, Message } from 'semantic-ui-react';
 import baseURL from '../../../../../../res/baseuri';
 
 const MyActivityCard = (props) => {
@@ -45,11 +45,16 @@ const MyActivityCard = (props) => {
     const GridMyActList = () => {
         
         return( 
-        <Grid stackable columns={2}>     
 
-            <MyVioDeptItem {...props} location={location} deptArray={myDeptList}/>    
+            <React.Fragment>
 
-        </Grid>)
+                  <Grid stackable columns={2}>     
+
+                    <MyVioDeptItem {...props} pushToLink={props.pushToLink} location={location} deptArray={myDeptList}/>    
+
+                    </Grid>
+            </React.Fragment>
+      )
     }
 
     return(
@@ -64,6 +69,7 @@ const MyActivityCard = (props) => {
                 </Header>
                             
             </div>
+            
             <hr></hr>            
   
               {
@@ -81,6 +87,18 @@ const MyActivityCard = (props) => {
 
 const MyVioDeptItem = (props) => {
 
+    const pushTo = (path) => {
+
+        var pushData = {
+            pathname: `/menu/act/${path}`,
+            state:{dept: path}
+        }
+
+        console.log(pushData);
+
+        props.pushToLink(pushData)
+    }
+
     return (
         <React.Fragment>
             {
@@ -88,10 +106,8 @@ const MyVioDeptItem = (props) => {
                     return(
                         <Grid.Column key={ix}>
                             
-                            <Button  
-                                as={Link}
-                                to={props.location.pathname + `/${it.d_id}`}
-                                onClick={()=>{console.log(it.d_name, ' link: ', props.location.pathname + `/${it.d_id}`)}}
+                            <Button                                  
+                                onClick={()=>pushTo(it.d_id)}
                                 key={it.d_id} 
                                 inverted 
                                 primary

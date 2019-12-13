@@ -1,12 +1,14 @@
 import React, {useState, useEffect} from 'react';
-import {withRouter, Link} from 'react-router-dom';
+import {withRouter, Link, useHistory} from 'react-router-dom';
 import axios from 'axios'
 import {  Grid, Button, Header, Message } from 'semantic-ui-react';
 import baseURL from '../../../../../../res/baseuri';
 
 const MyDepartments = (props) => {
 
-    const { location, history } = props
+    const { match,location,  } = props
+
+    const history = useHistory();
  
     const [didMount, setDidMount] = useState(false);
     const [myDeptList, setMyDeptList] = useState([]);
@@ -54,12 +56,60 @@ const MyDepartments = (props) => {
         )
     }
 
-    const MyDepartmentList = () => {
+    const MyDepartmentList =    () => {
+
+        const MyDepartmentsItem = () => {
+
+            const pushTo = (path) => {
+              
+                var pushData = {
+                    pathname: `/menu/dep/${path}`,
+                    state: { dept: path }
+                  }
+
+                // history.push(pushData)
+
+                props.pushToLink(pushData);
+            }
+        
+            return (
+                <React.Fragment>
+                    {
+                        myDeptList.map((it, ix)=>{
+                            return(
+                                <Grid.Column key={ix}>
+                                    
+                                    <Button  
+
+                                        ///home:${this.state.userID}
+                                        onClick={()=>pushTo(it.d_id) }
+                                        key={it.d_id} 
+                                        inverted 
+                                        primary
+                                        size='huge'
+                                        fluid>
+                                        {it.d_name}
+                                    </Button>
+                                                                        
+                                </Grid.Column>          
+                         )})
+                    }
+        
+        
+        
+                </React.Fragment>
+            )
+        }
+
         return(
             <Grid stackable columns={2}>            
-                <MyDepartmentsItem location={location} deptArray={myDeptList}/>
+                <MyDepartmentsItem  deptArray={myDeptList}/>
             </Grid>
         )
+    }
+
+    const pushTo = (path) => {
+        history.push(path)
     }
 
     return(
@@ -75,6 +125,7 @@ const MyDepartments = (props) => {
                 </Header>
                             
             </div>
+
             <hr></hr>
 
             {
@@ -87,44 +138,6 @@ const MyDepartments = (props) => {
     )
     
 }
-
-const MyDepartmentsItem = (props) => {
-
-    return (
-        <React.Fragment>
-
-
-            
-
-            {
-                props.deptArray.map((it, ix)=>{
-                    return(
-                        <Grid.Column key={ix}>
-                            
-                            <Button  
-                                as={Link}
-                                to={props.location.pathname + `/${it.d_id}`}
-                                onClick={()=>{console.log(it.d_id)}}
-                                key={it.d_id} 
-                                inverted 
-                                primary
-                                size='huge'
-                                fluid>{it.d_name}</Button>
-                                                                
-                        </Grid.Column>          
-                 )})
-            }
-
-
-
-        </React.Fragment>
-    )
-}
-
-
-
-
-
 
 export default withRouter(MyDepartments);
 

@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { Table, Segment, Dropdown, Container, Modal, Radio, Button, Form, Label, Divider, Header, Tab } from 'semantic-ui-react'
-import { withRouter } from 'react-router-dom'
+import { withRouter , useHistory} from 'react-router-dom'
 import axios from 'axios';
 import baseURL from '../../../../../../res/baseuri';
 
 function ManageAcadYear(props) {
 
-    const { match, location, history } = props
+    const { match, location } = props;
+
+    const history = useHistory();
 
     const [didMount, setDidMount] = useState(false)
 
@@ -25,6 +27,13 @@ function ManageAcadYear(props) {
                     headers: {
                         authorization : localStorage.getItem('x')
                     }
+                }
+
+                const authorization = await await axios.post(`${baseURL}/api/auth` ,{} ,header);
+
+                if(authorization.data.msg !== 'auth' || !authorization || authorization.data.user_details.user_type_id !== 'ADMIN') {
+                    localStorage.clear();
+                    history.push("/");
                 }
 
                 const result = await axios.get(`${baseURL}/api/semester/get`,header);
@@ -88,7 +97,6 @@ function ManageAcadYear(props) {
         }
     }
 
-
     const componentDeptList = deptList.map((it, idx) => {
         return(
             <Table.Row key={it.id}  negative={it.state==="1"? false : true} >
@@ -103,12 +111,17 @@ function ManageAcadYear(props) {
 
     return(
         <Container>
+        
+            <div>
+                {JSON.stringify(history)}
+            </div>
             <h2>Manage Semester</h2>
             
             <Segment style={{ overflow: 'auto', maxHeight: '1000vh' }}>
 
                 <Segment.Group horizontal>                    
                     <Table singleLine>
+
                         <Table.Header>
                             <Table.Row>
                                 <Table.HeaderCell>Active Semester</Table.HeaderCell>
@@ -116,49 +129,15 @@ function ManageAcadYear(props) {
                             </Table.Row>
                         </Table.Header>
 
-                            <Table.Body>
-                                {componentDeptList}
-                            </Table.Body>
-                        </Table>
-                    </Segment.Group>               
+                        <Table.Body>
+                            {componentDeptList}
+                        </Table.Body>
+                    </Table>
+                </Segment.Group>  
+
             </Segment>
         </Container>  
-        )
+    )
 }
-
-// <- Update Department Credentials, such a status, name, headofficers, educ_level, yearlevel and course ->
-// function UpdateDepartmentModal(props) {
-    
-//     return(
-//         <Modal onClose={props.internalRefresh()} trigger={<Button>Edit</Button>}>
-//             <Modal.Header>Update Department Details</Modal.Header>
-//             <Modal.Content >
-                
-//                 <FormUpdateDepartment deptKey={props.deptKey}/>
-
-//             </Modal.Content>
-
-//             <Modal.Actions>
-            
-//             </Modal.Actions>
-//         </Modal>
-//     )
-// }
-
-// // <-MANAGE USERS IN A DEPARTMENT->
-// function ManageDepartmentUser(props) {
-    
-//     return(
-//         <Modal onClose={props.internalRefresh()}  trigger={<Button color="green">Manage Users</Button>}>
-//             <Modal.Header>Manage Departments Users</Modal.Header>
-//                 <Modal.Content >
-//                     <ManageDepartmentsUser deptKey={props.deptKey}/>
-//                     </Modal.Content>
-//                 <Modal.Actions>
-            
-//             </Modal.Actions>
-//         </Modal>
-//     )
-// }
 
 export default withRouter(ManageAcadYear)

@@ -1,5 +1,5 @@
 import React, {  useState, useEffect } from 'react'
-import { Form, Header,Segment, Button,Divider, Label, Container, Dropdown} from 'semantic-ui-react'
+import { Form, Header,Segment, Button,Divider, Label, Container, Dropdown, Radio} from 'semantic-ui-react'
 import axios from 'axios';
 import baseURL from '../../../../../res/baseuri';
 import { withRouter, Redirect} from "react-router-dom";
@@ -7,13 +7,10 @@ import { withRouter, Redirect} from "react-router-dom";
 import Loader from '../../../../reuse/loader';
 
 
-
-function FormExampleSubcomponentControl (props) {
+const  FormExampleSubcomponentControl=  (props) => {
     
     const _isMounted = false;
-    
-
-
+    const {history} = props;
     //STATES
     const [loader, setLoader] = useState(true);
 
@@ -31,6 +28,7 @@ function FormExampleSubcomponentControl (props) {
     const [ valYearLevel, setValYearLevel ] = useState('');
     const [ valHeadOff, setValHeadOff] = useState('');
     const [ valCrsDept, setValCrsDept ] = useState('');
+    const [ valIsChecked, setValIsChecked] = useState('none');
     
     useEffect(() => {
         
@@ -42,6 +40,13 @@ function FormExampleSubcomponentControl (props) {
 
         const x = async()=>{
             try{
+              const authorization = await await axios.post(`${baseURL}/api/auth` ,{} ,header);
+
+              if(authorization.data.msg !== 'auth' || !authorization || authorization.data.user_details.user_type_id !== 'ADMIN') {
+                  localStorage.clear();
+                  history.push("/");
+              }
+
                 let result = await axios.post(`${baseURL}/api/departmentstype/get`,{},header);
                 setType(result.data.sqlResult)
                 console.log('TYPE OK');
@@ -74,7 +79,8 @@ function FormExampleSubcomponentControl (props) {
       if(
         valDeptName.trim() === ''    || valType  === ''   ||
         valAcadLevel  === ''  || valCourse === '' ||
-        valYearLevel === ''   || valHeadOff.trim() === ''
+        valYearLevel === ''   || valHeadOff.trim() === '' || 
+        setValCrsDept === '' 
       ) {
         alert("Please suppliment required fields")
 
@@ -87,8 +93,12 @@ function FormExampleSubcomponentControl (props) {
           valAcadLevel  : valAcadLevel,
           valCourse : valCourse ,
           valYearLevel : valYearLevel,
-          valHeadOff : valHeadOff 
+          valHeadOff : valHeadOff,
+          valCrsDept: valCrsDept,
+          valIsChecked : valIsChecked
         }
+
+        console.log('body to send,', body)
   
         let headers ={
           headers:{
@@ -105,10 +115,12 @@ function FormExampleSubcomponentControl (props) {
           setValCourse('') ;
           setValYearLevel('');
           setValHeadOff('');
-  
-          alert('Department Added')
+          setValCrsDept('');
+
+          alert('Department Added');
+
         } else {
-          alert('Adding Department Failed...')
+          alert('Adding Department Failed...');
         }
       }
 
@@ -122,6 +134,7 @@ function FormExampleSubcomponentControl (props) {
     // ON Dept TYPE CHANGE
     const type_handleChange = (e, { value }) => {
       setValType(value)
+      setValIsChecked('none')
       console.log(valType)
     }
 
@@ -169,6 +182,7 @@ function FormExampleSubcomponentControl (props) {
       console.log(valYearLevel)
     }
 
+    // Dept Changed
     const crsDept_handleChange = (e, { value }) => {
       setValCrsDept(value);
 
@@ -180,23 +194,74 @@ function FormExampleSubcomponentControl (props) {
 
 
       let filter=( subdata.course.filter((item)=> {
-        return item.educ_level_id === valAcadLevel && item.department === value
+        return (item.educ_level_id === valAcadLevel && item.department === value ) 
       }) )
+
+      console.log('filter COURSE: ', filter)
 
       let filter1=( subdata.yearlevel.filter((item)=> {
         return item.educ_level_id === valAcadLevel  
       }) )
 
-      setCourse(filter.map((it, idx) => { 
+      setCourse( [ {key:'-ALL',value:'-ALL', text: '-ALL' }, ...filter.map((it, idx) => { 
         console.log(it)
         return {key:it.course,value:it.course, text: it.course }
-      }))
+      }) ] )
 
-      setYearLevel(filter1.map((it, idx) => { 
+      setYearLevel( filter1.map((it, idx) => { 
         console.log(it)
         return {key:it.yearlevel,value:it.yearlevel, text: it.yearlevel }
       }))
 
+    }
+
+    const onIsRadio_handleChange = (e, {value}) => {
+      console.log(value);
+      setValIsChecked(value)
+    } 
+
+    const TradionSubDept = () => {
+
+      return(
+          <React.Fragment>
+               {/* SELECT [NONE, REG, FIN] */}
+             <Form>
+              <Form.Group widths='equal'  >
+                <Form.Field>
+                  <Radio
+                    
+                    value='none'
+                    label='none'
+                    name='radioGroup'
+                    checked={valIsChecked === 'none'}
+                    onChange={onIsRadio_handleChange}
+                  />  
+                </Form.Field>
+
+                <Form.Field>
+                  <Radio
+                    
+                    label='Is Finance?'
+                    name='radioGroup'
+                    value='fin'
+                    checked={valIsChecked === 'fin'}
+                    onChange={onIsRadio_handleChange}
+                  />
+                </Form.Field>
+                <Form.Field>
+                  <Radio
+                    
+                    value='reg'
+                    label='Is Registrar?'
+                    name='radioGroup'
+                    checked={valIsChecked === 'reg'}
+                    onChange={onIsRadio_handleChange}
+                  />  
+                </Form.Field>
+              </Form.Group>
+            </Form>
+          </React.Fragment>
+      )
     }
 
     if(loader) {
@@ -230,6 +295,11 @@ function FormExampleSubcomponentControl (props) {
                   options={type}
                   />
             </Form.Field>
+
+            {/* SET TRADITION IF NONE , REGISTRAR, FINANCE */}
+
+            {valType === 2 ?  <TradionSubDept/> : ''}
+          
 
             <Form.Field >
               <Label as='a' color='blue'  ribbon>Acadamic Level</Label>

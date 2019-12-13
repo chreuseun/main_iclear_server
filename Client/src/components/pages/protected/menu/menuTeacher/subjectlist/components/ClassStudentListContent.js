@@ -28,10 +28,12 @@ const ItemContent = (props) => {
                     }
                 };
 
+                console.log('class_id: ', props.class_id)
                 const result = await axios.get(`${baseURL}/api/class/student/${props.class_id}`,header);
 
                 if(xa){
                     setClassList(result.data.data)
+                    console.log('Class List: ', result.data.data)
                 }
 
             } catch(err) {
@@ -52,7 +54,7 @@ const ItemContent = (props) => {
     }
 
     // MEssage if you dont have Any Students in a class
-    const MessageExampleWarning = () => (
+    const MessageExampleWarning =   () => (
         <div>
             <Message warning>
                 <Message.Header>You don't have students for this subject</Message.Header>
@@ -160,7 +162,6 @@ const ItemContent = (props) => {
     // Update Remarks by single ID
     const onRemarksClick = async(class_issue_ids, remarks) => {
 
-
         try{            
             const header = {
                 headers: {
@@ -215,10 +216,8 @@ const ItemContent = (props) => {
 
             const result = await axios.get(`${baseURL}/api/class/student/${props.class_id}`,header);
 
-           
-                setClassList(result.data.data)
+            setClassList(result.data.data)
           
-
         } catch(err) {
             // localStorage.removeItem('x')
             console.log(err)
@@ -229,19 +228,15 @@ const ItemContent = (props) => {
     return(
         <React.Fragment>
             <Modal.Header>
-
                 <SubjectClassTitle/>
-
             </Modal.Header>
 
-            <Modal.Content>              
-
+            <Modal.Content>            
                 {
                     classList.length === 0 ? // if no students in a class
                         MessageExampleWarning() : // then this
                         TableClassIssueStudents() // else do this
                 }
-
             </Modal.Content>
 
         </React.Fragment>   

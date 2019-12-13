@@ -1,117 +1,154 @@
-import React, { Component } from 'react';
-import { withRouter, BrowserRouter, Route, Switch, Link} from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import { withRouter, BrowserRouter} from "react-router-dom";
 import { Menu,  Container, Dropdown } from 'semantic-ui-react';
+import axios from 'axios'
+import baseURL from '../../../../res/baseuri';
 
-//componets TRADIONAL
-import SelectionMyDepartments from '../../../pages/protected/menu/menuUser/menuMyDepartments/SelectionMyDepartments'
-import SelectedDepartments from '../../../pages/protected/menu/menuUser/menuMyDepartments/components/SelectedDepartment'
-import ManageDeptRequirements from '../../../pages/protected/menu/menuUser/menuMyDepartments/components/manageDeptRequirement.js/manageDeptRequirements';
-import MenuDeptClearance from '../../../pages/protected/menu/menuUser/menuDepartmentClearance/menuDepartmentClearance';
+const NavbarUser = (props) => {
 
-// Violation
-import MainViolation from '../../../pages/protected/menu/menuUser/menuViolation/MainViolation';
-import SelectedVioDept from '../../../pages/protected/menu/menuUser/menuViolation/components/SelectedVioDept/SelectedVioDept'
-import VioDepSettings from '../../../pages/protected/menu/menuUser/menuViolation/components/SelectedVioDept/components/VioDeptSettings/VioDepSettings'
+    const {  history } = props;
 
-// Activity Card
-import MainActivityCards from '../../../pages/protected/menu/menuUser/menuActivityCard/MainActCard';
-import SelectedActDept from '../../../pages/protected/menu/menuUser/menuActivityCard/components/SelectedActDept/SelectedActDept'
+    const [didMount, setDidMount] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const [userDetails, setUserDetails] = useState({});
 
-class NavbarUser extends Component {
-    _isMounted = false;
-
-    state = {
-        isLoading: true
-    }
-
-    componentDidMount() {
-        this._isMounted = true;
-    }
-
-    componentWillUnmount() {
-        this._isMounted = false;
-    }
-
-    render() {
-
-        const { location, history } = this.props
+    useEffect(()=>{
         
-        const RouteUser = () => {
-            return (
-                <Switch>
+        let UpdateHooks = true;
+        setDidMount(true);
+        setIsLoading(true);
+
+        
+
+        const getUserDetails = () => {
+            console.log('/menu - useEffect() START');
+            const fetchData = async() => {
+
+                try{
+                
+                    const header = {
+                        headers: {
+                            authorization : localStorage.getItem('x')
+                        }
+                    };
+
+                    const result = await await axios.post(`${baseURL}/api/auth` ,{} ,header);
+
+                    if(result.data.msg !== 'auth' || !result || result.data.user_details.user_type_id !== 'USER') {
+                        localStorage.clear();
+                        history.push("/");
+                    }
                     
-                    {/* HOME/INDEX */}
-                    <Route  exact path={location.pathname }               render={(props) => <SelectionMyDepartments {...props} userDetails={this.props.userDetails}/>}/> 
-                    
-                    {/* VIOLATION SYSTEM */}
-                    <Route  exact path={location.pathname + '/viol'} render={(props) => <MainViolation {...props} userDetails={this.props.userDetails}/>}/>
-                    <Route  exact path={location.pathname + '/viol/:dept'} render={(props) => <SelectedVioDept {...props} userDetails={this.props.userDetails}/>}/>  
-                    <Route  exact path={location.pathname + '/viol/:dept/settings'} render={(props) => <VioDepSettings {...props} userDetails={this.props.userDetails}/>}/>  
+                    if(UpdateHooks) {        
+                        setUserDetails(result.data.user_details);
+                        console.log('/menu - useEffect() END');
+                    }   
+                } catch(err) {
+                    console.log('/menu - useEffect Error');
+                    localStorage.clear();
+                    history.push("/");
+                }
+            };
 
-                    {/* ACTIVITY */}
-                    <Route  exact path={location.pathname + '/act'} render={(props) => <MainActivityCards {...props} userDetails={this.props.userDetails}/>}/> 
-                    <Route  exact path={location.pathname + '/act/:dept'} render={(props) => <SelectedActDept {...props} userDetails={this.props.userDetails}/>}/> 
-                    
-                    {/* DEPARTMENTS */}
-                    <Route  exact path={location.pathname + '/:dept'}     render={(props) => <SelectedDepartments {...props} userDetails={this.props.userDetails}/>}/> 
-                    <Route  exact path={location.pathname + '/:dept/req'} render={(props) => <ManageDeptRequirements {...props} userDetails={this.props.userDetails}/>}/> 
-                    <Route  exact  path={location.pathname + '/:dept/clr'} render={(props) => <MenuDeptClearance {...props} title={`Issue Clearance`} userDetails={this.props.userDetails}/>} /> 
-                    <Route  render={()=>{}}/> 
-                </Switch>
-            )
-        }
+            fetchData();
 
-        return(
-            <React.Fragment>
+        };
 
-                <BrowserRouter>
-                    <Menu color='blue' style={{}} stackable inverted  fixed='top'>
-                        <Container>
+        getUserDetails();
 
-                            <Link to="/menu">
-                                <Menu.Item>
-                                    HOME 
-                                </Menu.Item>
-                            </Link>     
+        return () => (UpdateHooks=false);
+    },[])
 
-                             <Menu.Menu position='left'>                            
-                                <Menu.Item
-                                    as={Link}
-                                    to="/menu"
-                                    name='Departments'
-                                />
-
-                                <Menu.Item
-                                    as={Link}
-                                    to={location.pathname + '/viol'}
-                                    name='Violation'
-                                />
-
-                                <Menu.Item
-                                    as={Link}
-                                    to="/menu/act"
-                                    name='Activity Card'
-                                />
-                            </Menu.Menu>                      
-
-                            <Menu.Menu position='right'>                            
-                                <Dropdown item text={'Welcome, ' + this.props.userDetails.username}>
-                                    <Dropdown.Menu>
-                                        <Dropdown.Item onClick={()=>{localStorage.clear();history.push('/')}} >Sign-Out</Dropdown.Item>
-                                    </Dropdown.Menu>
-                                </Dropdown>
-                            </Menu.Menu>
-                        </Container>  
-                    </Menu>
-
-                    <Container   style={{marginTop:"100px",background:'#F8F8F8', padding:'20px'}}>
-                        <RouteUser/>
-                    </Container>
-                </BrowserRouter>
-            
-            </React.Fragment>
-        );
+    if(!didMount) {
+        return null
     }
+
+    // Menu navigation routes  [ /menu/dep, /menu/act, /menu/vio ]
+    const pushTo = (path) => {
+        history.push(path)
+    }
+
+    return(
+        <React.Fragment>
+
+            <BrowserRouter>
+                <Menu color='blue' style={{}} stackable inverted  fixed='top'>
+                    <Container>
+
+                        <Menu.Item
+                            onClick={()=>pushTo('/menu')}
+                        >
+                            HOME 
+                        </Menu.Item>
+
+                            <Menu.Menu position='left'>                            
+                            <Menu.Item
+                                onClick={()=>pushTo("/menu/dep")}
+                                name='Departments'
+                            />
+
+                            <Menu.Item
+                                onClick={()=>pushTo("/menu/viol")}
+                                name='Violation'
+                            />
+
+                            <Menu.Item
+                                onClick={()=>pushTo("/menu/act")}
+                                name='Activity Card'
+                            />
+                        </Menu.Menu>                      
+
+                        <Menu.Menu position='right'>                            
+                            <Dropdown item text={'Welcome, ' + userDetails.username || ''}>
+                                <Dropdown.Menu>
+                                    <Dropdown.Item onClick={()=>{localStorage.clear();history.push('/')}} >Sign-Out</Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        </Menu.Menu>
+                    </Container>  
+                </Menu>
+
+                <Container   style={{marginTop:"100px", padding:'20px'}}>
+                
+                </Container>
+            </BrowserRouter>
+        
+        </React.Fragment>
+    );
 }
 
+
 export default withRouter(NavbarUser);
+
+
+ // const RouteUser = () => {
+    //     return (
+
+    //         <Switch>
+                
+    //             {/* HOME/INDEX */}
+    //             <Route  exact path={'/menu/dep' } render={(props) => <SelectionMyDepartments {...props} userDetails={userDetails} />}/> 
+    //             {/* HOME/INDEX */}
+                
+    //             {/* VIOLATION SYSTEM */}
+    //             <Route  exact path={ '/menu/viol'} render={(props) => <MainViolation {...props} userDetails={userDetails}/>}/>
+    //             <Route  exact path={'/menu/viol/:dept'} render={(props) => <SelectedVioDept {...props} userDetails={userDetails}/>}/ >  
+    //             <Route  exact path={'/menu/viol/:dept/settings'} render={(props) => <VioDepSettings {...props} userDetails={userDetails} />}/>  
+    //             {/* VIOLATION SYSTEM */}                    
+
+    //             {/* ACTIVITY */}
+    //             <Route  exact path={'/menu/act'}       render={(props) => <MainActivityCards {...props} userDetails={userDetails}/>}/>                 
+    //             <Route  exact path={'/menu/act/:dept'} render={(props) => <SelectedActDept {...props} userDetails={userDetails}/>}/>                 
+    //             <Route  exact path={'/menu/act/:dept/scan'}  render={(props) => <LaunchScanner {...props} userDetails={userDetails}/>}/>
+    //             {/* ACTIVITY */}
+
+    //             {/* DEPARTMENTS */}
+    //             <Route  exact path={'/menu/dep/:dept'}     render={(props) => <SelectedDepartments {...props} userDetails={userDetails}/>}/> 
+    //             <Route  exact path={'/menu/dep/:dept/req'} render={(props) => <ManageDeptRequirements {...props} userDetails={userDetails}/>}/> 
+    //             <Route  exact  path={'/menu/dep/:dept/clr'} render={(props) => <MenuDeptClearance {...props} title={`Issue Clearance`} userDetails={userDetails}/>} /> 
+    //             <Route  render={()=>{return(null)}}/> 
+    //             {/* DEPARTMENTS */}
+                
+    //         </Switch>
+    //     )
+    // }

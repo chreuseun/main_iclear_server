@@ -48,7 +48,7 @@ const SubjectList = (props) => {
 
         return () => (xa=false)
 
-    },[])
+    },[]);
     
     if(!didMount){
         return null;

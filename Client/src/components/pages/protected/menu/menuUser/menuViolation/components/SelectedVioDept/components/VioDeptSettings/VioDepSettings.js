@@ -30,7 +30,7 @@ const ViolationSettings = (props) => {
                     }
                 };
                 
-                const violationDept = await axios.post(`${baseURL}/api/department/getone`, {id:match.params.dept||''},header)
+                const violationDept = await axios.post(`${baseURL}/api/department/getone`, {id:location.state.dept||''},header)
 
                 if(UpdateHook){
                     setVioDept(violationDept.data.sqlResult[0] || {})
@@ -61,15 +61,13 @@ const ViolationSettings = (props) => {
     return(
         <React.Fragment>
 
-            {/* HEader */}
             <div>
                 <Header as='h2'>
                     {'Settings: '}  { vioDept.d_name || '' } {'-'} { vioDept.el_name || '' } {'   '}  { vioDept.el_id || '' }
                     <Header.Subheader>
                         Configure class and violations
                     </Header.Subheader>
-                </Header>
-                            
+                </Header>           
             </div>
 
             <hr></hr>
@@ -121,8 +119,7 @@ const ViolationsSubMenu = (props) => {
             </Header>
             
             <ViolationList/>
-
-
+            
         </React.Fragment>  
     )
 }
@@ -139,6 +136,7 @@ const ClassSubMenu = () => {
             </Header>
 
             <ClassList/>
+
         </React.Fragment>
 
         

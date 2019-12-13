@@ -5,7 +5,7 @@ import { Menu,  Container, Dropdown, Header,Segment, Sidebar,Image, Grid } from 
 //componets
 import SelectionMyDepartments from '../../../pages/protected/menu/menuUser/menuMyDepartments/SelectionMyDepartments'
 import SelectedDepartments from '../../../pages/protected/menu/menuUser/menuMyDepartments/components/SelectedDepartment'
-import ManageDeptRequirements from '../../../pages/protected/menu/menuUser/menuMyDepartments/components/manageDeptRequirement.js/manageDeptRequirements';
+import ManageDeptRequirements from '../../../pages/protected/menu/menuUser/menuMyDepartments/components/manageDeptRequirement/manageDeptRequirements';
 import MenuDeptClearance from '../../../pages/protected/menu/menuUser/menuDepartmentClearance/menuDepartmentClearance';
 import SubjectList from '../../../pages/protected/menu/menuTeacher/subjectlist/subjectlist'
 
@@ -29,9 +29,9 @@ const NavbarUser = (props) => {
         return (
             <Switch>
                 <Route  exact path={location.pathname }               render={(props) => <SubjectList {...props} userDetails={data.userDetails} />}/> 
-                <Route  exact path={location.pathname + '/:dept'}     render={(props) => <SelectedDepartments {...props} userDetails={data.userDetails}/>}/> 
-                <Route  exact path={location.pathname + '/:dept/req'} render={(props) => <ManageDeptRequirements {...props} userDetails={data.userDetails}/>}/> 
-                <Route  exact path={location.pathname + '/:dept/clr'} render={(props) => <MenuDeptClearance {...props} title={`Issue Clearance`} userDetails={data.userDetails}/>} /> 
+                <Route  exact path={location.pathname + '/class/:dept'}     render={(props) => <SelectedDepartments {...props} userDetails={data.userDetails}/>}/> 
+                <Route  exact path={location.pathname + '/class/:dept/req'} render={(props) => <ManageDeptRequirements {...props} userDetails={data.userDetails}/>}/> 
+                <Route  exact path={location.pathname + '/class/:dept/clr'} render={(props) => <MenuDeptClearance {...props} title={`Issue Clearance`} userDetails={data.userDetails}/>} /> 
                 <Route  render={()=>{}}/> 
             </Switch>
         )

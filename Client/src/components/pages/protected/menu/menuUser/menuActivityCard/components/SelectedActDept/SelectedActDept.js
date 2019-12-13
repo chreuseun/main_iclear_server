@@ -31,7 +31,7 @@ const SelectedVioDept = (props) => {
                     }
                 };
 
-                const actDeptDetailes = await axios.post(`${baseURL}/api/department/getone`, {id:match.params.dept||''},header)
+                const actDeptDetailes = await axios.post(`${baseURL}/api/department/getone`, {id:location.state.dept || ''},header)
 
                 if(UpdateHook){
                     setActDeptInfo(actDeptDetailes.data.sqlResult[0] || {});

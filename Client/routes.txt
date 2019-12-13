@@ -1,0 +1,43 @@
+# ADMIN
+<Route path={'/menu/newuser'} exact render={ (props) => <NavbarAdmin {...props} /> } />
+<Route path={'/menu/configaccount'} exact render={ (props) => <NavbarAdmin {...props}/> } />
+
+<Route path={'/menu/newdepartment'} exact render={ (props) => <NavbarAdmin {...props}/> } />
+<Route path={'/menu/configdepartment'} exact render={ (props) => <NavbarAdmin {...props}/> } />
+
+<Route path={'/menu/config_semester'} exact render={ (props) => <NavbarAdmin {...props}/> } />
+<Route path={'/menu/config_acad_year'} exact render={ (props) => <NavbarAdmin {...props}/> } />
+
+<Route path={'/menu/uploadstudent'} exact render={ (props) => <NavbarAdmin {...props}/> } />
+
+
+# USERS 
+{/* HOME/INDEX */}
+<Route  exact path={location.pathname }               render={(props) => <SelectionMyDepartments {...props} userDetails={props.userDetails} />}/> 
+
+{/* VIOLATION SYSTEM */}
+<Route  exact path={location.pathname + '/viol'} render={(props) => <MainViolation {...props} userDetails={props.userDetails}/>}/>
+<Route  exact path={location.pathname + '/viol/:dept'} render={(props) => <SelectedVioDept {...props} userDetails={props.userDetails}/>}/ >  
+<Route  exact path={location.pathname + '/viol/:dept/settings'} render={(props) => <VioDepSettings {...props} userDetails={props.userDetails} />}/>  
+
+{/* ACTIVITY */}
+
+<Route  exact path={location.pathname + '/act'}       render={(props) => <MainActivityCards {...props} userDetails={props.userDetails}/>}/> 
+
+<Route  exact path={location.pathname + '/act/:dept'} render={(props) => <SelectedActDept {...props} userDetails={props.userDetails}/>}/> 
+
+<Route  exact path={location.pathname + '/act/:dept/scan'}  render={(props) => <LaunchScanner {...props} userDetails={props.userDetails}/>}/>
+
+{/* DEPARTMENTS */}
+<Route  exact path={location.pathname + '/:dept'}     render={(props) => <SelectedDepartments {...props} userDetails={props.userDetails}/>}/> 
+<Route  exact path={location.pathname + '/:dept/req'} render={(props) => <ManageDeptRequirements {...props} userDetails={props.userDetails}/>}/> 
+<Route  exact  path={location.pathname + '/:dept/clr'} render={(props) => <MenuDeptClearance {...props} title={`Issue Clearance`} userDetails={props.userDetails}/>} /> 
+<Route  render={()=>{}}/> 
+
+
+# SUBJECT TEACHER 
+<Route  exact path={location.pathname }               render={(props) => <SubjectList {...props} userDetails={data.userDetails} />}/> 
+<Route  exact path={location.pathname + '/:dept'}     render={(props) => <SelectedDepartments {...props} userDetails={data.userDetails}/>}/> 
+<Route  exact path={location.pathname + '/:dept/req'} render={(props) => <ManageDeptRequirements {...props} userDetails={data.userDetails}/>}/> 
+<Route  exact path={location.pathname + '/:dept/clr'} render={(props) => <MenuDeptClearance {...props} title={`Issue Clearance`} userDetails={data.userDetails}/>} /> 
+<Route  render={()=>{}}/> 

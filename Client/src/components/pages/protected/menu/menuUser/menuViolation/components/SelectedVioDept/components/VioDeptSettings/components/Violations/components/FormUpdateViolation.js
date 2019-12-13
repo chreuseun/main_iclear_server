@@ -32,7 +32,7 @@ const FormUpdateViolations = (props) => {
                     }
                 };
                 
-                const violationDept = await axios.get(`${baseURL}/api/violation/user/${match.params.dept}/class`, header)
+                const violationDept = await axios.get(`${baseURL}/api/violation/user/${location.state.dept}/class`, header)
 
                 if(UpdateHook){
 
@@ -88,7 +88,7 @@ const FormUpdateViolations = (props) => {
                     id:rowData.v_id
                 }
 
-                const violationDept = await axios.post(`${baseURL}/api/violation/user/${match.params.dept}/violations/${rowData.v_id}/update`, body, header)
+                const violationDept = await axios.post(`${baseURL}/api/violation/user/${location.state.dept}/violations/${rowData.v_id}/update`, body, header)
 
                 if(violationDept){
                     alert('Violation Updated')
@@ -111,20 +111,6 @@ const FormUpdateViolations = (props) => {
     return (
         <Form>
 
-            {/* <p>
-                {JSON.stringify(rowData)}
-            </p>
-            
-            <p>
-                {JSON.stringify(match)}
-            </p>
-
-            <p>
-                {JSON.stringify(classList)}
-            </p> */}
-
-      
-
                 <Form.Input fluid label='Violation Name' placeholder='Violation Name'
                     value ={v_name}
                     onChange={(e) => {setV_name(e.target.value)}}
@@ -142,8 +128,6 @@ const FormUpdateViolations = (props) => {
                     style={{maxWidth:'300px'}}
                 />
                     
-
-
               <Form.Checkbox
                 onClick={onIsDeletedChange}
                toggle label='Enabled'  checked={isDeleted==='1' && isDeleted? false : true}/>

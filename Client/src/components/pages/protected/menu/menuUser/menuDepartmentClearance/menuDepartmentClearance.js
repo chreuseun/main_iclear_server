@@ -11,17 +11,17 @@ import IssueClearanceModal from '../../../../protected/menu/menuUser/menuDepartm
 function ManageAcadYear(props) {
 
     const { match, location, history } = props
-    const [didMount, setDidMount] = useState(false)
 
+    const [didMount, setDidMount] = useState(false)
     const [deptList, setDeptList] = useState([]);
     const [context, setContext] = useState('');
     const [isLoading, setIsLoading] = useState(true);
-    const [ShowForm, setShowForm] = useState(false);// 
-    const [depinfo, setDepInfo] = useState({});// 
-
+    const [ShowForm, setShowForm] = useState(false);
+    const [depinfo, setDepInfo] = useState({});
     const [DepStd,setDepStd] = useState([]);
 
     useEffect( () => {
+        console.log('UserDetails: ', location.state)
        
         setDidMount(true);
         let xa = true;
@@ -35,19 +35,17 @@ function ManageAcadYear(props) {
                     }
                 }
 
+                const detStd_ = (await axios.get(`${baseURL}/api/departments/${location.state.dept}/std`, header))
 
-                const detStd_ = (await axios.get(`${baseURL}/api/departments/${match.params.dept}/std`, header))
+                console.log(detStd_.data.data)
 
-
-                console.log(detStd_.data.data.dep)
                 if(xa)
                 {
                     setDepInfo(detStd_.data.data.dep);
                     setDepStd(detStd_.data.data.students)
                     setIsLoading(false)
                 }
-
-                
+             
             } catch(err) {
                 props.history.push('/')
             }
@@ -72,9 +70,7 @@ function ManageAcadYear(props) {
 
     // ***************************************************************************
     const addBtnOnClick = () => {
-       
             setShowForm(!ShowForm);
-        
     }
 
     const saveReqOnClick = async() => {
@@ -88,11 +84,11 @@ function ManageAcadYear(props) {
                 }
 
          
-                const add = await axios.post(`${baseURL}/api/departments/req/add`,{d_id: match.params.dept, context},header);
+                const add = await axios.post(`${baseURL}/api/departments/req/add`,{d_id: location.state.dept, context},header);
                 console.log(add.data.data)
 
                 // final step
-                const result = await axios.get(`${baseURL}/api/departments/${match.params.dept}/req/get`,header);
+                const result = await axios.get(`${baseURL}/api/departments/${location.state.dept}/req/get`,header);
                 setDeptList(result.data.data);
 
                 setContext('')
@@ -115,10 +111,10 @@ function ManageAcadYear(props) {
         <Container>
 
             <Dimmer  active={isLoading} inverted>
-                <Loader inverted content='Loading' />
+                <Loader inverted content='Loading'/>
             </Dimmer>
 
-            <Header textAlign='center'>{props.title}: {depinfo.d_name || ''}</Header>
+            <Header textAlign='center'>Issue Clearance:{depinfo.d_name || ''}</Header>
 
             <Segment style={{ overflow: 'auto', maxHeight: '1000vh' }}>
            
@@ -126,14 +122,14 @@ function ManageAcadYear(props) {
 
                 <Table color='red' striped compact selectable>
                     <Table.Header>
-                    <Table.Row>      
-                        <Table.HeaderCell>Sys No.</Table.HeaderCell>                  
-                        <Table.HeaderCell>UID</Table.HeaderCell>                        
-                        <Table.HeaderCell>Student</Table.HeaderCell>
-                        <Table.HeaderCell>Section</Table.HeaderCell>
-                        <Table.HeaderCell>Course-Yr.</Table.HeaderCell>
-                        <Table.HeaderCell>S.Y.-Sem</Table.HeaderCell>
-                    </Table.Row>
+                        <Table.Row>      
+                            <Table.HeaderCell>Sys No.</Table.HeaderCell>                  
+                            <Table.HeaderCell>UID</Table.HeaderCell>                        
+                            <Table.HeaderCell>Student</Table.HeaderCell>
+                            <Table.HeaderCell>Section</Table.HeaderCell>
+                            <Table.HeaderCell>Course-Yr.</Table.HeaderCell>
+                            <Table.HeaderCell>S.Y.-Sem</Table.HeaderCell>
+                        </Table.Row>
                     </Table.Header>
 
                     <Table.Body>
@@ -141,10 +137,10 @@ function ManageAcadYear(props) {
                     </Table.Body>
                 </Table>                 
              
-                </Segment.Group>               
+                </Segment.Group>
             </Segment>
         </Container>  
-        )
+    )
 }
 
 

@@ -21,7 +21,7 @@ const ModalAddSanction = (props) => {
                     }
                 };
                 
-                const violationDept = await axios.post(`${baseURL}/api/violation/user/${match.params.dept}/class/${props.rowData.id}/sanction/add`, {desc}, header)
+                const violationDept = await axios.post(`${baseURL}/api/violation/user/${location.state.dept}/class/${props.rowData.id}/sanction/add`, {desc}, header)
              
                 console.log(violationDept.data.data  || '')
                
@@ -42,7 +42,7 @@ const ModalAddSanction = (props) => {
         if( 
             (desc !== '' && desc) && 
             (props.rowData.id !== '' && props.rowData.id) && 
-            (match.params.dept !== '' && match.params.dept)
+            (location.state.dept !== '' && location.state.dept)
         ){
             fetchData();
         } else{
@@ -78,7 +78,7 @@ const ModalAddSanction = (props) => {
         <Modal.Header>Add New Sanction:  {props.rowData.id}</Modal.Header>
         <Modal.Content>
 
-            <Form>               
+            <Form>
                 <Form.TextArea label='Description' placeholder='Description of sanction...' onChange={(e)=>{setDesc(e.target.value)}} value={desc} />
             </Form>
 

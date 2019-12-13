@@ -32,20 +32,18 @@ const SelectedVioDept = (props) => {
                         authorization : localStorage.getItem('x')
                     }
                 };
-                //api/violation/user/117
-                const result = await axios.get(`${baseURL}/api/violation/user/${match.params.dept}`,header);
-                const violationDept = await axios.post(`${baseURL}/api/department/getone`, {id:match.params.dept||''},header)
+                
+                const result = await axios.get(`${baseURL}/api/violation/user/${location.state.dept}`,header);
+                const violationDept = await axios.post(`${baseURL}/api/department/getone`, {id:location.state.dept ||''},header)
 
                 if(UpdateHook){
                     setVioDeptTitle(violationDept.data.sqlResult[0] || {})
                     setStudentList(result.data.data || [])
-
-                    
                 }
 
             } catch(err) {
-                // localStorage.removeItem('x')
-                console.log(err)
+                localStorage.removeItem('x')
+                console.log('RefSelectedVioDept - useEffect ERROR')
                 history.push('/')
             }
         }
@@ -77,8 +75,6 @@ const SelectedVioDept = (props) => {
             </Table.Header>
 
             <Table.Body>
-
-                
                 {<StudentList/>}
             </Table.Body>
         </Table>
@@ -95,21 +91,29 @@ const SelectedVioDept = (props) => {
 
                 {studentList.map((it, ix)=>{
                     return(
-
-                    
-
                         <ModalStudent key={it.s_username} {...props} it={it}/>
-
-
-
                     )
                 })}
             </React.Fragment>
         )
     }
 
+    const pushTo = (path) => {
+        
+        var pushData = {
+            pathname: `/menu/viol/${path}/settings`,
+            state: { dept: location.state.dept }
+        }
+
+        console.log(pushData)
+        
+
+        props.pushToLink(pushData)
+    }
+
     return(
         <React.Fragment>
+            
             <div>
                 <Header as='h2'>
                     { vioDeptTitle.d_name || '' } {'-'} { vioDeptTitle.el_name || '' }
@@ -130,8 +134,6 @@ const SelectedVioDept = (props) => {
                 <Menu.Menu position='left'>
                         <Menu.Item>
                             <Button animated='fade'
-                                // as={Link}
-                                // to={props.location.pathname + `/settings`}
                                 secondary
                             >
                                 <Button.Content visible>{'All records'}</Button.Content>
@@ -147,11 +149,13 @@ const SelectedVioDept = (props) => {
                         <Menu.Item>
                             <Button animated='fade'
                                 primary
-                                as={Link}
-                                to={props.location.pathname + `/settings`}
-                            >
+                                
+                                onClick={()=>pushTo(location.state.dept)}
+                                >
+
                                 <Button.Content visible>{'Settings'}</Button.Content>
                                 <Button.Content hidden> {'Settings'}</Button.Content>
+
                             </Button>
                         </Menu.Item>
                         

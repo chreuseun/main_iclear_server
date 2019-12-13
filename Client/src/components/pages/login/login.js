@@ -20,8 +20,7 @@ const Login = (props) => {
     useEffect(()=>{
         setDidMount(true);
         let setState = true; // xa
-
-
+        
         // Check Token API
         if(localStorage.getItem('x')) {
             const arg = {
@@ -41,7 +40,6 @@ const Login = (props) => {
             }
         }   
 
-
         return () => (setState=false)
 
     },[])
@@ -59,8 +57,6 @@ const Login = (props) => {
     }
 
     const onClick = async() => {
-
-        
 
         if( us !== '' && pw !== '' ) {
 
@@ -85,11 +81,13 @@ const Login = (props) => {
 
     return(
         <Segment>
+
             <Dimmer inverted  active={load}>
                 <Ld>Logging-in...</Ld>
             </Dimmer>
 
             <LoginForm usSend={usSend} pwSend={pwSend} onClick={onClick}/>
+
         </Segment>
     );
 }

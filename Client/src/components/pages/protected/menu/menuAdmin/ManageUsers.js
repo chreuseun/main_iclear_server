@@ -24,10 +24,22 @@ function ManageUsers(props) {
                     }
                 }
 
-                const result = await axios.post(uri.getAccounts,{},header);
-                setUserList(result.data.sqlResult);
+                const fetch = await axios.post(uri.getAccounts,{},header);
+
+                const authorization = await await axios.post(`${baseURL}/api/auth` ,{} ,header);
+
+                if(authorization.data.msg !== 'auth' || !authorization || authorization.data.user_details.user_type_id !== 'ADMIN') {
+                    localStorage.clear();
+                    history.push("/");
+                }
+
+                setUserList(fetch.data.sqlResult);
+
+
+
+
             } catch(err) {
-                localStorage.removeItem('x')
+                localStorage.clear()
                 history.push('/')
                
             }

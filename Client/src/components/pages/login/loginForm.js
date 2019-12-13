@@ -1,51 +1,112 @@
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect } from 'react';
+import {withRouter} from 'react-router-dom'
 import { Button, Form, Grid, Header, Segment ,Dimmer, Loader} from 'semantic-ui-react'
+import Login from './login';
 
 
-export default class LoginForm extends Component {
-    state = {
-        isLogged : false,
-        isLoading: true
-    }
+const LoginForm = (props) => {  
 
-    render() {
+  const [didMount, setDidMount] = useState(false)
+  const [isLogged, setIsLogged] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-        const usChange = (e) => {
-            this.props.usSend(e.target.value)
-        }
-        
-        const pwChange = (e) => {
-            this.props.pwSend(e.target.value)
-        }
+  useEffect(()=>{
+    setDidMount(true);
+    let setState = true;
 
-        const onClick = () => {
-            this.props.onClick()
-        }
+    console.log('Login Form: ', 'useEffect([])');
 
+    return () => (setState=false)
+  }, []);
 
-        return(
-            <Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
+  if(!didMount) {
+    return null
+  }
 
-              <Grid.Column style={{ maxWidth: 450 }}>
+  const usChange = (e) => {
+    props.usSend(e.target.value)
+  }
 
-                <Header as='h2' color='blue' textAlign='center'>
-                   Log-in to your account
-                </Header>
-                <Form size='large'>
-                  <Segment stacked>
+  const pwChange = (e) => {
+      props.pwSend(e.target.value)
+  }
 
-                    <input onChange={usChange}   type="text"  placeholder="Username" style={{marginBottom:"10px"}}/>
-                    
-                    <input onChange={pwChange}   type="password"  placeholder="password" style={{marginBottom:"10px"}}/>
-          
-                    <Button onClick={onClick} color='blue' fluid size='large'>
-                      Login
-                    </Button>
-                  </Segment>
-                </Form>
-             
-              </Grid.Column>
-            </Grid>
-        );
-    }
+  const onClick = () => {
+      props.onClick()
+  }
+
+  return(
+    <Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
+
+      <Grid.Column style={{ maxWidth: 450 }}>
+
+        <Header as='h2' color='blue' textAlign='center'>
+          Log-in to your account
+        </Header>
+        <Form size='large'>
+          <Segment stacked>
+
+            <input onChange={usChange}   type="text"  placeholder="Username" style={{marginBottom:"10px"}}/>
+            
+            <input onChange={pwChange}   type="password"  placeholder="password" style={{marginBottom:"10px"}}/>
+
+            <Button onClick={onClick} color='blue' fluid size='large'>
+              Login
+            </Button>
+          </Segment>
+        </Form>
+    
+      </Grid.Column>
+    </Grid>
+  )
 }
+
+export default LoginForm;
+
+// export default class LoginForm extends Component {
+    
+//     state = {
+//         isLogged : false,
+//         isLoading: true
+//     }
+
+//     render() {
+
+//         const usChange = (e) => {
+//             this.props.usSend(e.target.value)
+//         }
+        
+//         const pwChange = (e) => {
+//             this.props.pwSend(e.target.value)
+//         }
+
+//         const onClick = () => {
+//             this.props.onClick()
+//         }
+
+//         return(
+//             <Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
+
+//               <Grid.Column style={{ maxWidth: 450 }}>
+
+//                 <Header as='h2' color='blue' textAlign='center'>
+//                    Log-in to your account
+//                 </Header>
+//                 <Form size='large'>
+//                   <Segment stacked>
+
+//                     <input onChange={usChange}   type="text"  placeholder="Username" style={{marginBottom:"10px"}}/>
+                    
+//                     <input onChange={pwChange}   type="password"  placeholder="password" style={{marginBottom:"10px"}}/>
+          
+//                     <Button onClick={onClick} color='blue' fluid size='large'>
+//                       Login
+//                     </Button>
+//                   </Segment>
+//                 </Form>
+             
+//               </Grid.Column>
+//             </Grid>
+//         );
+//     }
+// }

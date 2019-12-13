@@ -15,40 +15,6 @@ const FormInsertViolation = (props) => {
         setDidMount(true);
         let UpdateHook = true;
 
-        // const fetchData = async() => {
-        //     try{
-            
-        //         const header = {
-        //             headers: {
-        //                 authorization : localStorage.getItem('x')
-        //             }
-        //         };
-                
-        //         const violationDept = await axios.get(`${baseURL}/api/violation/user/${match.params.dept}/class`, header)
-
-        //         if(UpdateHook){
-
-        //             let optionVioDept = violationDept.data.data.map((it, ix) => {
-        //                 return(
-        //                     {
-        //                         text : it.name,
-        //                         key : it.id,
-        //                         value : it.id
-        //                     }
-        //                 )
-        //             })
-                    
-        //             setClassList( optionVioDept || [] )
-        //         }
-
-        //     } catch(err) {
-        //         console.log(err)
-        //         history.push('/')
-        //     }
-        // }
-
-        // fetchData();
-
         return () => (UpdateHook=false)
 
     },[])
@@ -106,7 +72,7 @@ const FormInsert = (props) => {
                     }
                 };
                 
-                const violationDept = await axios.get(`${baseURL}/api/violation/user/${match.params.dept}/class`, header)
+                const violationDept = await axios.get(`${baseURL}/api/violation/user/${location.state.dept}/class`, header)
 
                 if(UpdateHook){
 
@@ -165,7 +131,7 @@ const FormInsert = (props) => {
                     cls
                 }
                 
-                const addResponse = await axios.post(`${baseURL}/api/violation/user/${match.params.dept}/violations/add`, body, header)
+                const addResponse = await axios.post(`${baseURL}/api/violation/user/${location.state.dept}/violations/add`, body, header)
              
                 console.log(addResponse.data.data)
 

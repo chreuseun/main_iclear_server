@@ -1,8 +1,10 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import { withRouter, BrowserRouter, Route, Switch, Link} from "react-router-dom";
 import { Menu , Container, Dropdown } from 'semantic-ui-react';
+import axios from 'axios';
+import baseURL from '../../../../res/baseuri'; 
 
-//componets
+//COMPONENTS LIST *******************************************************************************
 
 // *** USERS
 import InsertNewAdmin from '../../../../components/pages/protected/menu/menuAdmin/Form_AddAdmin';
@@ -18,95 +20,230 @@ import ManageSemester from './../../../pages/protected/menu/menuAcadYear/Semeste
 
 // ** STUDENT
 import UploadStudent from './../../../pages/protected/menu/menuStudent/UploadCSV';
+import StudentList from './../../../pages/protected/menu/menuStudent/StudentList';
 
-class NavbarAdmin extends Component {
+const NavbarAdmin = (props) => {
 
-    render() {
-        const { location, history } = this.props
+    const { location, history, match } = props;
 
-        return(
-            <React.Fragment>
+    const [didMount, setDidMount] = useState(false);
+    const [userDetails, setUserDetails] = useState({});
+    const [activeOption, setActiveOption] = useState({});
 
-                <BrowserRouter>
-                    <Menu color="blue" stackable inverted  fixed='top'>
-                        <Container>
+    // Use Effect Part
+    useEffect(()=> {
 
-                            <Link to="/menu">
-                                <Menu.Item>
-                                    HOME 
-                                </Menu.Item>
-                            </Link>
+        let UpdateHooks = true;
+        setDidMount(true);
 
-                            <Dropdown item text='Users'>
-                                <Dropdown.Menu>
-                                                                        
-                                    <Dropdown.Item as={Link} to={location.pathname + '/newuser'} style={{color:'black'}}>
-                                        Add User
-                                    </Dropdown.Item>
-                                                                  
-                                    
-                                    <hr/>                                    
-                                    <Dropdown.Item as={Link} to={location.pathname + '/configaccount'} style={{color:'black'}}>
-                                        Manage Users
-                                    </Dropdown.Item>
-                                   
-                                </Dropdown.Menu>
-                            </Dropdown>
+        console.log('NavbarAdmin:  ','useEffect - Data');
 
-                            <Dropdown item text='Departments'>
-                                <Dropdown.Menu>
-                                    <Dropdown.Item   as={Link} to={location.pathname + '/newdepartment'} >Add Department</Dropdown.Item>
-                                    <hr/>
-                                    <Dropdown.Item as={Link} to={location.pathname + '/configdepartment'} >Manage Departments</Dropdown.Item>
-                                </Dropdown.Menu>
-                            </Dropdown>
+        const getUserDetails = () => {
 
-                            <Dropdown item text='Academic Year'>
-                                <Dropdown.Menu>
-                                  
-                                    <Dropdown.Item as={Link} to={location.pathname + '/config_acad_year'}>Manage Academic Year</Dropdown.Item>
-                                    <hr/>
-                                    <Dropdown.Item as={Link} to={location.pathname + '/config_semester'}>Manage Semester</Dropdown.Item>
-                                </Dropdown.Menu>
-                            </Dropdown>
+            const fetchData = async() => {
 
-                            <Dropdown item text='Student'>
-                                <Dropdown.Menu>
-                                  
-                                    <Dropdown.Item as={Link} to={location.pathname + '/uploadstudent'}>Upload CSV</Dropdown.Item>
-                                    <hr/>
-                                    <Dropdown.Item as={Link} to={location.pathname + '/config_semester'}>Manage Students</Dropdown.Item>
-                                </Dropdown.Menu>
-                            </Dropdown>
+                try{
+                
+                    const header = {
+                        headers: {
+                            authorization : localStorage.getItem('x')
+                        }
+                    };
 
-                            <Menu.Menu position='right'>                            
-                                <Dropdown item text={'Welcome, ' + this.props.userDetails.username}>
-                                    <Dropdown.Menu>
-                                        <Dropdown.Item onClick={()=>{localStorage.clear();history.push('/')}} >Sign-Out</Dropdown.Item>
-                                    </Dropdown.Menu>
-                                </Dropdown>
-                            </Menu.Menu>
-                        </Container>  
-                    </Menu>
+                    const result = await await axios.post(`${baseURL}/api/auth` ,{} ,header);
+
+                    if(result.data.msg !== 'auth' || !result || result.data.user_details.user_type_id !== 'ADMIN') {
+                        localStorage.clear();
+                        history.push("/");
+                    }
                     
-                    <Container style={{marginTop:"50px"}}>
-                        <Switch>
-                          <Route path={location.pathname + '/newuser'} component={InsertNewAdmin}/> 
-                          <Route path={location.pathname + '/configaccount'} component={ManageUser}/> 
+                    if(UpdateHooks) {        
+                        setUserDetails(result.data.user_details);
+                        setActiveOption(location.pathname); 
+                    }   
+                } catch(err) {
+                    localStorage.clear();
+                    history.push("/");
+                }
+            };
 
-                          <Route path={location.pathname + '/newdepartment'} component={InsertNewDepartment}/> 
-                          <Route path={location.pathname + '/configdepartment'} component={ManageDepartments}/> 
+            fetchData();
 
-                          <Route path={location.pathname + '/config_semester'} component={ManageSemester}/> 
-                          <Route path={location.pathname + '/config_acad_year'} component={ManageAcadYear}/> 
+            return () => (UpdateHooks=false);
+        };
 
-                          <Route path={location.pathname + '/uploadstudent'} component={UploadStudent}/> 
-                        </Switch>
-                    </Container>
-                </BrowserRouter>
-            </React.Fragment>
-        );
+        getUserDetails();
+
+        return () => (UpdateHooks=false);
+
+    },[]);
+
+    if(!didMount) {
+        return null;
     }
+
+    const pushTo = (path) => {
+        history.push(path)
+    }
+
+    const SubmenuComponent = () => {
+        
+        // ON GOING - DONE
+        if( location.pathname  === '/menu/newuser') {
+            return(
+               <InsertNewAdmin/> 
+            )
+        } 
+        // ON GOING - DONE
+        else if( location.pathname  === '/menu/configaccount') {
+            return(
+               <ManageUser/> 
+            )
+        } 
+        // ON GOING - DONE
+        else if( location.pathname  === '/menu/newdepartment'){
+            return(
+                <InsertNewDepartment/> 
+             )
+        } 
+        // ON GOING - DONE
+        else if( location.pathname  === '/menu/configdepartment'){
+            return(
+                <ManageDepartments/> 
+             )
+        }
+        // ON GOING - DONE
+        else if( location.pathname  === '/menu/config_acad_year'){
+            return(
+                <ManageAcadYear/> 
+             )
+        } else if( location.pathname  === '/menu/config_semester'){
+            return(
+                <ManageSemester/> 
+             )
+        } else if( location.pathname  === '/menu/uploadstudent'){
+            return(
+                <UploadStudent/> 
+             )
+        } else if( location.pathname  === '/menu/students'){
+            return(
+                <StudentList/> 
+             )
+        } else {
+            return(null)
+        }
+    }
+
+    return(
+        <React.Fragment>
+
+            <BrowserRouter>
+
+                <Menu color="blue" stackable inverted  fixed='top'>
+                    <Container>
+
+                        <Menu.Item
+                             item text='Users'
+                            onClick={()=>pushTo('/menu')}>
+                            HOME 
+                        </Menu.Item>
+                   
+                        <Dropdown item text='Users'>
+                            <Dropdown.Menu>
+                                                                    
+                                <Dropdown.Item 
+                                    style={{color:'black'}}
+                                    onClick={()=>pushTo('/menu/newuser')}>
+                                    Add User
+                                </Dropdown.Item>
+                                                                
+                                
+                                <hr/>        
+
+                                <Dropdown.Item 
+                                    style={{color:'black'}}
+                                    onClick={()=>pushTo('/menu/configaccount')}>
+                                    Manage Users
+                                </Dropdown.Item>
+                                
+                            </Dropdown.Menu>
+                        </Dropdown>
+
+                        <Dropdown item text='Departments'>
+                            <Dropdown.Menu>
+                                <Dropdown.Item  
+                                    style={{color:'black'}}
+                                    onClick={()=>pushTo('/menu/newdepartment')}>
+                                    Add Department
+                                </Dropdown.Item>
+
+                                <hr/>
+
+                                <Dropdown.Item 
+                                    style={{color:'black'}}
+                                    onClick={()=>pushTo('/menu/configdepartment')}>
+                                    Manage Departments
+                                </Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+
+                        <Dropdown item text='Academic Year'>
+                            <Dropdown.Menu>
+                                
+                                <Dropdown.Item 
+                                    style={{color:'black'}}
+                                    onClick={()=>pushTo('/menu/config_acad_year')}>
+                                    Manage Academic Year
+                                </Dropdown.Item>
+
+                                <hr/>
+
+                                <Dropdown.Item 
+                                    style={{color:'black'}}
+                                    onClick={()=>pushTo('/menu/config_semester')}>
+                                    Manage Semester
+                                </Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+
+                        <Dropdown item text='Student'>
+                            <Dropdown.Menu>
+                                
+                                <Dropdown.Item 
+                                    style={{color:'black'}}
+                                    onClick={()=>pushTo('/menu/uploadstudent')}>
+                                    Upload CSV
+                                </Dropdown.Item>
+                                <hr/>
+                                <Dropdown.Item
+                                    style={{color:'black'}}
+                                    onClick={()=>pushTo('/menu/students')}>
+                                    Manage Students
+                                </Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+
+                        <Menu.Menu position='right'>                            
+                            <Dropdown item text={'Welcome, ' + userDetails.username || ''}>
+                                <Dropdown.Menu>
+                                    <Dropdown.Item onClick={()=>{localStorage.clear(); history.push('/')}} >Sign-Out</Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        </Menu.Menu>
+                    </Container>  
+                </Menu>
+                
+                <Container style={{marginTop:"50px"}}>
+                        <SubmenuComponent/>
+                        
+                </Container>
+
+            </BrowserRouter>
+
+        </React.Fragment>
+    );   
 }
 
 export default withRouter(NavbarAdmin);
+
+

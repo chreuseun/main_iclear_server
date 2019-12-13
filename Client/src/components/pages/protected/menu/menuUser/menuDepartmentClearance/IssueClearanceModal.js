@@ -29,11 +29,11 @@ const ModalScrollingExample = (props) => {
                         authorization : localStorage.getItem('x')
                     }
                 }
-                const depInf = await axios.post(`${baseURL}/api/department/getone`,{id:match.params.dept}, header) 
+                const depInf = await axios.post(`${baseURL}/api/department/getone`,{id:location.state.dept}, header) 
 
-                const result = await axios.get(`${baseURL}/api/departments/${match.params.dept}/req/get`,header);
+                const result = await axios.get(`${baseURL}/api/departments/${location.state.dept}/req/get`,header);
 
-                const _issRecords = await axios.post(`${baseURL}/api/clearance/issue/get`, {d_id:match.params.dept , s_uid:props.studentInfo.s_username }, header); // 
+                const _issRecords = await axios.post(`${baseURL}/api/clearance/issue/get`, {d_id:location.state.dept , s_uid:props.studentInfo.s_username }, header); // 
             
                 if(xa)
                 {
@@ -51,10 +51,11 @@ const ModalScrollingExample = (props) => {
             }
             
         }
+
         x();
 
         return () => (xa=false)
-        
+
       }, []);
 
     if(!didMount) {
@@ -79,6 +80,7 @@ const ModalScrollingExample = (props) => {
     const onSaveIssue = async() => {
 
        try{
+            console.log('saving isuue');
 
             setLoad(true)
 
@@ -87,19 +89,24 @@ const ModalScrollingExample = (props) => {
                     authorization : localStorage.getItem('x')
                 }
             }
+            
             const actYr = (await axios.get(`${baseURL}/api/acad_year/active/get`, header)).data.data[0].id;
 
             const actSem = (await axios.get(`${baseURL}/api/semester/active/get`,header)).data.data[0].id;
 
-            
-            let toAdd = (requirements.filter((it)=>{            
+            let filt =  (requirements.filter((it)=>{            
                 return it.selected === true
-            })).map((it, id)=>{
-    
+            }))
+
+            console.log('user_details: ', props.userDetails);
+            let addData = filt.map((it, id)=>{
+
+                console.log('Looping again: ')
+
                 return([
                     props.studentInfo.s_username,
-                    `${props.studentInfo.s_username}${match.params.dept}${actYr}${actSem}${it.context}`,
-                    match.params.dept,
+                    `${props.studentInfo.s_username}${location.state.dept}${actYr}${actSem}${it.context}`,
+                    location.state.dept,
                     actYr,
                     actSem,
                     it.context,
@@ -109,12 +116,37 @@ const ModalScrollingExample = (props) => {
                     props.studentInfo.s_sec
                 ])
             })  
-            
-            // if length is NOT ZERO
-            if(toAdd.length !== 0){
 
-                await axios.post(`${baseURL}/api/clearance/issue/add`,{toAdd},header);
-                const _issRecords = await axios.post(`${baseURL}/api/clearance/issue/get`, {d_id:match.params.dept , s_uid:props.studentInfo.s_username }, header);
+
+            console.log('addData   ', addData)
+
+            
+
+            // let toAdd = (requirements.filter((it)=>{            
+            //     return it.selected === true
+            // })).map((it, id)=>{
+
+       
+            //     return([
+            // 
+            //         it.context,
+            //         props.userDetails.id,
+            //         props.studentInfo.s_crs,
+            //         props.studentInfo.s_yr,
+            //         props.studentInfo.s_sec
+            //     ])
+            // })  
+            
+            
+
+            // if length is NOT ZERO
+            if(addData.length !== 0){
+
+                 console.log('Posting')
+                await axios.post(`${baseURL}/api/clearance/issue/add`,{addData},header);
+
+               
+                const _issRecords = await axios.post(`${baseURL}/api/clearance/issue/get`, {d_id:location.state.dept , s_uid:props.studentInfo.s_username }, header);
                 setRecords(_issRecords.data.data)
                 setLoad(false)
 
@@ -127,7 +159,7 @@ const ModalScrollingExample = (props) => {
             }
 
         } catch(err) {
-            props.history.push('/')
+            // props.history.push('/')
         }
     } 
 
@@ -145,7 +177,7 @@ const ModalScrollingExample = (props) => {
             // Update Clearand Remarks
             await axios.post(`${baseURL}/api/clearance/issue/update/${id}/${remarks}`,{},header);
 
-            setRecords((await axios.post(`${baseURL}/api/clearance/issue/get`, {d_id:match.params.dept , s_uid:props.studentInfo.s_username }, header)).data.data);
+            setRecords((await axios.post(`${baseURL}/api/clearance/issue/get`, {d_id:location.state.dept , s_uid:props.studentInfo.s_username }, header)).data.data);
 
             setLoad(false);
             
@@ -201,6 +233,7 @@ const ModalScrollingExample = (props) => {
                             <Message.Header>Successfully Issued</Message.Header>
                             <p>Requirements saved</p>
                         </Message>
+                        
                         <Table fixed compact>
 
                             <Table.Header>
@@ -293,7 +326,6 @@ const IssuedRecordItem = (props) => {
     )
 }
 
-
 const Reqi = (props) => {
     const {data} = props;
 
@@ -306,6 +338,5 @@ const Reqi = (props) => {
     )
 
 }
-
 
 export default withRouter(ModalScrollingExample)

@@ -16,4 +16,4 @@ const Records = () => {
     )
 }
 
-export default Records;
+export default withRouter(Records);

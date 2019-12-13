@@ -44,7 +44,7 @@ class FormExampleSubcomponentControl extends Component {
           try {
               response = await axios.post(this.uri.auth,{} ,header)
 
-              if(response.data.msg !== 'auth' || !response) {
+              if(response.data.msg !== 'auth' || !response || response.data.user_details.user_type_id !== 'ADMIN') {
                   localStorage.clear();
                   this.props.history.push("/");
               }
@@ -55,10 +55,13 @@ class FormExampleSubcomponentControl extends Component {
                   })
               }                  
           } catch(err){
+            localStorage.clear()
+            this.props.history.push('/')
           }  
       }
 
-          init();
+      init();
+
     } catch(err) {
         localStorage.clear();
         this.props.history.push("/");
@@ -111,6 +114,7 @@ class FormExampleSubcomponentControl extends Component {
         this.setState({
           isLoading:true
         })
+
         data=await axios.post(this.uri.register,body ,headers)   
         
         this.setState({

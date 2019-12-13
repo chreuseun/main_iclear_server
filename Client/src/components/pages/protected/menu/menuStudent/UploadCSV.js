@@ -30,6 +30,13 @@ function ManageDepartment(props) {
                     }
                 }
 
+                const authorization = await await axios.post(`${baseURL}/api/auth` ,{} ,header);
+
+                if(authorization.data.msg !== 'auth' || !authorization || authorization.data.user_details.user_type_id !== 'ADMIN') {
+                    localStorage.clear();
+                    history.push("/");
+                }
+
                 const result = await axios.post(`${baseURL}/api/educlevel/get`,{},header);
 
                 const result1 = await axios.get(`${baseURL}/api/acad_year/active/get`,header);
@@ -60,7 +67,7 @@ function ManageDepartment(props) {
           
         }
 
-      }, []);
+    }, []);
 
     if(!didMount) {
         return null
@@ -129,7 +136,7 @@ function ManageDepartment(props) {
                                   it.field11, // gender
                                   it.field8,  // section
                                   `${ActAcadYear.id}`, // acad_year_id
-                                  `${ActSemester.id}`, // semester_id
+                                  `${ValAcadLevel.id}` === '1' || `${ValAcadLevel.id}` === '2' ? '4' : `${ActSemester.id}`, // semester
                                   `${ValAcadLevel.id}` === '1' || `${ValAcadLevel.id}` === '2' ? 'NONE' : it.field12 || 'NONE',
                                   `${ValAcadLevel.id}` === '1' || `${ValAcadLevel.id}` === '2' ? 'NONE' : it.field13 || 'NONE',
                                 ]
@@ -190,7 +197,6 @@ function ManageDepartment(props) {
 
         console.log(value)
 
-
         ListEducLevel.map((it,ix)=>{
 
             if(it.value === value){
@@ -199,9 +205,7 @@ function ManageDepartment(props) {
                     code : `${it.code}`
                 })
             }
-            
         })
-
     }
 
     return(

@@ -31,9 +31,9 @@ function ManageAcadYear(props) {
                         authorization : localStorage.getItem('x')
                     }
                 }
-                const depInf = await axios.post(`${baseURL}/api/department/getone`,{id:match.params.dept}, header)
+                const depInf = await axios.post(`${baseURL}/api/department/getone`,{id:location.state.dept}, header)
 
-                const result = await axios.get(`${baseURL}/api/departments/${match.params.dept}/req/get`,header);
+                const result = await axios.get(`${baseURL}/api/departments/${location.state.dept}/req/get`,header);
                 console.log(depInf.data.sqlResult[0])
                 if(xa)
                 {
@@ -89,11 +89,11 @@ function ManageAcadYear(props) {
                 }
 
          
-                const add = await axios.post(`${baseURL}/api/departments/req/add`,{d_id: match.params.dept, context},header);
+                const add = await axios.post(`${baseURL}/api/departments/req/add`,{d_id: location.state.dept, context},header);
                 console.log(add.data.data)
 
                 // final step
-                const result = await axios.get(`${baseURL}/api/departments/${match.params.dept}/req/get`,header);
+                const result = await axios.get(`${baseURL}/api/departments/${location.state.dept}/req/get`,header);
                 setDeptList(result.data.data);
 
                 setContext('')
@@ -153,11 +153,11 @@ function ManageAcadYear(props) {
                             </Table.Row>
                         </Table.Header>
 
-                            <Table.Body>
-                                {componentDeptList}
-                            </Table.Body>
-                        </Table>
-                    </Segment.Group>               
+                        <Table.Body>
+                            {componentDeptList}
+                        </Table.Body>
+                    </Table>
+                </Segment.Group>               
             </Segment>
         </Container>  
         )

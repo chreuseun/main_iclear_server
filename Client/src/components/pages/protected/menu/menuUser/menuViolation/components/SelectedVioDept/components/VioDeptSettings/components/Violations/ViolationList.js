@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Button, Modal, Menu } from 'semantic-ui-react';
-import { withRouter, Link} from 'react-router-dom';
+import { withRouter} from 'react-router-dom';
 import baseURL from '../../../../../../../../../../../../res/baseuri';
 import axios from 'axios';
 
@@ -29,7 +29,7 @@ const ViolationList = (props) => {
                     }
                 };
                 
-                const violationDept = await axios.get(`${baseURL}/api/violation/user/${match.params.dept}/violations`, header)
+                const violationDept = await axios.get(`${baseURL}/api/violation/user/${location.state.dept}/violations`, header)
 
                 if(UpdateHook){
                     setVioDept(violationDept.data.data || [])
@@ -62,7 +62,7 @@ const ViolationList = (props) => {
                     }
                 };
                 
-                const violationDept = await axios.get(`${baseURL}/api/violation/user/${match.params.dept}/violations`, header)
+                const violationDept = await axios.get(`${baseURL}/api/violation/user/${location.state.dept}/violations`, header)
 
                 
                     setVioDept(violationDept.data.data || [])

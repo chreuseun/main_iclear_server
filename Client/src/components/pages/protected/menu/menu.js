@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import {withRouter} from 'react-router-dom';
 import axios from 'axios';
 
-
 // COmponents 
 import Loader from '../../../reuse/loader';
 
@@ -12,7 +11,7 @@ import NavbarUser from '../../../reuse/navbar/mainmenu/NavbarUser';   // USER
 import NavbarSubject from '../../../reuse/navbar/mainmenu/NavbarSubject';   // USER
 import baseURL from '../../../../res/baseuri';
 
-const Menu_ = (props) => {
+const Menu = (props) => {
 
     const { match, location, history } = props
 
@@ -24,48 +23,59 @@ const Menu_ = (props) => {
         auth:`${baseURL}/api/auth`
     }
 
-    useEffect((props)=>{
+    useEffect(()=>{
 
         setDidMount(true);
-        let _isMounted = true;
+        let UpdateHooks = true;
 
-        try {
-            let response;
+        const login = () => {
+            try {
+                let response;
 
-            const header = {
-                headers: {
-                    authorization : localStorage.getItem('x')
-                }
-            }
-
-            const init = async() =>{
-                try {
-                    response = await axios.post(uri.auth,{} ,header)
-
-                    if(response.data.msg !== 'auth' || !response) {
-                        localStorage.clear();
-                        props.history.push("/");
+                const header = {
+                    headers: {
+                        authorization : localStorage.getItem('x')
                     }
-                    
-                    if(_isMounted) {        
-                        setIsLoading(false);
-                        setUserDetails(response.data.user_details);
-                    }                  
-                } catch(err){
-                }  
-            }
+                }
 
-            init();
-        } catch(err) {
-            localStorage.clear();
-            props.history.push("/");
-        } 
-    },[])
+                const init = async() =>{
+                    try {
+                        response = await axios.post(uri.auth,{} ,header)
+
+                        if(response.data.msg !== 'auth' || !response) {
+                            localStorage.clear();
+                            history.push("/");
+                        }
+                        
+                        if(UpdateHooks) {        
+                            localStorage.setItem('user_details',  JSON.stringify(response.data.user_details))
+                            setIsLoading(false);
+                            setUserDetails(response.data.user_details);
+                            
+                            localStorage.setItem('user_details', );                            
+                        }                  
+                    } catch(err){
+
+                    }  
+                }
+
+                init();
+
+            } catch(err) {
+                localStorage.clear();
+                history.push("/");
+            }
+        }
+
+        login()
+            
+        return () => (UpdateHooks=false)
+    },[]);
 
     if(!didMount) {
-        return null
+        return null;
     }
-  
+ 
     if(!isLoading) {
 
         //  Logged as admin
@@ -78,15 +88,15 @@ const Menu_ = (props) => {
             return <NavbarUser userDetails={userDetails}/>
         }
 
-        // subject teacher
-        else {
+        // logged as subject
+        else{
             return <NavbarSubject userDetails={userDetails}/>
         }
 
     } else {
-        return <Loader loadText={'Loading...'}/>
+        return <Loader loadText={'Loading menu...'}/>
     }
 
 }
 
-export default withRouter(Menu_)
+export default withRouter(Menu)

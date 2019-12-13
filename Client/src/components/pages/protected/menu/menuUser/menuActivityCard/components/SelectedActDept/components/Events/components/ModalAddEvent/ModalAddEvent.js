@@ -10,10 +10,9 @@ const ModalAddEvent = (props) => {
     const {location, match, history } = props;
 
     const [type, setType] = useState([]);
-    const [elDept, setElDept] =useState([])
+    const [elDept, setElDept] =useState([]);
 
     const apiFetchEventType = () => {
-        
         const fetchData = async() => {
             try{
             
@@ -58,8 +57,6 @@ const ModalAddEvent = (props) => {
 
             trigger={
                 <Button animated='fade'
-                    // as={Link}
-                    // to={props.location.pathname + `/settings`}
                     secondary
                 >
                     <Button.Content visible>{'New Event'}</Button.Content>
@@ -72,7 +69,7 @@ const ModalAddEvent = (props) => {
           <Modal.Header>New Event Details</Modal.Header>
           
           <Modal.Content>
-            <FormNewEventDetails {...props} el_dept={elDept}  typesAct={type || []}/>
+            <FormNewEventDetails {...props} log={props.log} el_dept={elDept}  typesAct={type || []}/>
           </Modal.Content>
 
           <Modal.Actions>
@@ -88,7 +85,7 @@ const ModalAddEvent = (props) => {
 
 const FormNewEventDetails = (props) => {
 
-
+    const {location, match, history } = props;
       // Insert Values
     const [name, setName] = useState('');
     const [type, setType] = useState('');
@@ -97,29 +94,6 @@ const FormNewEventDetails = (props) => {
     const options = props.typesAct || [];
     const el_dept = props.el_dept || [];
       
-    /*
-    INSERT INTO events
-        (
-        `departments_id`, -- this the dept ID
-        `events_type_id`, -- DropDown
-        `name`, -- TextINput
-        `semester_id`, -- Current Active Sem query
-        `acad_year_id`, -- CurrentActive Sem QUery
-        `course`, -- ALL
-        `yearlevel`, -- ALL 
-        `student_department`, -- SELECT
-        `creator_account_id`, --account_id)
-
-
-        `name`, -- TextINput
-        `events_type_id`, -- DropDown
-        `student_department` -- Drop Down
-
-        `yearlevel`, -- ALL 
-        `course` -- ALL
-        
-    */
-
     const deptOnChange = (e, {value}) => {
         console.log(value)
         setDepartment(`${value}`)
@@ -133,25 +107,48 @@ const FormNewEventDetails = (props) => {
     }
 
     const onSaveButtonClicked = () => {
-        console.log(
-            'UserAccountId: ', props.userDetails.id || ''
-        )
 
-        console.log(
-            'ActivityDepartmentId: ', props.match.params.dept || ''
-        )
 
-        console.log(
-            'EventName: ', name || ''
-        )
+        const fetchData = async() => {
+            try{
+            
+                const header = {
+                    headers: {
+                        authorization : localStorage.getItem('x')
+                    }
+                };
+                
 
-        console.log(
-            'type_id: ', type || ''
-        )
+                let body = {
+                    name:name ,                    
+                    type ,
+                    department ,
+                    dep_id: props.location.state.dept,
+                    acc_id: props.userDetails.id
+                }
 
-        console.log(
-            'department: ', department || ''
-        )
+                const postApiAddNewEvent = await axios.post(`${baseURL}/api/activity/event/add`, body, header);
+
+                console.log(postApiAddNewEvent)
+            } catch(err) {
+                // localStorage.removeItem('x')
+                console.log(err)
+                history.push('/')
+            }
+        }
+
+        if(name === '' || type === '' || department === '' || !props.location.state.dept || !props.userDetails.id){
+            alert('All fields requires values...')
+        }else{
+            fetchData();
+            
+            setName('');
+            setType('');
+            setDepartment('');
+            alert('New Event saved');
+            props.log();
+        }
+        
     }
 
     return (

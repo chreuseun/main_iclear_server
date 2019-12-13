@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {  Header, Button, Table, Message, Modal, Divider, Card } from 'semantic-ui-react';
+import {  Header, Button, Table, Message, Modal, Divider, Card, Transition } from 'semantic-ui-react';
 import { withRouter} from 'react-router-dom';
 import baseURL from '../../../../../../../../res/baseuri';
 import axios from 'axios';
@@ -18,52 +18,6 @@ const ModalStudent = (props) => {
     const [showListRecord, setShowListRecord] = useState(true);
     const [violationRecords, setViolationRecords] =useState([]);
 
-    // useEffect(()=>{
-    //     console.log('Model Intial API data fetch')
-    //     setDidMount(true);
-    //     let UpdateHooks = true;
-
-    //     const axiosAPI = async()=>{
-    //         try{               
-    //             const header = {
-    //                 headers: {
-    //                     authorization : localStorage.getItem('x')
-    //                 }
-    //             }
-
-    //             // get violationList for this departmnet
-    //             const fetchViolationList = await axios.get(`${baseURL}/api/violation/user/${match.params.dept}/violations`, header);
-     
-    //             // get violation records of the student
-    //             const fetchStudentViolationRecords = await axios.get(`${baseURL}/api/violation/user/1234/violations/student/records/${s_username}`, header);
-                
-    //             if(UpdateHooks)
-    //             {
-    //                 if(fetchViolationList.data.data){
-
-    //                     let data = fetchViolationList.data.data
-    //                     setViolations(data)
-    //                 } 
-                    
-    //                 if(fetchStudentViolationRecords.data.data) {
-    //                     let data = fetchStudentViolationRecords.data.data
-    //                     setViolationRecords(data)
-    //                 }
-    //             }
-    //         } catch(err) {
-    //             history.push('/')
-    //         }        
-    //     }
-
-    //     axiosAPI();
-
-    //     return () => (UpdateHooks=false)
-    // },[])
-
-    // if(!didMount) {
-    //     return null
-    // }
-
     const refreshContents = () => {
         const axiosAPI = async()=>{
             try{               
@@ -74,7 +28,7 @@ const ModalStudent = (props) => {
                 }
 
                 // get violationList for this departmnet
-                const fetchViolationList = await axios.get(`${baseURL}/api/violation/user/${match.params.dept}/violations`, header);
+                const fetchViolationList = await axios.get(`${baseURL}/api/violation/user/${location.state.dept}/violations`, header);
      
                 // get violation records of the student
                 const fetchStudentViolationRecords = await axios.get(`${baseURL}/api/violation/user/1234/violations/student/records/${s_username}`, header);
@@ -99,7 +53,6 @@ const ModalStudent = (props) => {
 
 
     const onViolationRecordsButton = () =>{
-
         setShowListRecord(!showListRecord)
     }   
 
@@ -118,27 +71,6 @@ const ModalStudent = (props) => {
                     }
                 };
 
-                /*
-                { 
-                    "s_id":1,
-                    "s_acd_yr":1,
-                    "s_sem_id":1,
-                    "d_type_id":3,
-                    "d_crs":"-ALL",
-                    "d_yr":"-ALL",
-                    el_id":4,
-                    "d_id":117,
-                    "s_username":"CL1",
-                    "s_fn":"Jason Marc",
-                    "s_mn":"Marinas",
-                    "s_ln":"Del Rosario",
-                    "s_yr":"1st",
-                    "s_sec":"B",
-                    "s_crs":"BSCPE",
-                    "s_dept":"CCS",
-                    "ay_name":"2019-2020",
-                    "sem_name":"1st"}
-                */
                 const {v_id} = it
                 const body = {
                     uid: s_username,
@@ -150,7 +82,7 @@ const ModalStudent = (props) => {
                     sec: s_sec
                 }
 
-                const result = await axios.post(`${baseURL}/api/violation/user/${match.params.dept}/violations/student/add`,body, header);
+                const result = await axios.post(`${baseURL}/api/violation/user/${location.state.dept}/violations/student/add`,body, header);
      
                 if(result.data.data[8]){
 
@@ -235,40 +167,43 @@ const ModalStudent = (props) => {
                             Violations List
                     </Button>
                     {/* Violation List */}
-                    <div style={{display: showList? 'block':'none'}}>
-                        <Divider horizontal>
-                            <Header as='h4'>
-                                    Violation List
-                            </Header>
-                        </Divider>
+                    <Transition visible={showList} animation='scale' duration={500}>
+                        <div>
+                            <Divider horizontal>
+                                <Header as='h4'>
+                                        Violation List
+                                </Header>
+                            </Divider>
 
-                        <Table style={{ overflowX:'scroll'}} selectable padded >
-                            <Table.Header >
-                                <Table.Row>
-                                    <Table.HeaderCell>Violation</Table.HeaderCell>
-                                    <Table.HeaderCell style={{maxWidth:'300px'}} >Description</Table.HeaderCell>
-                                    <Table.HeaderCell>Class</Table.HeaderCell>
-                                </Table.Row>
-                            </Table.Header>
-                            
-                            <Table.Body>
-                                {violations.map((it, id) => {
+                            <Table style={{ overflowX:'scroll'}} selectable padded >
+                                <Table.Header >
+                                    <Table.Row>
+                                        <Table.HeaderCell>Violation</Table.HeaderCell>
+                                        <Table.HeaderCell style={{maxWidth:'300px'}} >Description</Table.HeaderCell>
+                                        <Table.HeaderCell>Class</Table.HeaderCell>
+                                    </Table.Row>
+                                </Table.Header>
+                                
+                                <Table.Body>
+                                    {violations.map((it, id) => {
 
-                                    const {v_name, v_description, v_class} = it
+                                        const {v_name, v_description, v_class} = it
 
-                                    return(
-                                        <Table.Row key={it.v_id} 
-                                            onClick={()=>{ onAddIssue(it) }}>
-                                            <Table.Cell>{v_name}</Table.Cell>
-                                            <Table.Cell style={{maxWidth:'300px'}} >{v_description}</Table.Cell>
-                                            <Table.Cell>{v_class}</Table.Cell>
-                                         </Table.Row>
-                                    )
-                                })}
-                            </Table.Body>
-                        </Table>
-                    </div>
+                                        return(
+                                            <Table.Row key={it.v_id} 
+                                                onClick={()=>{ onAddIssue(it) }}>
+                                                <Table.Cell>{v_name}</Table.Cell>
+                                                <Table.Cell style={{maxWidth:'300px'}} >{v_description}</Table.Cell>
+                                                <Table.Cell>{v_class}</Table.Cell>
+                                            </Table.Row>
+                                        )
+                                    })}
+                                </Table.Body>
+                            </Table>
+                        </div>
                     
+                    </Transition>
+                   
                     <br/>
                     {/* Click to show violation records */}
                     <Button  secondary 
@@ -277,68 +212,46 @@ const ModalStudent = (props) => {
                             Violations records
                     </Button>
                     {/* Student Record */}
-                    <div  style={{display: showListRecord? 'block':'none'}} >
-                        <Divider horizontal>
-                            <Header as='h4'>
-                                    Violation Offences Record
-                            </Header>
-                        </Divider>
 
-                        <Table style={{ overflowX:'scroll'}} selectable compact>
-                            <Table.Header>
-                                <Table.Row>
-                                    <Table.HeaderCell>Violation</Table.HeaderCell>
-                                    <Table.HeaderCell>Yr.</Table.HeaderCell>
-                                    <Table.HeaderCell>Section</Table.HeaderCell>
-                                    <Table.HeaderCell>Course</Table.HeaderCell>
-                                    <Table.HeaderCell>Sem-S.Y.</Table.HeaderCell>
-                                    <Table.HeaderCell>Issued On</Table.HeaderCell>
-                                </Table.Row>
-                            </Table.Header>
+                    <Transition visible={showListRecord} animation='scale' duration={500}>
+                        <div>
+                            <Divider horizontal>
+                                <Header as='h4'>
+                                        Violation Offences Record
+                                </Header>
+                            </Divider>
 
-                            <Table.Body>
-                                {violationRecords.map((it, ix)=>{
+                            <Table style={{ overflowX:'scroll'}} selectable compact>
+                                <Table.Header>
+                                    <Table.Row>
+                                        <Table.HeaderCell>Violation</Table.HeaderCell>
+                                        <Table.HeaderCell>Yr.</Table.HeaderCell>
+                                        <Table.HeaderCell>Section</Table.HeaderCell>
+                                        <Table.HeaderCell>Course</Table.HeaderCell>
+                                        <Table.HeaderCell>Sem-S.Y.</Table.HeaderCell>
+                                        <Table.HeaderCell>Issued On</Table.HeaderCell>
+                                    </Table.Row>
+                                </Table.Header>
 
-                                    /*
-                                        {"id":200, 
-                                        "student_username":"CL1",
-                                        "violation_id":22,
-                                        "semester_id":1,
-                                        "acad_year_id":1,
-                                        "state":"1",
-                                        "is_send_sms":"0",
-                                        "yearlevel":"1st",
-                                        "course":"BSCPE",
-                                        "section":"B",
-                                        existing_record":1,
-                                        "s_dep":"CCS",
-                                        "sem_name":"1st",
-                                        "v_name":"Littering",
-                                        "ay_name":"2019-2020",
-                                        "issued_on":"11-16-2019",
-                                        "time":"07:51:45 PM"}
+                                <Table.Body>
+                                    {violationRecords.map((it, ix)=>{
+                                        return(
+                                            <Table.Row key={it.id}>
+                                                <Table.Cell style={{maxWidth:'300px'}}>{it.v_name}</Table.Cell>
+                                                <Table.Cell>{it.yearlevel}</Table.Cell>
+                                                <Table.Cell>{it.section}</Table.Cell>                                            
+                                                <Table.Cell>{it.course}</Table.Cell>
+                                                <Table.Cell>{it.sem_name}, {it.ay_name}</Table.Cell>
+                                                <Table.Cell>{it.issued_on} {it.time}</Table.Cell>
+                                            </Table.Row>
+                                        )
+                                    })}
+                                </Table.Body>
+                            </Table>
+                        </div>
 
-                                    */
-
-                                    return(
-                                        <Table.Row key={it.id}>
-                                            <Table.Cell style={{maxWidth:'300px'}}>{it.v_name}</Table.Cell>
-                                            <Table.Cell>{it.yearlevel}</Table.Cell>
-                                            <Table.Cell>{it.section}</Table.Cell>                                            
-                                            <Table.Cell>{it.course}</Table.Cell>
-                                            <Table.Cell>{it.sem_name}, {it.ay_name}</Table.Cell>
-                                            <Table.Cell>{it.issued_on} {it.time}</Table.Cell>
-                                            
-
-                                            
-                                      
-                                         </Table.Row>
-                                    )
-                                })}
-                            </Table.Body>
-                        </Table>
-                    </div>
-
+                    </Transition>
+                    
                 </div>
                
             </Modal.Content>

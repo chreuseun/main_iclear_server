@@ -30,6 +30,14 @@ function ManageAcadYear(props) {
                     }
                 }
 
+                const authorization = await await axios.post(`${baseURL}/api/auth` ,{} ,header);
+
+                if(authorization.data.msg !== 'auth' || !authorization || authorization.data.user_details.user_type_id !== 'ADMIN') {
+                    localStorage.clear();
+                    history.push("/");
+                }
+  
+
                 const result = await axios.get(`${baseURL}/api/acad_year/get`,header);
                 
                 if(xa)

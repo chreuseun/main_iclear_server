@@ -32,7 +32,7 @@ const ClassList = (props) => {
                     }
                 };
                 
-                const violationDept = await axios.get(`${baseURL}/api/violation/user/${match.params.dept}/class`, header)
+                const violationDept = await axios.get(`${baseURL}/api/violation/user/${location.state.dept}/class`, header)
                 console.log(violationDept.data.data  || '')
                 if(UpdateHook){
                     setClassList( violationDept.data.data || [])
@@ -162,7 +162,7 @@ const SanctionList = (props) => {
                     }
                 };
 
-                const classSanction = await axios.get(`${baseURL}/api/violation/user/${match.params.dept}/violations/sanction/${props.rowData.id}`, header)
+                const classSanction = await axios.get(`${baseURL}/api/violation/user/${location.state.dept}/violations/sanction/${props.rowData.id}`, header)
       
                 console.log(classSanction.data.data  || '')
                 
@@ -193,7 +193,7 @@ const SanctionList = (props) => {
                     }
                 };
 
-                const classSanction = await axios.get(`${baseURL}/api/violation/user/${match.params.dept}/violations/sanction/${props.rowData.id}`, header)
+                const classSanction = await axios.get(`${baseURL}/api/violation/user/${location.state.dept}/violations/sanction/${props.rowData.id}`, header)
       
                 console.log(classSanction.data.data  || '')
                 
