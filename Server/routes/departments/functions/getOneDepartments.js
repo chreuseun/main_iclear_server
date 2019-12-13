@@ -44,8 +44,9 @@ const asyncGetCourseLevel = async ({res, token, params}) => {
                             d.yearlevel as 'd_yearlevel',
                             d.head_officer,
                             d.state as 'd_state',
-                            is_coursed,
+                            d.is_subdepartment as 'is_subdep',
                             
+                            is_coursed,
                             d.id as 'd_id',
                             d.department_type_id as 'd_type',
                             el.id as 'el_id'

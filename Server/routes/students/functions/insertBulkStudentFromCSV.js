@@ -77,7 +77,7 @@ let _sql = {
     
     ON DUPLICATE KEY UPDATE 
         educ_level_id = VALUES(educ_level_id),
-        password= VALUES(password),
+        password = VALUES(password),
         image_url= VALUES(image_url),
         studfname= VALUES(studfname),
         studmname= VALUES(studmname),

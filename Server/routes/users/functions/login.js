@@ -15,10 +15,13 @@ login = ({res, loginCred, pool, _sql ,bcrypt, jwt, secretkey}) => {
                 connection.query(_sql.select_1_user,params[0],(err, results) => {
                     // When done with the connection, release it.
                     connection.destroy(); 
-        
+                    
+                    // If ERROR
                     if(err || results.length === 0 ) {
                         res.json({error})
-                    } else if(results[0].lock_meter >= 5 || results[0].is_locked === 1) {
+                    }
+                    // if Log 
+                    else if(results[0].lock_meter >= 5 || results[0].is_locked === 1) {
                         
                         results[0].is_locked === 1 ? 
                         res.json({msg:'account locked'})
@@ -57,7 +60,7 @@ login = ({res, loginCred, pool, _sql ,bcrypt, jwt, secretkey}) => {
                                 status ?  
                                     // CREATE TOKEN and SEND TO THE CLIENT
                                     jwt.sign(payload, secretkey, { expiresIn: '24h' },function(err, token) {
-                                        res.send({msg:"success", token })
+                                        res.send({msg:"success", token, user_details:payload})
                                     })  :  
                                     pool.getConnection( (err,connection) => {
                                         if(err) {

@@ -5,12 +5,14 @@ router.post('/clearance/issue/add', (req, res) => {
 
     const addClearance = require('./functions/addStudentClearance');
 
+
+    console.log(req.body.toAdd)
     let token = req.headers.authorization
  
     args = {
         res, 
         token ,
-        params : [req.body.toAdd]
+        params : [req.body.addData]
     }
 
     addClearance(args)

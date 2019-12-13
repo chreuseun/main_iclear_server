@@ -28,8 +28,12 @@ router.post('/departmentinsert', (req, res) => {
         req.body.valAcadLevel,
         req.body.valCourse ,
         req.body.valYearLevel,
-        req.body.valHeadOff 
+        req.body.valHeadOff,
+        req.body.valCrsDept,
+        req.body.valIsChecked
     ]
+
+    console.log()
 
     const insertDepartment = require('./functions/insertNewDepartments');
 
@@ -179,7 +183,6 @@ router.post(`/department/update`,(req, res) => {
 
 // USER ============================================================================
 
-//
 router.get('/departments/user', (req, res) => {
     
     const getDeptByAccId = require('./functions/getDeptByAccId');

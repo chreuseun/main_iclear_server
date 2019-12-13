@@ -12,7 +12,7 @@ router.get('/test', (req, res) => {
 
     console.log( `Methed: ${req.route.stack[0].method}  ${req.route.path}` );
 
-    
+    console.log(req.query)
 
 })
 

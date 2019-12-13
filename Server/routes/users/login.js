@@ -1,12 +1,13 @@
 const router = require('express').Router();
 var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
-// secret key
+
 const secretkey = require('../../auth/secretkey');
 
 const pool = require('../../mysql/pool/pool');
-const _sql = require('../../mysql/queries/accounts/Login'); // QUERY LIST
+const _sql = require('../../mysql/queries/accounts/Login');
 
+// Login user 
 router.post('/login', (req, res) => {
     
     req.body; 
@@ -30,6 +31,7 @@ router.post('/login', (req, res) => {
     console.log('> POST - /api/login ');
 })
 
+// register new user
 router.post('/register', (req, res) => {
 
     var body=[
@@ -70,6 +72,7 @@ router.post('/register', (req, res) => {
     console.log('> POST - /api/register')
 })
 
+// logout user and redirect to "/"
 router.post('/logout', (req, res) => {
 
     //psedo-code
@@ -93,19 +96,22 @@ router.post('/logout', (req, res) => {
     console.log('> POST - /api/logout')
 })
 
+// auth
 router.post('/auth', (req,res)=>{
-    let isLogged = require('./functions/checkToken');
+    let isLogged = require('./functions/refactorCheckToken');
     
     arg = {
-        headers : req.headers.authorization,
-        res
+        token : req.headers.authorization,
+        res ,
+        params: []
     }
 
     isLogged(arg)
 
-    console.log('> POST - /api/auth')
+    console.log( `Methed: ${req.route.stack[0].method}  ${req.route.path}`);
 })
 
+// get accounts
 router.post('/getaccounts', (req, res) => {
     
     let getaccounts = require('./functions/getAccounts');
@@ -121,6 +127,7 @@ router.post('/getaccounts', (req, res) => {
     console.log('> POST - /api/getaccounts')
 })
 
+// set the state of accounts to ACTIVE or INACTIVE
 router.post('/accounts/state/set', (req, res) => {
 
     let setState = require('./functions/setState');
@@ -138,6 +145,7 @@ router.post('/accounts/state/set', (req, res) => {
     console.log('> POST - /api/accounts/state/set')
 })
 
+// set the state of accounts to LOCKED or UNLOCKED
 router.post('/accounts/islocked/set', (req, res) => {
     console.log(`${req.body.acc_id.toString()}`)
     let setLocked = require('./functions/setIs_Locked');
@@ -157,8 +165,12 @@ router.post('/accounts/islocked/set', (req, res) => {
 
 module.exports = router
 
-
-
-
-  
-  
+// router.post('/auth/ref', (req,res)=>{
+//     let isLogged = require('./functions/checkToken');
+//     arg = {
+//         headers : req.headers.authorization,
+//         res
+//     }
+//     isLogged(arg)
+//     console.log('> POST - /api/auth')
+// })

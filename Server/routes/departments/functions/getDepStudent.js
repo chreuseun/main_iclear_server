@@ -25,12 +25,11 @@ const getDeptStudents = async ({res, token, params}) => {
         error  = true; 
     }
     
-    // get acadYear
     try{
         if(sqlResult[0].is_token === 'AUTH') {
 
-            dataResult.dep = (await query(_sql.getDepOne, params))[0]
-            dataResult.students = await query(_sql.getDepStudent, params)
+            dataResult.dep = (await query(_sql.getDepOne, params))[1][0]
+            dataResult.students = (await query(_sql.getDepStudent, params))
         }
     } catch (err){
         error  = true;  
@@ -74,7 +73,7 @@ const _sql = {
                             END)
                             
                         AND (CASE
-                                WHEN d.student_department = 'NONE' THEN true
+                                WHEN d.student_department = 'NONE' || d.student_department = 'ALL'   THEN true
                                 ELSE d.student_department = s.department
                             END)
                         AND d.state = '1'
@@ -83,7 +82,11 @@ const _sql = {
                     JOIN acad_year ay ON ay.id = s.acad_year_id
                     JOIN semester sem ON sem.id = s.semester_id`,
     
-    getDepOne : `SELECT 
+    getDepOne : `
+    
+    SET @dept_id := ?;
+    
+    SELECT 
     d.name as 'd_name',    
     el.name as 'el_name',
     dt.name as 'd_type_name',
@@ -101,7 +104,7 @@ const _sql = {
     JOIN departments_type dt ON dt.id = d.department_type_id
     JOIN educ_level el ON el.id = d.educ_level_id
 
-    WHERE d.state = '1' AND  d.id = ? LIMIT 1`
+    WHERE d.state = '1' AND  d.id = @dept_id LIMIT 1`
 
     
 }

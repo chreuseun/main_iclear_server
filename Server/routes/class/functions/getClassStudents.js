@@ -41,21 +41,21 @@ const InsertNewSubj = async ({res, token, params}) => {
 
 let _sql= {
     getClassStudentList : `SELECT cli.* , 
-	cls.educ_level_id,
-    cls.name AS 'cls_name',
-    ay.name AS 'ay_name',
-    sem.name AS 'sem_name',
-    el.name AS 'el_name',
-    st.studfname,
-    st.studlname,
-    st.studmname
-FROM class_issue cli
-JOIN class cls ON cls.id = cli.class_id
-	AND cls.id = ?
-JOIN acad_year ay ON ay.id = cls.acad_year_id
-JOIN semester sem ON sem.id = cls.semester_id
-JOIN educ_level el ON el.id = cls.educ_level_id
-JOIN student_ st ON st.username = cli.student_username`
+                            cls.educ_level_id,
+                            cls.name AS 'cls_name',
+                            ay.name AS 'ay_name',
+                            sem.name AS 'sem_name',
+                            el.name AS 'el_name',
+                            st.studfname,
+                            st.studlname,
+                            st.studmname
+                        FROM class_issue cli
+                        JOIN class cls ON cls.id = cli.class_id
+                            AND cls.id = ?
+                        JOIN acad_year ay ON ay.id = cls.acad_year_id
+                        JOIN semester sem ON sem.id = cls.semester_id
+                        JOIN educ_level el ON el.id = cls.educ_level_id
+                        JOIN student_ st ON st.username = cli.student_username`
 }
 
 module.exports =  InsertNewSubj

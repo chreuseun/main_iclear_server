@@ -21,23 +21,26 @@ const asyncSetAcadYear = async ({res, token, params}) => {
     try{       
         sqlResult = await query(sql.select_blacklist_token_all, [jwtResult.token, jwtResult.decoded.id])
     } catch (err) {
+        console.log('err auth')
         error  = true; 
     }
     
     // get acadYear
     try{
         if(sqlResult[0].is_token === 'AUTH') {
+            console.log(params)
 
-         
+
             sqlResult = await query(sql_.addClearanceStudent, params)
         }
     } catch (err){
+        console.log('error Add')
         error  = true;  
     }
 
     error ? 
         res.sendStatus(401) : 
-        res.json({ data:sqlResult})
+        res.json({ data:sqlResult })
 }
 
 

@@ -30,7 +30,21 @@ const asyncGetAccounts = async ({res, token, params}) => {
     
     try{
         if(sqlResult[0].is_token === 'AUTH') {
-            let sql = `SELECT 
+            
+
+            sqlResult = await query(_sql.selectUsers, [])
+        }
+    } catch (err){
+        error  = true;  
+    }
+
+    error ? 
+        res.sendStatus(401) : 
+        res.json({sqlResult})
+}
+
+let _sql = {
+    selectUsers :  `SELECT 
                         id,
                         user_type_id,
                         username,
@@ -43,16 +57,14 @@ const asyncGetAccounts = async ({res, token, params}) => {
                         contact_number,
                         created_at,
                         updated_at
-                    FROM account`
-            sqlResult = await query(sql, [])
-        }
-    } catch (err){
-        error  = true;  
-    }
+                    FROM account
 
-    error ? 
-        res.sendStatus(401) : 
-        res.json({sqlResult})
+                    WHERE state LIKE '%%'    
+                        AND user_type_id LIKE '%%'
+                        AND username LIKE '%%'
+                        AND lastname LIKE '%%'
+                        AND firstname LIKE '%%'
+                        AND middlename LIKE '%%'`
 }
 
 

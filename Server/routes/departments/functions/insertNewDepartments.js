@@ -43,7 +43,9 @@ const asyncInsertDepartment = async ({res, token, params}) => {
                 educ_level_id,    
                 course,            
                 yearlevel,                
-                head_officer
+                head_officer,
+                student_department,
+                is_subdepartment
             )
             VALUES
             (
@@ -52,13 +54,16 @@ const asyncInsertDepartment = async ({res, token, params}) => {
                 ?,
                 ?,
                 ?,
-                ?  
+                ?,
+                ?,
+                ?
             )`;
-
+                console.log(params[0])
             sqlResult = await query(sql, params[0])
         }
     } catch (err){
         error  = true;  
+        console.log('error in the SQL ')
     }
 
 

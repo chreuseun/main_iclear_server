@@ -6,7 +6,7 @@ router.post('/student/csv/insert', (req, res) => {
     console.log(req.body.values);
 
 
-    const getEducLevel = require('./functions/insertBulkStudentFromCSV');
+    const InsertBulkFromCsv = require('./functions/insertBulkStudentFromCSV');
 
     let token = req.headers.authorization
  
@@ -16,45 +16,26 @@ router.post('/student/csv/insert', (req, res) => {
         params : [req.body.values]
     }
 
-    getEducLevel(args)
+    InsertBulkFromCsv(args)
 
-    console.log('> POST - /api/educlevel/get')
+    console.log( `Methed: ${req.route.stack[0].method}  ${req.route.path}`);
 })
 
+router.get('/student', (req, res) => {
 
-// router.post('/educcourselevel/get', (req, res) => {
+    const getStudents = require('./functions/getStudents');
 
-//     const getCourseLevel = require('./functions/getCourseLevel');
-
-//     let token = req.headers.authorization
+    let token = req.headers.authorization
  
-//     args = {
-//         res, 
-//         token ,
-//         params : []
-//     }
+    args = {
+        res, 
+        token ,
+        params : []
+    }
 
-//     getCourseLevel(args)
+    getStudents(args);
 
-//     console.log('> POST - /api/educlevel/get')
-// })
-
-// router.post('/initeduccourselevel', (req, res) => {
-
-//     const getCourseLevel = require('./functions/getInitCourseLevel');
-//     console.log(req.body.id)
-
-//     let token = req.headers.authorization
- 
-//     args = {
-//         res, 
-//         token ,
-//         params : [req.body.id]
-//     }
-
-//     getCourseLevel(args)
-
-//     console.log('> POST - /api/initeduccourselevel')
-// })
+    console.log( `Methed: ${req.route.stack[0].method}  ${req.route.path}`);
+})
 
 module.exports = router
