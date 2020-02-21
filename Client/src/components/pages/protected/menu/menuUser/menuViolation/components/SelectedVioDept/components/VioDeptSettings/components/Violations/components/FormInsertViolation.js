@@ -25,14 +25,10 @@ const FormInsertViolation = (props) => {
 
     return(
     <React.Fragment>
-        <Modal size='fullscreen' trigger={
-            <Button animated='fade' primary>
-                <Button.Content visible>{'Create Violation'}</Button.Content>
-                <Button.Content hidden> {'Create Violation'}</Button.Content>
-            </Button>
-
-        }>
-            <Modal.Header>Insert New Violation</Modal.Header>
+        <Modal open={true} size='fullscreen' >
+            <Modal.Header>Insert New Violation 
+                <Button floated={"right"} onClick={()=>{props.onClose()}} negative>Close</Button>
+            </Modal.Header>
             <Modal.Content>
 
                 <FormInsert {...props}/>
@@ -50,6 +46,7 @@ const FormInsert = (props) => {
     const { location ,match, history } = props
     const [didMount, setDidMount] = useState(false);
     const [name, setName] = useState('');
+
     const [cls, setCls] = useState('');
     const [desc, setDesc] = useState('');
     const [classList, setClassList] = useState([]);
@@ -115,7 +112,6 @@ const FormInsert = (props) => {
             
         )
 
-
         const addViolation = async() => {
             try{
             
@@ -132,13 +128,13 @@ const FormInsert = (props) => {
                 }
                 
                 const addResponse = await axios.post(`${baseURL}/api/violation/user/${location.state.dept}/violations/add`, body, header)
-             
-                console.log(addResponse.data.data)
 
+                console.log(addResponse.data.data)
 
                 if(addResponse.data.data) {
                     alert('New Violation added...')
                     // run a  close modal function 
+                    setCls(''); setDesc(''); setName('');
                     props.onClose()
                 }
 
@@ -165,7 +161,7 @@ const FormInsert = (props) => {
     const onChangeClass = (e,{value}) => {
         setCls(`${value}`)
     }
-        
+
 
     return(
         <Form>  
@@ -174,14 +170,10 @@ const FormInsert = (props) => {
                 style={{maxWidth:'300px'}}
                 value={name}
                 onChange={(e)=>{
-                    
-
                     const { value } = e.target;
-                    
-                    setName(value)
-                    
-                   }
-                    
+                    setName(value);
+                }
+
                     }
                 maxLength={45}
             />
@@ -220,7 +212,6 @@ const FormInsert = (props) => {
                 </Menu>
             </div>
     </Form>
-
     )
 }
 

@@ -30,9 +30,14 @@ const asyncGetAccounts = async ({res, token, params}) => {
     
     try{
         if(sqlResult[0].is_token === 'AUTH') {
-            
+            console.log(params)
 
-            sqlResult = await query(_sql.selectUsers, [])
+            sqlResult = await query(_sql.selectUsers, [
+               `%${params.text}%`,
+               `%${params.type}%`,
+               `%${params.locked}%`,
+               `%${params.state}%`
+            ])
         }
     } catch (err){
         error  = true;  
@@ -40,11 +45,17 @@ const asyncGetAccounts = async ({res, token, params}) => {
 
     error ? 
         res.sendStatus(401) : 
-        res.json({sqlResult})
+        res.json({sqlResult:sqlResult[4]})
 }
 
 let _sql = {
-    selectUsers :  `SELECT 
+    selectUsers :  `
+                    SET @text := ?;
+                    SET @type := ?;
+                    SET @locked := ?;
+                    SET @state := ?;
+
+                    SELECT 
                         id,
                         user_type_id,
                         username,
@@ -59,12 +70,14 @@ let _sql = {
                         updated_at
                     FROM account
 
-                    WHERE state LIKE '%%'    
-                        AND user_type_id LIKE '%%'
-                        AND username LIKE '%%'
-                        AND lastname LIKE '%%'
-                        AND firstname LIKE '%%'
-                        AND middlename LIKE '%%'`
+                    WHERE state LIKE @state  
+                        AND is_locked LIKE @locked
+                        AND user_type_id LIKE @type
+                        
+                        AND (lastname LIKE @text
+                        OR firstname LIKE @text
+                        OR middlename LIKE @text
+                        OR username LIKE @text)`
 }
 
 

@@ -19,6 +19,24 @@ router.get('/semester/get', (req, res) => {
 })
 
 
+router.get('/semester', (req, res) => {
+
+    const getAcadYear = require('./functions/getAllSem');
+
+    let token = req.headers.authorization
+ 
+    args = {
+        res, 
+        token ,
+        params : []
+    }
+
+    getAcadYear(args)
+
+    console.log('> POST - /api/menu/semester/get')
+})
+
+
 router.get('/semester/active/get', (req, res) => {
 
     const getAcadYear = require('./functions/getActiveSem');

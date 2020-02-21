@@ -28,8 +28,17 @@ const getDeptStudents = async ({res, token, params}) => {
     try{
         if(sqlResult[0].is_token === 'AUTH') {
 
-            dataResult.dep = (await query(_sql.getDepOne, params))[1][0]
-            dataResult.students = (await query(_sql.getDepStudent, params))
+            dataResult.dep = (await query(_sql.getDepOne, [params.dep]))[1][0]
+            dataResult.students = (await query(_sql.getDepStudent, 
+                [
+                    params.dep,
+                    `%${params.text}%`,
+                    `%${params.level}%`,
+                    `%${params.course}%`,
+                    `%${params.yrlvl}%`,
+                    `%${params.section}%`
+                ]
+            ))[6]
         }
     } catch (err){
         error  = true;  
@@ -41,7 +50,15 @@ const getDeptStudents = async ({res, token, params}) => {
 }
 
 const _sql = {
-    getDepStudent : `SELECT  
+    getDepStudent : `
+                    SET @dep := ?;
+                    SET @text := ?;
+                    SET @level := ?;
+                    SET @course := ?;
+                    SET @yrlvl := ?;
+                    SET @section := ?;
+
+                    SELECT  
                         s.id as 's_id',
                         s.acad_year_id as 's_acd_yr',
                         s.semester_id as 's_sem_id',
@@ -63,6 +80,14 @@ const _sql = {
 
                     FROM departments as d
                     JOIN student_ as s ON s.educ_level_id = d.educ_level_id
+                        AND s.educ_level_id LIKE @level AND
+                        s.course LIKE @course AND
+                        s.yearlevel LIKE @yrlvl AND 
+                        s.section LIKE @section AND 
+                        (s.studfname LIKE @text OR
+                        s.studmname LIKE @text OR
+                        s.studlname LIKE @text OR
+                        s.username LIKE @text)
                         AND (CASE
                                 WHEN d.course = '-ALL' THEN true
                                 ELSE d.course = s.course
@@ -78,7 +103,7 @@ const _sql = {
                             END)
                         AND d.state = '1'
                         AND d.department_type_id = '2'
-                        AND d.id = ?
+                        AND d.id = @dep
                     JOIN acad_year ay ON ay.id = s.acad_year_id
                     JOIN semester sem ON sem.id = s.semester_id`,
     

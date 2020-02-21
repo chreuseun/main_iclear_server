@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { withRouter, BrowserRouter, Route, Switch, Link} from "react-router-dom";
-import { Menu,  Container, Dropdown } from 'semantic-ui-react';
+import { Menu,  Container, Dropdown, Button } from 'semantic-ui-react';
 import axios from 'axios'
 import baseURL from '../../../../../../res/baseuri';
 
@@ -12,14 +12,13 @@ const NavbarUser = (props) => {
 
     const { match ,location, history } = props;
 
-    const [didMount, setDidMount] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [userDetails, setUserDetails] = useState({});
 
     useEffect(()=>{
         
         let UpdateHooks = true;
-        setDidMount(true);
+      ;
         setIsLoading(true);
 
         console.log('NavbarAdmin:  ','useEffect - Data');
@@ -45,6 +44,7 @@ const NavbarUser = (props) => {
                     
                     if(UpdateHooks) {        
                         setUserDetails(result.data.user_details);
+                        setIsLoading(false);
                     }   
                 } catch(err) {
                     localStorage.clear();
@@ -62,10 +62,6 @@ const NavbarUser = (props) => {
         return () => (UpdateHooks=false);
     },[])
 
-    if(!didMount) {
-        return null
-    }
-      
     const pushToLink = (push) => {
         history.push(push)
     }
@@ -79,7 +75,7 @@ const NavbarUser = (props) => {
 
             <BrowserRouter>
 
-                <Menu color='blue' style={{}} stackable inverted  fixed='top'>
+                <Menu color='blue' style={{marginBottom:'20px'}} stackable inverted  fixed='top'>
                     <Container>
 
                         <Menu.Item
@@ -116,7 +112,9 @@ const NavbarUser = (props) => {
                 </Menu>
 
                 <Container   style={{marginTop:"100px", padding:'20px'}}>
+
                     <SelectedActDept pushToLink={pushToLink} userDetails={userDetails} />
+
                 </Container>
 
             </BrowserRouter>
@@ -126,35 +124,3 @@ const NavbarUser = (props) => {
 }
 
 export default withRouter(NavbarUser);
-
- // const RouteUser = () => {
-    //     return (
-
-    //         <Switch>
-                
-    //             {/* HOME/INDEX */}
-    //             <Route  exact path={'/menu/dep' } render={(props) => <SelectionMyDepartments {...props} userDetails={userDetails} />}/> 
-    //             {/* HOME/INDEX */}
-                
-    //             {/* VIOLATION SYSTEM */}
-    //             <Route  exact path={ '/menu/viol'} render={(props) => <MainViolation {...props} userDetails={userDetails}/>}/>
-    //             <Route  exact path={'/menu/viol/:dept'} render={(props) => <SelectedVioDept {...props} userDetails={userDetails}/>}/ >  
-    //             <Route  exact path={'/menu/viol/:dept/settings'} render={(props) => <VioDepSettings {...props} userDetails={userDetails} />}/>  
-    //             {/* VIOLATION SYSTEM */}                    
-
-    //             {/* ACTIVITY */}
-    //             <Route  exact path={'/menu/act'}       render={(props) => <MainActivityCards {...props} userDetails={userDetails}/>}/>                 
-    //             <Route  exact path={'/menu/act/:dept'} render={(props) => <SelectedActDept {...props} userDetails={userDetails}/>}/>                 
-    //             <Route  exact path={'/menu/act/:dept/scan'}  render={(props) => <LaunchScanner {...props} userDetails={userDetails}/>}/>
-    //             {/* ACTIVITY */}
-
-    //             {/* DEPARTMENTS */}
-    //             <Route  exact path={'/menu/dep/:dept'}     render={(props) => <SelectedDepartments {...props} userDetails={userDetails}/>}/> 
-    //             <Route  exact path={'/menu/dep/:dept/req'} render={(props) => <ManageDeptRequirements {...props} userDetails={userDetails}/>}/> 
-    //             <Route  exact  path={'/menu/dep/:dept/clr'} render={(props) => <MenuDeptClearance {...props} title={`Issue Clearance`} userDetails={userDetails}/>} /> 
-    //             <Route  render={()=>{return(null)}}/> 
-    //             {/* DEPARTMENTS */}
-                
-    //         </Switch>
-    //     )
-    // }

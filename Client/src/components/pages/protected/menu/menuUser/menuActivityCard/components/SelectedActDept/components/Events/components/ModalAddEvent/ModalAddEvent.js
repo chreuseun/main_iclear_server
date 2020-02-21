@@ -7,7 +7,7 @@ import axios from 'axios';
 
 const ModalAddEvent = (props) => {
 
-    const {location, match, history } = props;
+    const { history } = props;
 
     const [type, setType] = useState([]);
     const [elDept, setElDept] =useState([]);
@@ -31,9 +31,6 @@ const ModalAddEvent = (props) => {
 
                 const fetchElDept = await axios.get(`${baseURL}/api/departments/coursedepartment/${el_id}`, header);
 
-                console.log( `AcitivityType: ` , fetchActivityType.data.data)
-                console.log( `el_dept: ` , fetchElDept.data.data)
-
                 setType(fetchActivityType.data.data)
                 setElDept(
                     fetchElDept.data.data.filter((it)=>{return(it.key!== 'ALL')}
@@ -49,8 +46,6 @@ const ModalAddEvent = (props) => {
 
         fetchData();
     }
-
-    console.log('ModalAddevent Props: ', props)
 
     return(
         <Modal size={'fullscreen'}
@@ -85,7 +80,7 @@ const ModalAddEvent = (props) => {
 
 const FormNewEventDetails = (props) => {
 
-    const {location, match, history } = props;
+    const { history } = props;
       // Insert Values
     const [name, setName] = useState('');
     const [type, setType] = useState('');
@@ -109,15 +104,14 @@ const FormNewEventDetails = (props) => {
     const onSaveButtonClicked = () => {
 
 
-        const fetchData = async() => {
+        const AddEventInTable = async() => {
             try{
-            
+
                 const header = {
                     headers: {
                         authorization : localStorage.getItem('x')
                     }
                 };
-                
 
                 let body = {
                     name:name ,                    
@@ -140,8 +134,8 @@ const FormNewEventDetails = (props) => {
         if(name === '' || type === '' || department === '' || !props.location.state.dept || !props.userDetails.id){
             alert('All fields requires values...')
         }else{
-            fetchData();
-            
+            AddEventInTable();
+
             setName('');
             setType('');
             setDepartment('');

@@ -44,7 +44,9 @@ const asyncInsertDepartment = async ({res, token, params}) => {
                         course = ?,
                         yearlevel = ?,
                         head_officer = ?,
-                        state = ?
+                        state = ?,
+                        student_department = ?,
+                        is_subdepartment = ?
                         
                         WHERE id = ?`;
 

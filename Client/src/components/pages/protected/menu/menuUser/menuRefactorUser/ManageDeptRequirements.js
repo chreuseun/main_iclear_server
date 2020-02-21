@@ -90,7 +90,7 @@ const NavbarUser = (props) => {
                             HOME 
                         </Menu.Item>
 
-                            <Menu.Menu position='left'>                            
+                            <Menu.Menu position='left'>
                             <Menu.Item
                                 onClick={()=>pushTo("/menu/dep")}
                                 name='Departments'
@@ -107,13 +107,14 @@ const NavbarUser = (props) => {
                             />
                         </Menu.Menu>                      
 
-                        <Menu.Menu position='right'>                            
+                        <Menu.Menu position='right'>
                             <Dropdown item text={'Welcome, ' + userDetails.username || ''}>
                                 <Dropdown.Menu>
                                     <Dropdown.Item onClick={()=>{localStorage.clear();history.push('/')}} >Sign-Out</Dropdown.Item>
                                 </Dropdown.Menu>
                             </Dropdown>
                         </Menu.Menu>
+
                     </Container>  
                 </Menu>
 

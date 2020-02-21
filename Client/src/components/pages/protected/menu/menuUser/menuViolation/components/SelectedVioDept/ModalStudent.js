@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import {  Header, Button, Table, Message, Modal, Divider, Card, Transition } from 'semantic-ui-react';
+import React, {  useState } from 'react';
+import {  Header, Button, Table, Message, Modal, Divider, Card, Transition, Menu } from 'semantic-ui-react';
 import { withRouter} from 'react-router-dom';
 import baseURL from '../../../../../../../../res/baseuri';
 import axios from 'axios';
@@ -8,98 +8,109 @@ import axios from 'axios';
 const ModalStudent = (props) => {
 
 
-    const { location, history, match } = props
+    const { location, history } = props
     const { s_username, s_ln,  s_fn,  s_mn,  s_yr,  s_sec,  s_crs,  s_dept, ay_name,sem_name, s_sem_id, s_acd_yr } = props.it
 
-
-    const [didMount, setDidMount] = useState(false);
     const [violations, setViolations] = useState([]);
     const [showList, setShowList] = useState(true);
     const [showListRecord, setShowListRecord] = useState(true);
     const [violationRecords, setViolationRecords] =useState([]);
 
-    const refreshContents = () => {
-        const axiosAPI = async()=>{
-            try{               
-                const header = {
-                    headers: {
-                        authorization : localStorage.getItem('x')
-                    }
+    const [isGroup, setIsGroup] = useState(false);
+
+    const refreshContents = async(mode = '') => {
+
+        try{
+            const header = {
+                headers: {
+                    authorization : localStorage.getItem('x')
                 }
+            }
 
-                // get violationList for this departmnet
-                const fetchViolationList = await axios.get(`${baseURL}/api/violation/user/${location.state.dept}/violations`, header);
-     
-                // get violation records of the student
-                const fetchStudentViolationRecords = await axios.get(`${baseURL}/api/violation/user/1234/violations/student/records/${s_username}`, header);
+            // get violationList for this departmnet
+            const fetchViolationList = await axios.get(`${baseURL}/api/violation/user/${location.state.dept}/violations`, header);
 
-                if(fetchViolationList.data.data){
-                    let data = fetchViolationList.data.data
-                    setViolations(data)
-                } 
-                
-                if(fetchStudentViolationRecords.data.data) {
-                    let data = fetchStudentViolationRecords.data.data
-                    setViolationRecords(data)
-                }
+            // get violation records of the student
+            const fetchStudentViolationRecords = await axios.get(`${baseURL}/api/violation/user/1234/violations/student/records/${s_username}?mode=${mode}`, header);
 
-            } catch(err) {
-                history.push('/')
-            }        
+            if(fetchViolationList.data.data){
+                let data = fetchViolationList.data.data
+                setViolations(data)
+            } 
+            
+            if(fetchStudentViolationRecords.data.data) {
+                let data = fetchStudentViolationRecords.data.data
+                setViolationRecords(data)
+            }
+
+        } catch(err) {
+            localStorage.clear();
+            history.push('/')
         }
 
-        axiosAPI();
     }
 
-
+    // button to Show/Hiide Violation Records of the student
     const onViolationRecordsButton = () =>{
         setShowListRecord(!showListRecord)
-    }   
+    }
 
+    // button to Show/Hide Violation List
     const onViolationListButton = () => {
         setShowList(!showList)
     }
 
+    const onGroup = () => {
+        refreshContents('grouped');
+        setIsGroup(true);
+    }
+
+    const onBreak = () => {
+        refreshContents('breakdown');
+        setIsGroup(false);
+    }
+
     // issue violation for the current day only one is allowed per date
-    const onAddIssue = (it) => {
-        const InsertData = async() => {
-            try{
-            
-                const header = {
-                    headers: {
-                        authorization : localStorage.getItem('x')
-                    }
-                };
+    const onAddIssue = async(it) => {
+        // const InsertData = async() => {
 
-                const {v_id} = it
-                const body = {
-                    uid: s_username,
-                    vio: v_id,
-                    sem: s_sem_id,
-                    ay: s_acd_yr,
-                    yr: s_yr,
-                    crs: s_crs,
-                    sec: s_sec
+        try{
+
+            const header = {
+                headers: {
+                    authorization : localStorage.getItem('x')
                 }
+            };
 
-                const result = await axios.post(`${baseURL}/api/violation/user/${location.state.dept}/violations/student/add`,body, header);
-     
-                if(result.data.data[8]){
+            const {v_id} = it;
 
-                    result.data.data[8].insertId !== 0 ? 
-                        refreshContents() :
-                        console.log('no inserted')
-
-                    alert( result.data.data[8].insertId !== 0 ? 'Violation Issued' : 'Already issued for this date')
-                }
-
-            } catch(err) {
-                console.log(err)
-                history.push('/')
+            const body = {
+                uid: s_username,
+                vio: v_id,
+                sem: s_sem_id,
+                ay: s_acd_yr,
+                yr: s_yr,
+                crs: s_crs,
+                sec: s_sec
             }
+
+            const result = await axios.post(`${baseURL}/api/violation/user/${location.state.dept}/violations/student/add`,body, header);
+
+            if(result.data.data[8]){
+
+                result.data.data[8].insertId !== 0 ? 
+                    refreshContents() :
+
+                alert( result.data.data[8].insertId !== 0 ? 'Violation Issued' : 'Already issued for this date')
+            }
+
+        } catch(err) {
+            console.log(err)
+            history.push('/')
         }
 
-        InsertData();
+        // }
+        // InsertData();
     }
 
     return(
@@ -166,6 +177,7 @@ const ModalStudent = (props) => {
                         onClick={onViolationListButton}>
                             Violations List
                     </Button>
+
                     {/* Violation List */}
                     <Transition visible={showList} animation='scale' duration={500}>
                         <div>
@@ -205,53 +217,59 @@ const ModalStudent = (props) => {
                     </Transition>
                    
                     <br/>
-                    {/* Click to show violation records */}
+                    {/* Click to show violation records of student */}
                     <Button  secondary 
                         style={{marginTop:'20px'}}
                         onClick={onViolationRecordsButton}>
                             Violations records
                     </Button>
-                    {/* Student Record */}
 
+                    {/* Student Record */}
                     <Transition visible={showListRecord} animation='scale' duration={500}>
+                        
                         <div>
+
                             <Divider horizontal>
                                 <Header as='h4'>
                                         Violation Offences Record
                                 </Header>
                             </Divider>
 
+                            {/* MENU : GROUP or BREAKDOWN Button */}
+                            <div>
+                                <Menu secondary>
+
+                                    <Menu.Menu position='right'>
+
+                                        <Menu.Item>
+                                            <Button
+                                            onClick={()=>onGroup()}
+                                            visible>{'Group by count'}</Button>
+                                        </Menu.Item>
+
+                                        <Menu.Item>
+                                            <Button 
+                                            onClick={()=>onBreak()}
+                                            visible>{'Group by breakdown'}</Button>
+                                        </Menu.Item>
+                                        
+                                    </Menu.Menu>
+                                </Menu>
+                            </div>
+
                             <Table style={{ overflowX:'scroll'}} selectable compact>
-                                <Table.Header>
-                                    <Table.Row>
-                                        <Table.HeaderCell>Violation</Table.HeaderCell>
-                                        <Table.HeaderCell>Yr.</Table.HeaderCell>
-                                        <Table.HeaderCell>Section</Table.HeaderCell>
-                                        <Table.HeaderCell>Course</Table.HeaderCell>
-                                        <Table.HeaderCell>Sem-S.Y.</Table.HeaderCell>
-                                        <Table.HeaderCell>Issued On</Table.HeaderCell>
-                                    </Table.Row>
-                                </Table.Header>
+                                
+                                {/* BREAKDOWN */}
+                                {!isGroup &&  <ViolationRecordHeaderBreakDown violationRecords={violationRecords}/> }
+                                
+                                {/* GROUPED */}
+                                {isGroup &&  <ViolationRecordHeaderGrouped violationRecords={violationRecords}/> }
 
-                                <Table.Body>
-                                    {violationRecords.map((it, ix)=>{
-                                        return(
-                                            <Table.Row key={it.id}>
-                                                <Table.Cell style={{maxWidth:'300px'}}>{it.v_name}</Table.Cell>
-                                                <Table.Cell>{it.yearlevel}</Table.Cell>
-                                                <Table.Cell>{it.section}</Table.Cell>                                            
-                                                <Table.Cell>{it.course}</Table.Cell>
-                                                <Table.Cell>{it.sem_name}, {it.ay_name}</Table.Cell>
-                                                <Table.Cell>{it.issued_on} {it.time}</Table.Cell>
-                                            </Table.Row>
-                                        )
-                                    })}
-                                </Table.Body>
                             </Table>
-                        </div>
 
+                        </div>
                     </Transition>
-                    
+
                 </div>
                
             </Modal.Content>
@@ -259,6 +277,73 @@ const ModalStudent = (props) => {
         </Modal>
     )
 }
+
+const ViolationRecordHeaderBreakDown = (props) => {
+    return(
+        <React.Fragment>
+            <Table.Header>
+                <Table.Row>
+                    <Table.HeaderCell>Violation</Table.HeaderCell>
+                    <Table.HeaderCell>Yr.</Table.HeaderCell>
+                    <Table.HeaderCell>Section</Table.HeaderCell>
+                    <Table.HeaderCell>Course</Table.HeaderCell>
+                    <Table.HeaderCell>Sem-S.Y.</Table.HeaderCell>
+                    <Table.HeaderCell>Issued On</Table.HeaderCell>
+                </Table.Row>
+            </Table.Header>
+
+            <Table.Body>
+                {props.violationRecords.map((it, ix)=>{
+                    return(
+                        <Table.Row key={it.id}>
+                            <Table.Cell style={{maxWidth:'300px'}}>{it.v_name}</Table.Cell>
+                            <Table.Cell>{it.yearlevel}</Table.Cell>
+                            <Table.Cell>{it.section}</Table.Cell>                                            
+                            <Table.Cell>{it.course}</Table.Cell>
+                            <Table.Cell>{it.sem_name}, {it.ay_name}</Table.Cell>
+                            <Table.Cell>{it.issued_on} {it.time}</Table.Cell>
+                        </Table.Row>
+                    )
+                })}
+            </Table.Body>
+
+        </React.Fragment>
+    )
+}
+
+const ViolationRecordHeaderGrouped = (props) => {
+    return(
+        <React.Fragment>
+            <Table.Header>
+                <Table.Row>
+                    <Table.HeaderCell>Violation</Table.HeaderCell>
+                    <Table.HeaderCell>Yr.</Table.HeaderCell>
+                    <Table.HeaderCell>Section</Table.HeaderCell>
+                    <Table.HeaderCell>Course</Table.HeaderCell>
+                    <Table.HeaderCell>Sem-S.Y.</Table.HeaderCell>
+                    <Table.HeaderCell>No. of Records</Table.HeaderCell>
+                </Table.Row>
+            </Table.Header>
+
+            <Table.Body>
+                {props.violationRecords.map((it, ix)=>{
+                    return(
+                        <Table.Row key={it.id}>
+                            <Table.Cell style={{maxWidth:'300px'}}>{it.v_name}</Table.Cell>
+                            <Table.Cell>{it.yearlevel}</Table.Cell>
+                            <Table.Cell>{it.section}</Table.Cell>                                            
+                            <Table.Cell>{it.course}</Table.Cell>
+                            <Table.Cell>{it.sem_name}, {it.ay_name}</Table.Cell>
+                            <Table.Cell>{it.max_existing_record}</Table.Cell>
+                        </Table.Row>
+                    )
+                })}
+            </Table.Body>
+
+        </React.Fragment>
+    )
+}
+
 
 const MessageEmpty =  () => {
     return(

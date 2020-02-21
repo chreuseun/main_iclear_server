@@ -11,8 +11,8 @@ var query = require('../../reuse/query')
 var sql = require('../../../mysql/queries/accounts/Login')
 
 const asyncGetCourseLevel = async ({res, token, params}) => {
-    
-    let error  = false;    
+
+    let error = false;
     let jwtResult;
     let sqlResult;
 
@@ -26,7 +26,7 @@ const asyncGetCourseLevel = async ({res, token, params}) => {
         error  = true; 
     }
 
-    try{       
+    try{
         sqlResult = await query(sql.select_blacklist_token, [jwtResult.token, jwtResult.decoded.id])
     } catch (err) {
         error  = true; 
@@ -36,7 +36,13 @@ const asyncGetCourseLevel = async ({res, token, params}) => {
     try{
         if(sqlResult[0].is_token === 'AUTH') {
 
-            let sql = `SELECT 
+            let sql = `
+                        SET @d_name = ?;
+                        SET @level = ?;
+                        SET @type = ?;
+                        SET @state = ?;
+
+                        SELECT 
                             d.name as 'd_name',    
                             el.name as 'el_name',
                             dt.name as 'd_type_name',
@@ -45,6 +51,7 @@ const asyncGetCourseLevel = async ({res, token, params}) => {
                             d.head_officer,
                             d.state as 'd_state',
                             is_coursed,
+                            d.student_department,
                             
                             d.id as 'd_id',
                             d.department_type_id as 'd_type',
@@ -53,10 +60,21 @@ const asyncGetCourseLevel = async ({res, token, params}) => {
                         FROM departments d
                         JOIN departments_type dt ON dt.id = d.department_type_id
                         JOIN educ_level el ON el.id = d.educ_level_id
-                        
-                        WHERE d.department_type_id != 1 `;
 
-            sqlResult = await query(sql, [])
+                        WHERE d.department_type_id != 1
+                            AND d.name LIKE @d_name   
+                            AND el.id LIKE @level 
+                            AND d.department_type_id LIKE @type
+                            AND d.state LIKE @state; `;
+
+            console.log(params);
+
+            sqlResult = await query(sql, [
+                `%${params.text}%`,
+                `%${params.level}%`,
+                `%${params.type}%`,
+                `%${params.state}%`
+            ])
         }
     } catch (err){
         error  = true;  
@@ -64,7 +82,7 @@ const asyncGetCourseLevel = async ({res, token, params}) => {
 
     error ? 
         res.sendStatus(401) : 
-        res.json({ sqlResult:sqlResult})
+        res.json({ sqlResult:sqlResult[4]})
 }
 
 module.exports =  asyncGetCourseLevel

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Table, Segment, Radio, Container } from 'semantic-ui-react'
+import { Table, Segment, Radio, Container, Form, Input, Checkbox, Button, Select } from 'semantic-ui-react'
 import { withRouter } from 'react-router-dom'
 import axios from 'axios';
 import baseURL from '../../../../../res/baseuri'
@@ -12,6 +12,12 @@ function ManageUsers(props) {
 
     const [userList, setUserList] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+
+    // filters
+    const [text, setText] = useState('');
+    const [type, setType] = useState('');
+    const [locked, setLocked] = useState('');
+    const [state, setState] = useState('');
 
     useEffect( () => {
 
@@ -26,7 +32,7 @@ function ManageUsers(props) {
 
                 const fetch = await axios.post(uri.getAccounts,{},header);
 
-                const authorization = await await axios.post(`${baseURL}/api/auth` ,{} ,header);
+                const authorization = await axios.post(`${baseURL}/api/auth` ,{} ,header);
 
                 if(authorization.data.msg !== 'auth' || !authorization || authorization.data.user_details.user_type_id !== 'ADMIN') {
                     localStorage.clear();
@@ -35,19 +41,33 @@ function ManageUsers(props) {
 
                 setUserList(fetch.data.sqlResult);
 
-
-
-
             } catch(err) {
-                localStorage.clear()
-                history.push('/')
-               
+                localStorage.clear();
+                history.push('/');
             }
-            
         }
         x();
         
       }, []);
+
+    const optType = [
+        {key:'ALL',text:'ALL', value:''},
+        {key:'ADMIN',text:'ADMIN', value:'ADMIN'},
+        {key:'USER',text:'USER', value:'USER'},
+        {key:'SUBJECT',text:'SUBJECT', value:'SUBJECT'}
+    ]
+
+    const optLocked = [
+        {key:'ALL',text:'ALL', value:''},
+        {key:'1',text:'YES', value:'1'},
+        {key:'0',text:'NOT', value:'0'}
+    ]
+
+    const optState = [
+        {key:'ALL',text:'ALL', value:''},
+        {key:'1',text:'Active', value:'1'},
+        {key:'0',text:'Inactive', value:'0'},
+    ]
     
     const { match, location, history } = props
     
@@ -94,8 +114,6 @@ function ManageUsers(props) {
         }
     }
 
-
-
     const x = userList.map((it, idx) => {
         return(
         <Table.Row key={it.id}>
@@ -112,7 +130,45 @@ function ManageUsers(props) {
             </Table.Cell>
             <Table.Cell>{it.contact_number}</Table.Cell>
         </Table.Row>)
-    })
+    });
+
+    const FormFilterApi = async()=>{
+        try{
+        
+            const header = {
+                headers: {
+                    authorization : localStorage.getItem('x')
+                }
+            }
+
+            const fetch = await axios.post(`${baseURL}/api/getaccounts?text=${text}&type=${type}&locked=${locked}&state=${state}` ,{},header);
+
+           
+            setUserList(fetch.data.sqlResult);
+
+        } catch(err) {
+            localStorage.clear();
+            history.push('/');
+        }
+    }
+
+    const onTextChange = (e) => {
+        setText(e.target.value);
+    }
+
+    const onTypeChange = (e,{value}) => {
+        setType(value)
+    }
+
+    const onLockedChange = (e,{value}) => {
+        setLocked(value)
+    }
+
+    const onStateChange = (e,{value}) => {
+        setState(value)
+    }
+
+
 
     return(
 
@@ -120,7 +176,59 @@ function ManageUsers(props) {
             <h2>Manage Users</h2>
 
             <Segment style={{ overflow: 'auto', maxHeight: '1000vh' }}>
+
+            <div>
+                <Form>
+                    <Form.Group widths='equal'>
+                        <Form.Field
+                            control={Input}
+                            label='Search'
+                            placeholder='Search name'
+                            value={text}
+                            onChange={onTextChange}
+                        />
+
+                        <Form.Field
+                            control={Select}
+                            label='Type'
+                            options={optType}
+                            placeholder='Type'
+                            onChange={onTypeChange}
+                        />
+
+                        <Form.Field
+                            control={Select}
+                            label='Locked'
+                            options={optLocked}
+                            placeholder='Locked'
+                            onChange={onLockedChange}
+                        />
+
+                        <Form.Field
+                            control={Select}
+                            label='State'
+                            options={optState}
+                            placeholder='State'
+                            onChange={onStateChange}
+                        />
+
+                        <Form.Field
+                            control={Button}
+                            label='Search'
+                            onClick={()=>{
+                                FormFilterApi();
+                            }}
+                            content="Search"
+                            placeholder='State'
+                        />
+                    </Form.Group>
+                </Form>
+            </div>
+            
             <Segment.Group horizontal>
+
+            
+
             <Table singleLine>
                 <Table.Header>
                     <Table.Row>

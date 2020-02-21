@@ -29,9 +29,15 @@ router.get('/violation/user/:deptVioId', (req, res) => {
     args = {
         res, 
         token ,
-        params:[
-            req.params.deptVioId
-        ]
+        params:{
+            deptVioId : req.params.deptVioId,
+            text: req.query.text || '',
+            level: req.query.level || '',
+            course: req.query.course || '',
+            yrlvl: req.query.yrlvl || '',
+            section: req.query.section || ''
+
+        }
     }
 
     GetVioDeptStudentList(args)
@@ -239,16 +245,14 @@ router.get('/violation/user/:deptVioId/violations/student/records/:std', (req, r
     const getStudentViolationByUsername = require('./functions/getStudentViolationByStudentUsername')
 
     let token = req.headers.authorization
-
-
-    console.log(req.params.std)
-
+    console.log(req.query)
     args = {
         res, 
         token ,
-        params:[
-            req.params.std || ''
-        ]
+        params:{
+            std:req.params.std || '',
+            mode : req.query.mode || '' // {1:grouped}, {0:breadown}
+        }
     }
 
     getStudentViolationByUsername(args)

@@ -8,18 +8,16 @@ import axios from 'axios';
 import Events from './components/Events/Event';
 import Records from './components/Records/Records'
 
-const SelectedVioDept = (props) => {
+const SelectedActivityDept = (props) => {
 
     
-    const { location ,match, history } = props
+    const { location , history } = props
 
-    const [didMount, setDidMount] = useState(false);
     const [actDeptInfo, setActDeptInfo] = useState({});
     const [subMenu, setSubMenu] = useState('Events');
    
     useEffect(() => {
 
-        setDidMount(true);
         let UpdateHook = true;
 
         const fetchData = async() => {
@@ -50,10 +48,6 @@ const SelectedVioDept = (props) => {
         return () => (UpdateHook=false)
 
     },[])
-    
-    if(!didMount){
-        return null;
-    }
 
     const subMenOnClick = (e, {name}) => {
         setSubMenu(name);
@@ -62,7 +56,7 @@ const SelectedVioDept = (props) => {
     const ActiveSubmenu = () => {
 
         if(subMenu === 'Events') 
-        {return(<Events {...props}/>)}
+        {return(<Events {...props} actDeptInfo={actDeptInfo}/>)}
 
         if(subMenu === 'Records') 
         {return(<Records {...props}/>)}
@@ -74,6 +68,7 @@ const SelectedVioDept = (props) => {
             <div>
                 <Header as='h2'>
                     { actDeptInfo.d_name || '' } {'-'} { actDeptInfo.el_name || '' }
+                    
                     <Header.Subheader>
                         Manage our student Activity records and dept. settings
                     </Header.Subheader>
@@ -82,22 +77,24 @@ const SelectedVioDept = (props) => {
             <hr></hr>
 
             <div>
+
                 <Menu attached='top' tabular>
+
                     <Menu.Item
                         name='Events'
                         onClick={subMenOnClick}
                         active={subMenu === 'Events'}
                     />
-                    
+
                     <Menu.Item
                         name='Records'
                         onClick={subMenOnClick}
                         active={subMenu === 'Records'}
-                    />                            
+                    />
                 </Menu>
 
                 <Segment attached='bottom'>
-                    { <ActiveSubmenu {...props}/> }
+                    { <ActiveSubmenu  {...props}/> }
                 </Segment>
             </div>
 
@@ -107,6 +104,13 @@ const SelectedVioDept = (props) => {
 }
 
 
+
+export default withRouter(SelectedActivityDept)
+
+
+
+
+/*
 const MessageEmpty =  () => {
     return(
         <Message warning>
@@ -116,4 +120,4 @@ const MessageEmpty =  () => {
     )
 }
 
-export default withRouter(SelectedVioDept)
+*/

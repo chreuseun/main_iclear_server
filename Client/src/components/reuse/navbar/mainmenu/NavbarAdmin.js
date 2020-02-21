@@ -235,7 +235,6 @@ const NavbarAdmin = (props) => {
                 
                 <Container style={{marginTop:"50px"}}>
                         <SubmenuComponent/>
-                        
                 </Container>
 
             </BrowserRouter>

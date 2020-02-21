@@ -6,22 +6,26 @@ const secretkey = require('../../auth/secretkey'); // 1
 const jwtVerify = (token) => {
     return(
         new Promise((resolve, reject) => {
-    
+
             if(token && token.split(" ")[1] && token.split(" ")[0] === 'Bearer') {
 
                 // Verify token final step
-                token = token.split(" ")[1]; 
-        
+                token = token.split(" ")[1];
+
                 jwt.verify(token, secretkey, function(err, decoded) {
                     if(decoded) {
-                        resolve({token, decoded})
+
+                        resolve({token, decoded});
+
                     } else {
-                        reject('error') 
+
+                        reject(null)
+
                     }
                 })
             } else {
-            
-                reject('error')
+                // console.log('error in token format')
+                reject(null)
             }
         })
     )

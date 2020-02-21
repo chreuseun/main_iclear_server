@@ -49,17 +49,15 @@ const  FormExampleSubcomponentControl=  (props) => {
 
                 let result = await axios.post(`${baseURL}/api/departmentstype/get`,{},header);
                 setType(result.data.sqlResult)
-                console.log('TYPE OK');
-
-                // 
+                // console.log('TYPE OK');
 
                 result = await axios.post(`${baseURL}/api/educlevel/get`,{},header);
                 setAcadLevel(result.data.sqlResult)
-                console.log('acadlevel OK');
+                // console.log('acadlevel OK');
 
                 result = await axios.post(`${baseURL}/api/educcourselevel/get`,{},header);
                 setSubDate(result.data.sqlResult)
-                console.log('yr_cors OK');
+                // console.log('yr_cors OK');
 
                 setLoader(false)
 
@@ -118,7 +116,6 @@ const  FormExampleSubcomponentControl=  (props) => {
           setValCrsDept('');
 
           alert('Department Added');
-
         } else {
           alert('Adding Department Failed...');
         }
@@ -140,18 +137,17 @@ const  FormExampleSubcomponentControl=  (props) => {
 
     // ACADLEVEL CAHNGE
     const acadlevel_handleChange = async(e, { value }) => {
-        setValAcadLevel(value)
-
-        setCrsDept([])
-        setYearLevel([]);
-        setCourse([]);
-
-        setValCrsDept('')
-        setValYearLevel('');
-        setValCourse('');
-
         
+      setValAcadLevel(value)
+      setCrsDept([])
+      setYearLevel([]);
+      setCourse([]);
+      setValCrsDept('')
+      setValYearLevel('');
+      setValCourse('');
+ 
         try{
+
           const header = {
             headers: {
                 authorization : localStorage.getItem('x')
@@ -163,11 +159,8 @@ const  FormExampleSubcomponentControl=  (props) => {
 
 
         } catch(err) {
-                // props.history.push('/')
-        } 
-
-        
- 
+                props.history.push('/')
+        }  
     }
 
     // Course Changed
@@ -184,11 +177,10 @@ const  FormExampleSubcomponentControl=  (props) => {
 
     // Dept Changed
     const crsDept_handleChange = (e, { value }) => {
+      
       setValCrsDept(value);
-
       setYearLevel([]);
       setCourse([]);
-
       setValYearLevel('');
       setValCourse('');
 
@@ -203,16 +195,20 @@ const  FormExampleSubcomponentControl=  (props) => {
         return item.educ_level_id === valAcadLevel  
       }) )
 
-      setCourse( [ {key:'-ALL',value:'-ALL', text: '-ALL' }, ...filter.map((it, idx) => { 
-        console.log(it)
-        return {key:it.course,value:it.course, text: it.course }
-      }) ] )
+      if(value === 'ALL') {
+        setCourse( [ ...filter.map((it, idx) => { 
+          return {key:it.course,value:it.course, text: it.course }
+        }) ] );
+  
+      } else {
+        setCourse( [ {key:'ALL', value: 'ALL', text: 'ALL' }, ...filter.map((it, idx) => { 
+          return {key:it.course,value:it.course, text: it.course }
+        }) ] );
+      }
 
-      setYearLevel( filter1.map((it, idx) => { 
-        console.log(it)
+      setYearLevel( filter1.map((it, idx) => {
         return {key:it.yearlevel,value:it.yearlevel, text: it.yearlevel }
       }))
-
     }
 
     const onIsRadio_handleChange = (e, {value}) => {
@@ -224,8 +220,8 @@ const  FormExampleSubcomponentControl=  (props) => {
 
       return(
           <React.Fragment>
-               {/* SELECT [NONE, REG, FIN] */}
-             <Form>
+            {/* SELECT [NONE, REG, FIN] */}
+ 
               <Form.Group widths='equal'  >
                 <Form.Field>
                   <Radio
@@ -259,7 +255,7 @@ const  FormExampleSubcomponentControl=  (props) => {
                   />  
                 </Form.Field>
               </Form.Group>
-            </Form>
+
           </React.Fragment>
       )
     }
@@ -299,7 +295,6 @@ const  FormExampleSubcomponentControl=  (props) => {
             {/* SET TRADITION IF NONE , REGISTRAR, FINANCE */}
 
             {valType === 2 ?  <TradionSubDept/> : ''}
-          
 
             <Form.Field >
               <Label as='a' color='blue'  ribbon>Acadamic Level</Label>
@@ -367,7 +362,6 @@ const  FormExampleSubcomponentControl=  (props) => {
 
       </Container>
     )
-  
 }
 
 export default withRouter(FormExampleSubcomponentControl);

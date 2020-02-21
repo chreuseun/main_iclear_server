@@ -23,28 +23,38 @@ const getStudents = async({res, token, params}) => {
     } catch (err) {
         error  = true; 
     }
+    console.log(params)
 
     // insert new department
     try{
         if(sqlResult[0].is_token === 'AUTH') {
 
-            let sql = `INSERT INTO user_type (id)
-                        VALUES ?`;
-
-            sqlResult = await query(_sql.getStudent, params );
+            sqlResult = await query(_sql.getStudent, [
+                `%${params.text}%`,
+                `%${params.level}%`,
+                `%${params.course}%`,
+                `%${params.yrlvl}%`,
+                `%${params.section}%`
+            ] );
         }
     } catch (err){
-        error  = true;  
+        error  = true;
     }
-
 
     error ? 
     res.sendStatus(401) : 
-    res.json({ data:sqlResult })
+    res.json({ data:sqlResult[5] })
 }
 
 let _sql = {
-    getStudent : `SELECT 
+    getStudent : `
+                SET @text := ?;
+                SET @level := ?;
+                SET @course := ?;
+                SET @yrlvl := ?;
+                SET @section := ?;
+
+                SELECT 
                     s.*,
                     el.name AS 'el_name',
                     sem.name AS 'sem_name',
@@ -55,7 +65,17 @@ let _sql = {
                 FROM student_ s
                 JOIN educ_level el ON el.id = s.educ_level_id
                 JOIN semester sem ON sem.id = s.semester_id
-                JOIN acad_year ay ON ay.id = s.acad_year_id`
+                JOIN acad_year ay ON ay.id = s.acad_year_id
+                
+                WHERE
+                    s.educ_level_id LIKE @level AND
+                    s.course LIKE @course AND
+                    s.yearlevel LIKE @yrlvl AND 
+                    s.section LIKE @section AND 
+                    (studfname LIKE @text OR
+                    studmname LIKE @text OR
+                    studlname LIKE @text OR
+                    username LIKE @text); `
 }
 
 

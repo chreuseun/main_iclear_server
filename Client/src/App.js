@@ -1,17 +1,17 @@
-import React, {useState, useEffect} from 'react';
-import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom'
-import { Menu as men , Container, Dropdown } from 'semantic-ui-react';
+import React, {useEffect} from 'react';
+import {  Route, Switch, Redirect } from 'react-router-dom'
+import { Menu as men  } from 'semantic-ui-react';
 
 
 // < -COMPONENTS- >
 import Login from '../src/components/pages/login/login'
 import MenuPage from '../src/components/pages/protected/menu/menu'
-import Test from '../src/components/reuse/test_ly'
-import LauncherScanner from './components/pages/protected/menu/menuUser/menuActivityCard/components/SelectedActDept/components/Events/components/LaunchScanner/LaunchScanner';
+// import Test from '../src/components/reuse/test_ly'
+// import LauncherScanner from './components/pages/protected/menu/menuUser/menuActivityCard/components/SelectedActDept/components/Events/components/LaunchScanner/LaunchScanner';
 
 // NAVBAR ADMIN
 import NavbarAdmin from './components/reuse/navbar/mainmenu/NavbarAdmin';
-import NavbarUser from './components/reuse/navbar/mainmenu/NavbarUser';
+
 
 // USER departments
 import DepartmentSelection from './components/pages/protected/menu/menuUser/menuRefactorUser/DepartmentSelection';
@@ -31,7 +31,10 @@ import RefSelectedActDept from './components/pages/protected/menu/menuUser/menuR
 import Scanner from './components/pages/protected/menu/menuUser/menuActivityCard/components/SelectedActDept/components/Events/components/LaunchScanner/LaunchScanner';
 
 // Class
-import RefSubjectList from './components/pages/protected/menu/menuTeacher/RefactorSubject/RefSubjectList'
+// import RefSubjectList from './components/pages/protected/menu/menuTeacher/RefactorSubject/RefSubjectList'
+
+// Class (Overhaul)
+import NewSelectedSubject from './components/pages/protected/menu/menuTeacher/NewSubject/SelectedSubject.js/SelectedSubject';
 
 const  App = (props) => {
 
@@ -75,7 +78,7 @@ const  App = (props) => {
           {/* ADMIN */}
 
           {/* USER */}
-          <Route exact path={'/menu/dep' }              render={(props) => <DepartmentSelection  {...props}/>}/> 
+          <Route exact path={'/menu/dep' }              render={(props) => <DepartmentSelection  {...props}/>} />
 
           {/* DEPARTMENTS */}
           <Route exact path={'/menu/dep/:dept'}         render={(props) => <SelectedDepartment {...props}/>} /> 
@@ -83,39 +86,31 @@ const  App = (props) => {
           <Route exact path={'/menu/dep/:dept/clr'}     render={(props) => <RefMenuDepartmentClearance {...props} />} /> 
           <Route exact path={'/menu/dep/:dept/sub'}     render={(props) => <RefRegisterSubject {...props} text={'subject'}/>} />
           {/* DEPARTMENTS */}
-            
+
           {/* VIOLATION SYSTEM */}
           <Route  exact path={ '/menu/viol'} render={(props) => <RefMainViolation {...props}/>}/>
           <Route  exact path={'/menu/viol/:dept'} render={(props) => <RefSelectedVioDept {...props}/>}/ >  
           <Route  exact path={'/menu/viol/:dept/settings'} render={(props) => <RefVioDeptSettings {...props}/>}/>  
-          {/* VIOLATION SYSTEM */}                    
+          {/* VIOLATION SYSTEM */}
 
           {/* ACTIVITY */}
-          <Route  exact path={'/menu/act'}       render={(props) => <RefMainActCard {...props}/> }/>                       
-          <Route  exact path={'/menu/act/:dept'} render={(props) => <RefSelectedActDept {...props}/> }/>                 
-          <Route  exact path={'/menu/act/:dept/scan'}  render={(props) => <NavbarUser {...props}/>} />
-          {/* ACTIVITY */}
+          <Route  exact path={'/menu/act'}       render={(props) => <RefMainActCard {...props}/> }/>
+          <Route  exact path={'/menu/act/:dept'} render={(props) => <RefSelectedActDept {...props}/> }/>
 
+          {/* <Route  exact path={'/menu/act/:dept/scan'}  render={(props) => <NavbarUser {...props}/>} /> */}
+          {/* ACTIVITY */}
 
           {/* SUBJECT TEACHER */}
-          <Route  exact path={'/menu/class'}  render={(props) => <RefSubjectList {...props}/>} />
+          <Route  exact path={'/menu/subject/:subject_id'}  render={(props) => <NewSelectedSubject {...props} text={'/menu/subject/:subject_id'}/>} />
 
           <Route exact path={'/scanner'} render={(props) => <Scanner {...props} />}  />
-
-
-
-
           {/* USER */}
           <Route exact path={'/test'} render={()=><SamplePage/>} />
           <Route exact path={'/test/scan'} render={()=><SamplePage/>} />
-
-
-
-
           <Route path='*' exact={true} render={ (props) => <RedirectToLogin {...props}/> }/>
 
         </Switch>
-      </div>
+      </div>  
 
   );
 }

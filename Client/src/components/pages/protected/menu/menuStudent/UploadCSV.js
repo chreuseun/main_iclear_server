@@ -124,7 +124,7 @@ function ManageDepartment(props) {
                                   it.field1, // id
                                   `${ValAcadLevel.id}`, // educ_level_id
                                   `${ValAcadLevel.code}${it.field1}`, // username
-                                  `$2y$14$0KXJgXTja40eZLNTf7oSy.y6buQOKuuCKcSK87Hh3cNjHzaU95fa6`, // password
+                                  `$2y$14$ic5Y36G3r5oZ19kZxaoQ/u/JItjRHSvYyO3x/FCkbzUjmkp7KWbGK`, // password
                                   it.field2, // image_url
                                   it.field3, // studfname
                                   it.field4, // studmname

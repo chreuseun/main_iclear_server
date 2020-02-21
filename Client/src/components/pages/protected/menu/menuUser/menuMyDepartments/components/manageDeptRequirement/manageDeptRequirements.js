@@ -7,7 +7,7 @@ import { async } from 'q';
 
 function ManageAcadYear(props) {
 
-    const { match, location, history } = props
+    const { location } = props
 
     const [didMount, setDidMount] = useState(false)
 
@@ -139,11 +139,13 @@ function ManageAcadYear(props) {
 
                 <Button 
                     onClick={()=>{saveReqOnClick()}}
-                    style={{marginTop:'5px'}} color='green'>Save</Button> 
+                    style={{marginTop:'5px'}} color='green'>Save
+                </Button> 
+
             </Container>
           
             <Segment style={{ overflow: 'auto', maxHeight: '1000vh' }}>
-           
+
                 <Segment.Group horizontal>                    
                     <Table singleLine>
                         <Table.Header>

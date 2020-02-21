@@ -78,7 +78,7 @@ function ManageAcadYear(props) {
     }
 
     const setActSemester = async(sem_name) => {
-        
+
         try{
             const header = {
                 headers: {
@@ -100,20 +100,20 @@ function ManageAcadYear(props) {
     const componentDeptList = deptList.map((it, idx) => {
         return(
             <Table.Row key={it.id}  negative={it.state==="1"? false : true} >
-                      
+
                 <Table.Cell>
                     <Radio onClick={() =>{setActSemester(it.name)} } toggle checked={it.state==='1'?true:false}/> 
                 </Table.Cell>
                 <Table.Cell>{it.name}</Table.Cell>
-            </Table.Row>      
+
+            </Table.Row>
         )
-    })
+    });
 
     return(
         <Container>
         
             <div>
-                {JSON.stringify(history)}
             </div>
             <h2>Manage Semester</h2>
             
@@ -123,10 +123,12 @@ function ManageAcadYear(props) {
                     <Table singleLine>
 
                         <Table.Header>
+
                             <Table.Row>
                                 <Table.HeaderCell>Active Semester</Table.HeaderCell>
                                 <Table.HeaderCell>Name</Table.HeaderCell>
                             </Table.Row>
+
                         </Table.Header>
 
                         <Table.Body>

@@ -72,24 +72,24 @@ const MyDepartments = (props) => {
 
     const ButtonSubject = () => {
      
-        
-        if(myDeptList.is_subdep!=='reg'){
-            return    null
-        }
-
-        return(
+        if(myDeptList.is_subdep === 'reg' && (myDeptList.el_id === 1 || myDeptList.el_id === 2) ) {
+            return(
             
-            <Grid.Column key={3}>
-                            
-                <Button  
-                    onClick={()=>pushTo('sub')}
-                    primary
-                    size='huge' 
-                    fluid>Subjects
-                </Button>
-                                                    
-            </Grid.Column>   
-        )
+                <Grid.Column key={3}>
+                                
+                    <Button  
+                        onClick={()=>pushTo('sub')}
+                        primary
+                        size='huge' 
+                        fluid>Subjects
+                    </Button>
+                                                        
+                </Grid.Column>   
+            )
+        } else {
+            return(null)
+        }
+        
     }
         
 

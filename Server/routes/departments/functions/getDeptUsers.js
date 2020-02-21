@@ -65,7 +65,7 @@ let _sql= {
                             coalesce(acc.lastname, '') as 'lastname',
                             coalesce(acc.firstname, '') as 'firstname',
                             coalesce(acc.middlename, '') as 'middlename'
-                        FROM account acc WHERE acc.user_type_id != 'ADMIN') AS user
+                        FROM account acc WHERE NOT acc.user_type_id IN ('ADMIN', 'SUBJECT')) AS user
                         
                     LEFT JOIN 
                         (SELECT 
@@ -73,7 +73,7 @@ let _sql= {
                         FROM account acc
                         JOIN account_departments ad ON ad.account_id = acc.id
 
-                        WHERE ad.departments_id = ? AND acc.user_type_id != 'ADMIN') AS dep ON dep.acc_id = user.acc_id`,
+                        WHERE ad.departments_id = ? AND NOT acc.user_type_id IN ('ADMIN', 'SUBJECT') ) AS dep ON dep.acc_id = user.acc_id`,
     getDeptOne : `SELECT 
                 d.name as 'd_name',    
                 el.name as 'el_name',

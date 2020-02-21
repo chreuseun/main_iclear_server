@@ -13,6 +13,7 @@ const updateClassIssueRemarks = async ({res, token, params}) => {
     } catch(err) {
         error  = true; 
     }
+    
     if(!jwtResult) {
         error  = true; 
     }

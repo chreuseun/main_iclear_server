@@ -16,7 +16,7 @@ router.get('/filter_student/acad_level_id', (req, res)=> {
     getAcadLevelId(args)
 
     console.log( `Methed: ${req.route.stack[0].method}  ${req.route.path}`);
-})
+});
 
 // Get All Course
 router.get('/filter_student/course', (req, res)=> {
@@ -34,7 +34,7 @@ router.get('/filter_student/course', (req, res)=> {
     getCourse(args)
 
     console.log( `Methed: ${req.route.stack[0].method}  ${req.route.path}`);
-})
+});
 
 // Get All yearlevel
 router.get('/filter_student/yearlevel', (req, res)=> {
@@ -52,7 +52,7 @@ router.get('/filter_student/yearlevel', (req, res)=> {
     getYearLevel(args)
 
     console.log( `Methed: ${req.route.stack[0].method}  ${req.route.path}`);
-})
+});
 
 // Get All Section
 router.get('/filter_student/section', (req, res)=> {
@@ -70,19 +70,53 @@ router.get('/filter_student/section', (req, res)=> {
     getSection(args);
 
     console.log( `Methed: ${req.route.stack[0].method}  ${req.route.path}`);
+});
+
+router.get('/filter_student/class/educ_level', (req, res)=> {
+
+    const getClassAcadLevel = require('./function/getClassAcadLevel')
+
+    let token = req.headers.authorization
+
+    args = {
+        res, 
+        token ,
+        params : [req.body.values] // 
+    }
+
+    getClassAcadLevel(args);
+
+    console.log( `Methed: ${req.route.stack[0].method}  ${req.route.path}`);
+});
+
+router.get('/filter_student/class/course', (req, res) => {
+    const getClassCourse = require('./function/getClassCourse')
+
+    let token = req.headers.authorization
+
+    args = {
+        res, 
+        token ,
+        params : [req.query.educlevel] // 
+    }
+
+    getClassCourse(args);
+    console.log( `Methed: ${req.route.stack[0].method}  ${req.route.path}`);
 })
-
-
 
 /*
 SELECT 
-	yearlevel AS 'key',
-    yearlevel AS 'value',
-    yearlevel AS 'text'
+	data as 'key', 
+    data as 'value', 
+    data as 'text'
+FROM
+(SELECT 
+	DISTINCT course AS 'data'
 
 FROM student_
 
-GROUP By yearlevel ORDER BY yearlevel
+WHERE educ_level_id = 1) as main
+
 */
 
 module.exports = router;

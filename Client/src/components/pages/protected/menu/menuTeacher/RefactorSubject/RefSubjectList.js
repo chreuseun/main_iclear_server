@@ -116,7 +116,10 @@ const NavbarUser = (props) => {
                 </Menu>
 
                 <Container   style={{marginTop:"100px", padding:'20px'}}>
-                    <SubjectList pushToLink={pushToLink} userDetails={userDetails} />
+
+
+                    {/* <SubjectList pushToLink={pushToLink} userDetails={userDetails} /> */}
+                    
                 </Container>
             </BrowserRouter>
         

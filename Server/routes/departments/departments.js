@@ -1,5 +1,4 @@
 // STATUS : WORKING
-
 const router = require('express').Router();
 
 // ADMIN
@@ -18,7 +17,7 @@ router.post('/departmentstype/get', (req, res) => {
     getDepartments(args)
 
     console.log('> POST - /api/menu/departments/get')
-})
+});
 
 router.post('/departmentinsert', (req, res) => {
 
@@ -53,7 +52,7 @@ router.post('/departmentinsert', (req, res) => {
     insertDepartment(args)
  
     console.log('> POST - /api/menu/departmentinsert')
-})
+});
 
 router.get('/department/get', (req, res) => {
 
@@ -64,13 +63,18 @@ router.get('/department/get', (req, res) => {
     args = {
         res, 
         token ,
-        params:[]
+        params:{
+            text : req.query.text || '',
+            level : req.query.level || '',
+            type : req.query.type || '',
+            state : req.query.state || ''
+        }
     }
 
     getDepartments(args)
  
     console.log('> POST - /api/menu/department/get')
-})
+});
 
 router.post('/department/getone', (req, res) => {
 
@@ -89,7 +93,7 @@ router.post('/department/getone', (req, res) => {
     getDepartments(args)
  
     console.log('> POST - /api/menu/department/getone')
-})
+});
 
 router.get('/departments/:dept_id/users', (req, res) => {
     
@@ -109,7 +113,7 @@ router.get('/departments/:dept_id/users', (req, res) => {
     getDepartmentsUser(args)
  
     console.log('> POST - /api/menu/departments/:dept_id/users')
-})
+});
 
 router.post('/departments/users/add', (req, res) => {
 
@@ -129,7 +133,7 @@ router.post('/departments/users/add', (req, res) => {
     addDeptUser(args)
  
     console.log('> POST - /api/menu/departments/users/add')
-})
+});
 
 router.post('/departments/users/delete', (req, res) => {
 
@@ -149,7 +153,7 @@ router.post('/departments/users/delete', (req, res) => {
     delDeptUser(args)
  
     console.log('> POST - /api/menu/departments/users/delete')
-})
+});
 
 router.post(`/department/update`,(req, res) => {
     
@@ -162,7 +166,9 @@ router.post(`/department/update`,(req, res) => {
         req.body.valYearLevel,
         req.body.valHeadOff,
         `${req.body.valStatus}`,
-        req.body.valDepartment_id   
+        req.body.valCrsDept,
+        req.body.valIsChecked,
+        req.body.valDepartment_id
     ]
 
     let token = req.headers.authorization
@@ -179,10 +185,9 @@ router.post(`/department/update`,(req, res) => {
     depUpdate(args)
     
     console.log('> POST - /api/menu/departments/users/delete')
-})
+});
 
 // USER ============================================================================
-
 router.get('/departments/user', (req, res) => {
     
     const getDeptByAccId = require('./functions/getDeptByAccId');
@@ -199,7 +204,7 @@ router.get('/departments/user', (req, res) => {
     getDeptByAccId(args)
  
     console.log('> POST - /api/menu/departments/users/:acc_id')
-})
+});
 
 router.get('/departments/coursedepartment/:el_id', (req,res) => {
     const getCourseDept = require('./functions/getCourseDepartment');
@@ -217,7 +222,7 @@ router.get('/departments/coursedepartment/:el_id', (req,res) => {
     getCourseDept(args)
  
     console.log(`> POST - /api${req.url}`)
-})
+});
 
 router.get('/departments/:d_id/req/get', (req, res) => {
 
@@ -234,7 +239,7 @@ router.get('/departments/:d_id/req/get', (req, res) => {
     getDeptReq(args)
     
     console.log('> POST - /api/menu/:d_id/req/get')
-})
+});
 
 router.post('/departments/req/add', (req, res) => {
 
@@ -258,7 +263,7 @@ router.post('/departments/req/add', (req, res) => {
     AddRequirements(args)
     
     console.log('> POST - /api/menu/departments/req/add')
-})
+});
 
 router.get('/departments/:dep/std', (req, res) => {
 
@@ -274,12 +279,19 @@ router.get('/departments/:dep/std', (req, res) => {
     args = {
         res, 
         token ,
-        params: data
+        params: {
+            dep: req.params.dep,
+            text: req.query.text || '',
+            level: req.query.level || '',
+            course: req.query.course || '',
+            yrlvl: req.query.yrlvl || '',
+            section: req.query.section || ''
+        }
     }
 
     AddRequirements(args)
     
     console.log('> POST - /api/menu/departments/:dep/std')
-})
+});
 
 module.exports = router

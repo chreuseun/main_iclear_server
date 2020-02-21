@@ -56,11 +56,7 @@ const ModalScrollingExample = (props) => {
 
         return () => (xa=false)
 
-      }, []);
-
-    if(!didMount) {
-        return null
-    }
+    }, []);
 
     // click the requirement trun the check to TRUE or FALSE
     const onSelected = (id) => {
@@ -117,28 +113,6 @@ const ModalScrollingExample = (props) => {
                 ])
             })  
 
-
-            console.log('addData   ', addData)
-
-            
-
-            // let toAdd = (requirements.filter((it)=>{            
-            //     return it.selected === true
-            // })).map((it, id)=>{
-
-       
-            //     return([
-            // 
-            //         it.context,
-            //         props.userDetails.id,
-            //         props.studentInfo.s_crs,
-            //         props.studentInfo.s_yr,
-            //         props.studentInfo.s_sec
-            //     ])
-            // })  
-            
-            
-
             // if length is NOT ZERO
             if(addData.length !== 0){
 
@@ -187,7 +161,7 @@ const ModalScrollingExample = (props) => {
     }
 
     return(
-        <Container fluid onClick={()=> {}}>
+        <Container fluid >
 
             <Dimmer active={load} inverted>
                 <Loader inverted content='Loading' />
@@ -198,7 +172,7 @@ const ModalScrollingExample = (props) => {
                 <Grid.Row>
                     <Grid.Column width={4}>
                         <Card fluid>
-                            <Image src='https://react.semantic-ui.com/images/avatar/large/matthew.png' wrapped ui={false} />
+                            {/* <Image src='https://react.semantic-ui.com/images/avatar/large/matthew.png' wrapped ui={false} /> */}
                             <Card.Content>
                                 <Card.Header>{props.studentInfo.s_ln}, {props.studentInfo.s_fn} {props.studentInfo.s_mn}</Card.Header>
 
@@ -272,16 +246,14 @@ const ModalScrollingExample = (props) => {
                                     onRemarkClick={onRemarkClick}
                                 />
                                )
-                            })}                   
-
-                               
+                            })}
 
                         </Card>
-                        
+
                     </Grid.Column>
 
                 </Grid.Row>
-        
+
             </Grid>
         </Container>
     )

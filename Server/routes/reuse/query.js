@@ -11,14 +11,14 @@ const sqlPoolPromise = (sql, params) => {
                         connection.destroy();
         
                         if(err) {
-                            reject('error');
+                            reject(null);
                             
                         } else {
                             resolve(results);
                         }
                     })
                 }
-            });  
+            });
         })
     )
 } 

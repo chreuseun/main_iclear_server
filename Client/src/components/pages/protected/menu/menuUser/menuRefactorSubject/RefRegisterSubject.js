@@ -114,7 +114,9 @@ const NavbarUser = (props) => {
                 </Menu>
 
                 <Container   style={{marginTop:"100px", padding:'20px'}}>
+
                     {/* <MainActCard pushToLink={pushToLink} userDetails={userDetails} /> */}
+                    
                     <RegisterSubject/>
                 </Container>
 

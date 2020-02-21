@@ -1,5 +1,5 @@
 import React, {  useState, useEffect } from 'react'
-import { Form,Segment, Button,Divider, Label, Container, Dropdown} from 'semantic-ui-react'
+import { Form,Segment, Button,Divider, Label, Container, Dropdown, Radio} from 'semantic-ui-react'
 import axios from 'axios';
 import baseURL from '../../../../../res/baseuri'
 import { withRouter} from "react-router-dom";
@@ -10,14 +10,13 @@ function FormExampleSubcomponentControl (props) {
   
     //STATES
     const [loader, setLoader] = useState(true);
-
     const [ type , setType ] = useState([]);  // dept type ADMIN OR USER
     const [ acadlevel , setAcadLevel] = useState([]);  // Academic Level
     const [ course , setCourse ] = useState([]);  // Course
     const [ yearlevel , setYearLevel ] = useState([]);  // Yearlevel
     const [ subdata , setSubDate ] = useState([]);
-    const [ initData, setInitData] = useState([])
-
+    const [ initData, setInitData] = useState([]);
+    const [crsDept, setCrsDept] = useState([]); // crsDept
     const [ valDeptName, setValDeptName] = useState('');
     const [ valType, setValType ] = useState('');
     const [ valAcadLevel, setValAcadLevel ] = useState('');
@@ -25,74 +24,65 @@ function FormExampleSubcomponentControl (props) {
     const [ valYearLevel, setValYearLevel ] = useState('');
     const [ valHeadOff, setValHeadOff] = useState('');
     const [valStatus, setValStatus] = useState('');
+    const [ valCrsDept, setValCrsDept ] = useState('');
+    const [ valIsChecked, setValIsChecked] = useState('none');
 
-  
-  
-    
     useEffect(() => {
  
-      const ac = new AbortController();
+    const ac = new AbortController();
 
-          
     const x = async()=>{
       try{
 
         const header = {
-              headers: {
-                  authorization : localStorage.getItem('x')
-              },
+          headers: {
+              authorization : localStorage.getItem('x')
           }
+        }
 
           let result = await axios.post(`${baseURL}/api/departmentstype/get`,{},header);
           setType(result.data.sqlResult)
-          // console.log('TYPE OK');
 
           result = await axios.post(`${baseURL}/api/educlevel/get`,{},header);
           setAcadLevel(result.data.sqlResult)
-          // console.log('acadlevel OK');
 
           result = await axios.post(`${baseURL}/api/educcourselevel/get`,{},header);
           setSubDate(result.data.sqlResult)
-          // console.log('yr_cors OK');
 
           result = await axios.post(`${baseURL}/api/department/getone`,{id:props.deptKey},header);
-          // console.log( result.data.sqlResult[0]);
 
           let sqlResult = result.data.sqlResult[0];
 
           setValDeptName(sqlResult.d_name);
           setValType(sqlResult.d_type);
-
+          setValIsChecked(sqlResult.is_subdep);
           setValAcadLevel(sqlResult.el_id);
+
+          let data_crsDept = await axios.get(`${baseURL}/api/departments/coursedepartment/${sqlResult.el_id}`,header);
+          setCrsDept(data_crsDept.data.data)
+
+          setValCrsDept(sqlResult.student_department);
+
           let initResult = await axios.post(`${baseURL}/api/initeduccourselevel`,{id:sqlResult.el_id},header);
            
           setInitData(initResult.data.sqlResult);
-
           setCourse(initResult.data.sqlResult.course);
           setYearLevel(initResult.data.sqlResult.yearlevel);
-
           setValCourse(sqlResult.d_course);
           setValYearLevel(sqlResult.d_yearlevel);
-
           setValHeadOff(sqlResult.head_officer);
           setValStatus(parseInt(sqlResult.d_state));
-          
-          
-          setLoader(false)
-          
-          
 
+          setLoader(false);
       } catch(err) {
               props.history.push('/')
       } 
     }
-
-
         x();
 
         return ()=> ac.abort();
 
-    }, [])
+    }, []);
 
     // ON SUBMIT
     const onSubmit = async(e) => {
@@ -101,11 +91,12 @@ function FormExampleSubcomponentControl (props) {
       if(
         valDeptName.trim() === ''    || valType  === ''   ||
         valAcadLevel  === ''  || valCourse === '' ||
-        valYearLevel === ''   || valHeadOff.trim() === '' || valStatus === ''
+        valYearLevel === ''   || valHeadOff.trim() === '' || valStatus === '' ||
+        valCrsDept === ''
       ) {
         alert("Please suppliment required fields")
-
       } else {
+
         setLoader(true);
 
         let body = {
@@ -116,17 +107,19 @@ function FormExampleSubcomponentControl (props) {
           valCourse : valCourse ,
           valYearLevel : valYearLevel,
           valHeadOff : valHeadOff,
-          valStatus : valStatus 
+          valStatus : valStatus ,
+          valCrsDept: valCrsDept,
+          valIsChecked:valIsChecked
         }
-  
+
         let headers ={
           headers:{
             authorization : localStorage.getItem('x')
           }
         }
-  
+
         let response = await axios.post(`${baseURL}/api/department/update`, body, headers)
-  
+
         if(response) {
           console.log(props.location)
           
@@ -139,8 +132,6 @@ function FormExampleSubcomponentControl (props) {
       }
 
       setLoader(false)
-
-      // ************************************************************************************
     }
 
     // ON Dept TYPE CHANGE
@@ -150,30 +141,28 @@ function FormExampleSubcomponentControl (props) {
     }
 
     // ACADLEVEL CAHNGE
-    const acadlevel_handleChange = (e, { value }) => {
-        setValAcadLevel(value)
-      
-        setValYearLevel('');
-        setValCourse('');
+    const acadlevel_handleChange = async(e, { value }) => {
 
-        let filter=( subdata.course.filter((item)=> {
-          return item.educ_level_id === value
-        }) )
+      setValAcadLevel(value)
+      setCrsDept([])
+      setYearLevel([]);
+      setCourse([]);
+      setValCrsDept('')
+      setValYearLevel('');
+      setValCourse('');
 
-        let filter1=( subdata.yearlevel.filter((item)=> {
-          return item.educ_level_id === value
-        }) )
-  
-        setCourse(filter.map((it, idx) => { 
-          console.log(it)
-          return {key:it.course,value:it.course, text: it.course }
-        }))
+        try{
+          const header = {
+            headers: {
+                authorization : localStorage.getItem('x')
+            }
+          }
 
-        setYearLevel(filter1.map((it, idx) => { 
-          console.log(it)
-          return {key:it.yearlevel,value:it.yearlevel, text: it.yearlevel }
-        }))
- 
+          let data_crsDept = await axios.get(`${baseURL}/api/departments/coursedepartment/${value}`,header);
+          setCrsDept(data_crsDept.data.data)
+        } catch(err) {
+                props.history.push('/')
+        }  
     }
 
     // Course Changed
@@ -188,11 +177,94 @@ function FormExampleSubcomponentControl (props) {
       console.log(valYearLevel)
     }
 
-     // Yearlevel Changed
+     // TO DISABLE AND ENABLE A DEPARTMENT
      const status_handleChange = (e, { value }) => {
         setValStatus(value);
         console.log(valStatus)
       
+    }
+
+    // Department of course
+    const crsDept_handleChange = (e, { value }) => {
+
+      setValCrsDept(value);
+      setYearLevel([]);
+      setCourse([]);
+      setValYearLevel('');
+      setValCourse('');
+
+      let filter=( subdata.course.filter((item)=> {
+        return (item.educ_level_id === valAcadLevel && item.department === value ) 
+      }) );
+
+      let filter1=( subdata.yearlevel.filter((item)=> {
+        return item.educ_level_id === valAcadLevel  
+      }) );
+
+      if(value === 'ALL') {
+        setCourse( [ ...filter.map((it, idx) => { 
+          return {key:it.course,value:it.course, text: it.course }
+        }) ] );
+  
+      } else {
+        setCourse( [ {key:'ALL', value: 'ALL', text: 'ALL' }, ...filter.map((it, idx) => { 
+          return {key:it.course,value:it.course, text: it.course }
+        }) ] );
+      }
+
+     
+      setYearLevel( filter1.map((it, idx) => {
+        return {key:it.yearlevel,value:it.yearlevel, text: it.yearlevel }
+      }));
+    }
+
+    const onIsRadio_handleChange = (e, {value}) => {
+      console.log(value);
+      setValIsChecked(value)
+    }
+
+    const TradionSubDept = () => {
+
+      return(
+          <React.Fragment>
+               {/* SELECT [NONE, REG, FIN] */}
+          
+              <Form.Group widths='equal'  >
+                <Form.Field>
+                  <Radio
+                    
+                    value='none'
+                    label='none'
+                    name='radioGroup'
+                    checked={valIsChecked === 'none'}
+                    onChange={onIsRadio_handleChange}
+                  />  
+                </Form.Field>
+
+                <Form.Field>
+                  <Radio
+                    
+                    label='Is Finance?'
+                    name='radioGroup'
+                    value='fin'
+                    checked={valIsChecked === 'fin'}
+                    onChange={onIsRadio_handleChange}
+                  />
+                </Form.Field>
+                <Form.Field>
+                  <Radio
+                    
+                    value='reg'
+                    label='Is Registrar?'
+                    name='radioGroup'
+                    checked={valIsChecked === 'reg'}
+                    onChange={onIsRadio_handleChange}
+                  />  
+                </Form.Field>
+              </Form.Group>
+       
+          </React.Fragment>
+      )
     }
 
     if(loader) {
@@ -224,16 +296,31 @@ function FormExampleSubcomponentControl (props) {
                   />
             </Form.Field>
 
+            {valType === 2 ?  <TradionSubDept/> : ''}
+
             <Form.Field >
               <Label as='a' color='blue'  ribbon>Acadamic Level</Label>
                   <Dropdown
                   placeholder='Acadamic Level'
-                  fluid                  
+                  fluid
                   search
                   selection
                   value={valAcadLevel}
                   onChange={acadlevel_handleChange}
                   options={acadlevel}
+                  />
+            </Form.Field>
+
+            <Form.Field >
+              <Label as='a' color='blue'  ribbon>Department</Label>
+                  <Dropdown
+                    placeholder='Course'
+                    fluid
+                    search
+                    selection
+                    value={valCrsDept}
+                    onChange={crsDept_handleChange}
+                    options={crsDept}
                   />
             </Form.Field>
 
@@ -295,9 +382,6 @@ function FormExampleSubcomponentControl (props) {
 
       </Container>
     )
-  
 }
 
 export default withRouter(FormExampleSubcomponentControl);
- 
-// () => {console.log(valDeptName, valType, valAcadLevel, valCourse, valYearLevel, valStatus, valHeadOff)}

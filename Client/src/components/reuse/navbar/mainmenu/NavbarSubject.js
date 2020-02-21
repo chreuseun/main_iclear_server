@@ -1,13 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { withRouter, BrowserRouter, Route, Switch, Redirect, Link} from "react-router-dom";
-import { Menu,  Container, Dropdown, Header,Segment, Sidebar,Image, Grid } from 'semantic-ui-react';
+// Subject Teacher Landing Page
 
-//componets
-import SelectionMyDepartments from '../../../pages/protected/menu/menuUser/menuMyDepartments/SelectionMyDepartments'
-import SelectedDepartments from '../../../pages/protected/menu/menuUser/menuMyDepartments/components/SelectedDepartment'
-import ManageDeptRequirements from '../../../pages/protected/menu/menuUser/menuMyDepartments/components/manageDeptRequirement/manageDeptRequirements';
-import MenuDeptClearance from '../../../pages/protected/menu/menuUser/menuDepartmentClearance/menuDepartmentClearance';
-import SubjectList from '../../../pages/protected/menu/menuTeacher/subjectlist/subjectlist'
+import React, { useEffect, useState } from 'react';
+import { withRouter, BrowserRouter, Link, useHistory} from "react-router-dom";
+import { Menu,  Container, Dropdown, Button, Header, Table } from 'semantic-ui-react';
+import Axios from 'axios';
+import baseuri from '../../../../res/baseuri';
 
 const NavbarUser = (props) => {
     
@@ -24,23 +21,15 @@ const NavbarUser = (props) => {
         return null
     }
 
-    // <SelectionMyDepartments {...props} userDetails={props.userDetails}/>
-    const RouteUser = (data) => {
-        return (
-            <Switch>
-                <Route  exact path={location.pathname }               render={(props) => <SubjectList {...props} userDetails={data.userDetails} />}/> 
-                <Route  exact path={location.pathname + '/class/:dept'}     render={(props) => <SelectedDepartments {...props} userDetails={data.userDetails}/>}/> 
-                <Route  exact path={location.pathname + '/class/:dept/req'} render={(props) => <ManageDeptRequirements {...props} userDetails={data.userDetails}/>}/> 
-                <Route  exact path={location.pathname + '/class/:dept/clr'} render={(props) => <MenuDeptClearance {...props} title={`Issue Clearance`} userDetails={data.userDetails}/>} /> 
-                <Route  render={()=>{}}/> 
-            </Switch>
-        )
+    const PushToTestLink = (pushData) => {
+        history.push(pushData)
     }
 
     return(
         <React.Fragment>
 
             <BrowserRouter>
+
                 <Menu color='blue' style={{}} stackable inverted  fixed='top'>
                     <Container>
 
@@ -61,61 +50,140 @@ const NavbarUser = (props) => {
                 </Menu>
 
                 <Container style={{marginTop:"100px",background:'#F8F8F8',padding:'20px'}}>
-                    <RouteUser userDetails={props.userDetails}/>
+
+                    <SubjectTeacher PushToTestLink={PushToTestLink}/>
+
                 </Container>
+
             </BrowserRouter>
-        
+
         </React.Fragment>
     );
 }
 
-const Sidemenu= (props) => {
+const SubjectTeacher = (props) => {
+
 
     return(
-        <Grid.Row stretched>
-            <Container style={{height:'100%'}}>
+        <React.Fragment>
 
-                <Sidebar.Pushable style={{height:'100%'}} as={Segment}>
+            <PageHeader/>
 
+            <hr/>
+            <br/>
 
-                <Sidebar
-                    style={{background:'#afc2cb' }}
-                    as={Menu}
-                    animation={'push'}
-                    direction={'left'}
-                    icon='labeled'
-                    inverted
-                    vertical
-                    visible={true}
-                    width='thin'
-                    >
-                        <Container >
-                        <h1 style={{color:'#ffffff',paddingTop:'5px',paddingBottom:'5px'}}>Menu</h1>
-                        </Container>
-                        <Menu.Item as='a'>
-                        Home
-                        </Menu.Item>
-                        <Menu.Item as='a'>
-                        Games
-                        </Menu.Item>
-                        <Menu.Item as='a'>
-                        Channels
-                        </Menu.Item>
-                
-                    </Sidebar>
-            
+            <TableSubjectList PushToTestLink={props.PushToTestLink} />
 
-                <Sidebar.Pusher>
-                    <Segment stretched style={{height: '100vh'}} basic>
-                    <Header as='h3'>Application Content</Header>
-                    <Image src='https://react.semantic-ui.com/images/wireframe/paragraph.png' />
-                    </Segment>
-                </Sidebar.Pusher>
-                </Sidebar.Pushable>
-
-            </Container>
-        </Grid.Row>
+        </React.Fragment>
     )
-}   
+}
+
+const PageHeader = (props) => {
+
+    return(
+        <Header as='h2'>
+
+            My Subject
+
+            <Header.Subheader>
+                Manage students subject clearance
+            </Header.Subheader>
+        </Header>
+    )
+}
+
+const TableSubjectList = (props) => {
+
+    const history = useHistory();
+
+    const [ assignedSubject, setAssigneSubject ] = useState([]);
+
+    const effect = async(updateHook) => {
+
+        try{
+
+            const header = {
+                headers: {
+                    authorization : localStorage.getItem('x')
+                }
+            }
+
+            let fetchAssignedSubject =  await Axios.get(`${baseuri}/api/subjclass/teacher/subject`, header);
+
+            console.log('fetchedData : ' , fetchAssignedSubject.data.data);
+
+            if(updateHook){
+                setAssigneSubject(fetchAssignedSubject.data.data);
+            }
+
+        }catch(err){
+            history.push('/')
+        }
+
+    }
+
+    useEffect(() => {
+        let updateHook = true;
+
+        effect(updateHook);
+
+        return () => {
+            updateHook = false;
+        };
+    }, [])
+
+
+
+    const TableBody = () => {
+        return(
+            <React.Fragment>
+                {
+                    assignedSubject.map((itm, idx) => {
+                        return(
+                            <Table.Row 
+                                key={itm.id}
+                                onClick={()=> props.PushToTestLink({pathname: `/menu/subject/${itm.id}`}) }
+                            >
+
+                                <Table.Cell>{itm.subdet_name}{`(${itm.subdet_code})`}</Table.Cell>
+                                <Table.Cell>{itm.yearlevel}{'-'}{itm.course}</Table.Cell>
+                                <Table.Cell>{itm.section}</Table.Cell>
+                                <Table.Cell>{itm.ay_name}{'-'}{itm.sem_name}</Table.Cell>
+                                <Table.Cell>{itm.el_name}</Table.Cell>
+
+                            </Table.Row>
+                        )
+                    })
+                }
+            </React.Fragment>
+        )
+    }
+
+    return(
+        <React.Fragment>
+
+            <Header size='medium'>Assign Subject Class</Header>
+
+            <Table singleLine>
+
+                <Table.Header>
+                    <Table.Row>
+                        <Table.HeaderCell>Name(code)</Table.HeaderCell>
+                        <Table.HeaderCell>Yr.</Table.HeaderCell>
+                        <Table.HeaderCell>Section</Table.HeaderCell>
+                        <Table.HeaderCell>Academic Year</Table.HeaderCell>
+                        <Table.HeaderCell>Level</Table.HeaderCell>
+                    </Table.Row>
+                </Table.Header>
+
+                <Table.Body>
+                    <TableBody/>
+                </Table.Body>
+
+            </Table>
+
+      </React.Fragment>
+    )
+}
 
 export default withRouter(NavbarUser);

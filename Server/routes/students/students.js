@@ -30,7 +30,13 @@ router.get('/student', (req, res) => {
     args = {
         res, 
         token ,
-        params : []
+        params : {
+            text: req.query.text || '',
+            level: req.query.level || '',
+            course: req.query.course || '',
+            yrlvl: req.query.yrlvl || '',
+            section: req.query.section || ''
+        }
     }
 
     getStudents(args);

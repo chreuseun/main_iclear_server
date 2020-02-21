@@ -9,38 +9,58 @@ const StudentList = (props) => {
 
     const {match, history, location} = props;
 
-    const [didMount, setDidMount ] = useState(false);
-    const [student, setStudent ] = useState([])
+    const [load, setLoad] = useState(true);
+    const [student, setStudent ] = useState([]);
+    const [opCourse, setOpCourse] = useState([]);
+    const [opYrLvl, setOpYrLvl] = useState([]);
+    const [opSection, setOpSection] = useState([]);
+
+    const [text, setText] = useState('');
+    const [level, setLevel] = useState('');
+    const [course, setCourse] = useState('');
+    const [yearlevel, setYearlevel] = useState('');
+    const [section, setSection] = useState('');
+
+    const optLevel = [
+        {key:'0', text:'ALL', value:''},
+        {key:'1', text:'GS', value:'1'},
+        {key:'2', text:'JHS', value:'2'},
+        {key:'3', text:'SHS', value:'3'},
+        {key:'4', text:'COLLEGE', value:'4'}
+    ]
 
     useEffect(()=>{
 
         let updateHook = true;
+
         console.log('useEffect ')
 
-
         const getUserDetails = async() => {
-
             try{
-            
+
                 const header = {
                     headers: {
                         authorization : localStorage.getItem('x')
                     }
                 };
-                
+
                 // /api/student
-                const result = await axios.get(`${baseURL}/api/student` ,header);
+                const resOpYrLvl = await axios.get(`${baseURL}/api/filter_student/yearlevel`, header);
+                const resOpSec = await axios.get(`${baseURL}/api/filter_student/section`, header);
+                const resOpLevel = await axios.get(`${baseURL}/api/filter_student/course` ,header);
+                const result = await axios.get(`${baseURL}/api/student?text=${text}&level=${level}&course=${course}` ,header);
 
                 if(updateHook){
-                    setStudent(result.data.data || [])
+                    setStudent(result.data.data || []);
+                    setOpCourse([{key:0, text:'ALL', value:''} ,...resOpLevel.data.data ]|| []);
+                    setOpYrLvl( [{key:0, text:'ALL', value:''} , ...resOpYrLvl.data.data] || []);
+                    setOpSection([{key:0, text:'ALL', value:''} , ...resOpSec.data.data] || [] );
                 }
 
             } catch(err) {
                 localStorage.clear();
                 history.push("/");
             }
-        
-
         };
 
         getUserDetails();
@@ -51,22 +71,53 @@ const StudentList = (props) => {
         
     },[])
 
-    const optionSample = [
-        {key:'1', value:'1', text:'Hello There'},
-        {key:'2', value:'2', text:'Turn it there'},
-        {key:'3', value:'3', text:'Make There'}
-    ]
+    const FetchFilterStudent = async() => {
+        try{
 
-    const genderOptions = [
-        { key: 'm', text: 'Male', value: 'male' },
-        { key: 'f', text: 'Female', value: 'female' },
-        { key: 'o', text: 'Other', value: 'other' },
-    ]
+            const header = {
+                headers: {
+                    authorization : localStorage.getItem('x')
+                }
+            };
+
+            const result = await axios.get(`${baseURL}/api/student?text=${text}&level=${level}&course=${course}&yrlvl=${yearlevel}&section=${section}` ,header);
+            
+            setStudent(result.data.data || []);
+
+        } catch(err) {
+            localStorage.clear();
+            history.push("/");
+        }
+    }
 
     const onEnterKeyDown = (e) => {
         if(e.key === 'Enter'){
             console.log(e.key)
         }
+    }
+
+    const onTextChange = (e) => {
+        setText(e.target.value);
+    }
+
+    const onLevelChange = (e, {value}) => {
+        setLevel(value)
+    }
+
+    const onCourseChange = (e, {value}) => {
+        setCourse(value);
+    }
+
+    const onYearLevelChange = (e, {value}) => {
+        setYearlevel(value);
+    }
+
+    const onSectionChange = (e, {value}) => {
+        setSection(value);
+    }
+
+    const onSearchButtonClicked = () => {
+        FetchFilterStudent();
     }
 
     return(
@@ -85,54 +136,54 @@ const StudentList = (props) => {
                             id='form-input-control-first-name'
                             control={Input}
                             label='Search'
-                            onKeyDown={onEnterKeyDown}
                             placeholder='Student Name / Username'
-                        
+                            value={text}
+                            onChange={onTextChange}
                         />
-                        
+
                         <Form.Field
                             control={Select}
-                            options={genderOptions}
+                            options={optLevel}
                             label='Level'
                             placeholder='Level'
                             search
-                            onChange={()=>{console.log('changed here')}}
-                            searchInput={{ id: 'form-select-control-gender' }}
-                            
+                            onChange={onLevelChange}
                         />
 
                         <Form.Field
                             control={Select}
-                            options={genderOptions}
+                            options={opCourse}
                             label='Course'
                             placeholder='Course'
                             search
-                            onChange={()=>{console.log('changed here')}}
-                            searchInput={{ id: 'form-select-control-gender' }}
-                            
+                            onChange={onCourseChange}
                         />
 
                         <Form.Field
                             control={Select}
-                            options={genderOptions}
+                            options={opYrLvl}
                             label='Yearlevel'
                             placeholder='Year Level'
                             search
-                            onChange={()=>{console.log('changed here')}}
-                            searchInput={{ id: 'form-select-control-gender' }}
-                            
+                            onChange={onYearLevelChange}
                         />
 
                       <Form.Field
                             control={Select}
-                            options={genderOptions}
+                            options={opSection}
                             label='Section'
                             placeholder='Section'
                             search
-                            onChange={()=>{console.log('changed here')}}
-                            searchInput={{ id: 'form-select-control-gender' }}
-                            
+                            onChange={onSectionChange}
                         />
+
+                        <Form.Field
+                            control={Button}
+                            label='Search'
+                            content="Search"
+                            onClick={()=>{onSearchButtonClicked()}}
+                        />
+                    
                     
                     </Form.Group>
 

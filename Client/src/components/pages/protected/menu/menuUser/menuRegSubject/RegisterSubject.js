@@ -1,18 +1,24 @@
 import React,{useState, useEffect} from 'react';
-import { withRouter, BrowserRouter, Route, Switch, Link} from "react-router-dom";
-import { Button, Menu, Input, Segment, Header, Modal, Image } from 'semantic-ui-react';
+import { withRouter} from "react-router-dom";
+import { Button, Menu, Segment, Header, Modal, Form, Loader } from 'semantic-ui-react';
 import axios from 'axios'
 import baseURL from '../../../../../../res/baseuri';
+
+
+import TableComponent from './components/SubjectList_table';
 
 // path : '/menu/dep/:dept/sub'
 
 
 const RegisterSubject = (props)  => {
     const { match ,location, history } = props;
-    const [submenu , setSubmenu] = useState('List')
-    const [didMount, setDidMount] = useState(false);
+
+    const [loading, setLoading] = useState(true);
+
+    const [submenu , setSubmenu] = useState('List');
     const [depDetails, setDepDetails] = useState(false);
-    const [openModal, setOpenModel] = useState(false);
+    const [openModal, setOpenModal] = useState(false);
+    const [subjectDetails, setSubjectDetails] = useState([]);
 
     useEffect(()=>{
 
@@ -20,12 +26,10 @@ const RegisterSubject = (props)  => {
         console.log('Location: ', location)
         console.log('History: ', history)
 
-        setDidMount(true);
-        let xa = true;
+        let upadateHook = true;
 
-        const x = async()=>{
+        const x = async() => {
             try{
-                
 
                 const header = {
                     headers: {
@@ -33,29 +37,37 @@ const RegisterSubject = (props)  => {
                     }
                 }
 
-                // {id:match.params.dept}
+                // Get Department Details
                 const result = await axios.post(`${baseURL}/api/department/getone`, { id:location.state.dept }, header);
-                
-                console.log(result.data.sqlResult[0])
 
-                if(xa)
+                // Get SubjectDetails
+                const fetchDeptDetails = await axios.get(`${baseURL}/api/subjclass/subjects/${result.data.sqlResult[0].el_id}`,header);
+
+                console.log(result.data)
+                console.log('Fetch Dept Details: ', fetchDeptDetails.data.data);
+
+                if(upadateHook)
                 {
-                    // setDeptList(result.data.data);
+                    setLoading(false);
                     setDepDetails(result.data.sqlResult[0]);
+                    setSubjectDetails(fetchDeptDetails.data.data)
                 }
 
             } catch(err) {
                 history.push('/')
             }
-            
         }
+
         x();
 
-        return () => (xa=false)
-    },[])
+        return () => (upadateHook = false)
+    },[]);
 
-    if(!didMount) {
-        return null
+    if(loading){
+        console.log('Loading')
+        return(
+            <Loader/>
+        )
     }
 
     // SubMenu
@@ -63,77 +75,256 @@ const RegisterSubject = (props)  => {
         return(
             <React.Fragment>
                 <div>
-                    
                     <Menu attached='top' tabular>
                         <Menu.Item
-                            name='List'
+                            name='Subject  List'
                             active={submenu === 'List'}
-                        />
-                        <Menu.Item
-                            name='Sub'
                         />
                     </Menu>
         
                     <Segment attached='bottom'>
 
-                    <div>
-                        <Menu secondary>
-                            
-                            <Menu.Menu position='right'>
-                                <Menu.Item>
-                                    <Button secondary>
-                                        Add Subject
-                                    </Button>
-                                </Menu.Item>
+                        <div>
+                            <Menu secondary>
                                 
-                            </Menu.Menu>
-                        </Menu>
-                    </div>
-               
+                                <Menu.Menu position='right'>
+                                    <Menu.Item>
+                                        <Button onClick={()=>{setOpenModal(!openModal)}} secondary>
+                                            Add Subject
+                                        </Button>
+                                    </Menu.Item>
+                                    
+                                </Menu.Menu>
+                            </Menu>
+                        </div>
 
-                        <img src='https://react.semantic-ui.com/images/wireframe/paragraph.png' />
+                        <Segment style={{ overflow: 'auto', maxHeight: '1000vh' }}>
+                            <Segment.Group horizontal>
+
+                                {/* Table Here!! list of subjects for the educ leve */}
+                                <TableComponent subjectDetails={subjectDetails}/>
+
+                            </Segment.Group>
+                        </Segment>
+
                     </Segment>
                 </div>
           </React.Fragment>
         )
     }
 
+    // Modal Add Subject
     const ModalAddSubject = () => {
+
+        const [course, setCourse] = useState([]);
+        const [yearlevel, setYearlevel] = useState([]);
+
+        const x = async(UpdateHook)=>{
+
+            try{               
+                const header = {
+                    headers: {
+                        authorization : localStorage.getItem('x')
+                    }
+                }
+
+                const result = await axios.get(`${baseURL}/api/filter_student/class/course/?educlevel=${depDetails.el_id}`, header);
+                const resultYearLevel = await axios.get(`${baseURL}/api/filter_student/yearlevel`, header);
+
+                console.log(result.data)
+
+                if(UpdateHook)
+                {
+                    setCourse(result.data.data)
+                    setYearlevel(resultYearLevel.data.data)
+                }
+
+            } catch(err) {
+                history.push('/')
+            }
+
+        }
+
+        useEffect(()=>{
+            let UpdateHook = true
+
+            x(UpdateHook);
+
+            return (()=>{
+                UpdateHook = false
+                console.log('Modal is Closed')
+            })
+        },[])
+
+        const FormAddingSubject = () => {
+
+            const [name , setName] = useState('');
+            const [code, setCode] = useState('');
+            const [valcourse,setValCourse] = useState('');
+            const [valyearlevel,setValYearlevel] = useState('');
+
+            const onSubmitClick = () => {
+    
+                if(
+                    name !== '' &&
+                    code !== '' &&
+                    valcourse !== '' &&
+                    valyearlevel !== '' &&
+                    depDetails.el_id !== ''
+                ){
+                    
+                    let subjectDetails = {
+                        name,
+                        code,
+                        educ_level_id: depDetails.el_id ,
+                        yearlevel:valyearlevel,
+                        course:valcourse 
+                    }
+
+                    const AxiosInsertSubjectDetails = async(UpdateHook = true)=>{
+
+                        try{               
+                            const header = {
+                                headers: {
+                                    authorization : localStorage.getItem('x')
+                                }
+                            }
+                            // http://127.0.0.1:4040
+                            const result = await axios.post(`${baseURL}/api/subjclass/insert`, subjectDetails, header);
+      
+                            console.log(result.data.data)
+
+                            let response = result.data.data
+
+                            if(response.msg === "Insert Succesful"){
+                                setName('');
+                                setCode('');
+                                setValYearlevel('');
+                                setValCourse('');
+                                alert('Subject Added')
+                               
+                             
+                               
+
+                            }else if(response.msg === "Code Already Exist") {
+                                alert('Subject code Already Exist')
+                                setCode('')
+                            } else{
+                                alert('Subbject Insert failed')
+                            }
+
+                        } catch(err) {
+                            history.push('/menu')
+                        }
+            
+                    }
+
+                    AxiosInsertSubjectDetails();
+                } else {
+                    alert('All Fields are required')
+                }
+
+            }
+
+            const onCourseChange = (e, {value}) => {
+                setValCourse(value)
+            }
+
+            const onYearLevelChange = (e, {value}) => {
+                setValYearlevel(value)
+            }
+
+            return(
+                <Form>
+                    <Form.Group widths='equal'>
+
+                        <Form.Input 
+                            onChange={ (e)=>{  setName(e.target.value) } }
+                            value={name}
+                            fluid label='Subject Name' placeholder='Subject name' maxLength={"30"}/>
+
+                        <Form.Input 
+                            onChange={(e)=>{  setCode(e.target.value); }}
+                            value={code}
+                            fluid label='Code' placeholder='Code' maxLength={"20"}/>
+
+                    </Form.Group>
+
+                    <Form.Group widths='equal'>
+
+                        <Form.Select
+                            fluid
+                            label='Course'
+                            options={course}
+                            placeholder='Course'
+                            onChange={onCourseChange}
+                            value={valcourse}
+                        />
+
+                        <Form.Select
+                            fluid
+                            label='Year Level'
+                            options={yearlevel}
+                            placeholder='Gender'
+                            onChange={onYearLevelChange}
+                            value={valyearlevel}
+                        />
+
+                    </Form.Group>
+
+                    <Form.Button onClick={onSubmitClick}>Submit</Form.Button>
+                </Form>
+            )
+        }
+
         return(
-            <Modal >
-            <Modal.Header>Select a Photo</Modal.Header>
-            <Modal.Content image>
-              <Image wrapped size='medium' src='https://react.semantic-ui.com/images/avatar/large/rachel.png' />
-              <Modal.Description>
-                <Header>Default Profile Image</Header>
-                <p>
-                  We've found the following gravatar image associated with your e-mail
-                  address.
-                </p>
-                <p>Is it okay to use this photo?</p>
-              </Modal.Description>
+            <Modal open={openModal}>
+            <Modal.Header>
+                Add Subject
+
+                <Button 
+                    onClick={()=>{ setOpenModal(false) }}
+                    floated="right" inverted color='red'>
+                    Close   
+                </Button>
+
+            </Modal.Header>
+
+            <Modal.Content >
+
+                {/* FORM  */}
+                <FormAddingSubject/>
+
             </Modal.Content>
           </Modal>
         )
     }
 
     return (
+
         <div>
 
             <div>
                 <Header as='h2'>
+
                         {depDetails.d_name || ''}
+
                     <Header.Subheader>
+
                         Assign Subjects to teachers
+
                     </Header.Subheader>
                 </Header>
             </div>
+
             <hr/>
 
             <Selection/>
 
-            <ModalAddSubject/>
+            { openModal && <ModalAddSubject/>}
+
         </div>
+
     )
 }
 

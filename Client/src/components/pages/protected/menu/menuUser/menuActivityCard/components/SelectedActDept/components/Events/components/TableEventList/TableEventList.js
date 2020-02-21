@@ -8,10 +8,8 @@ const TableEventList = (props) => {
     
     const {location, match, history } = props;
     const [load, setLoad] = useState(false);
-    const [list, setList] = useState([]);
 
     useEffect(()=>{ 
-        // http://192.168.100.10:4040/api/activity/121/events
         
 
         const fetchData = async() => {
@@ -45,10 +43,6 @@ const TableEventList = (props) => {
 
     return(
         <React.Fragment>
-
-            <Dimmer active={load} inverted>
-                <Loader inverted>Loading</Loader>
-            </Dimmer>
 
             <Table compact='very' selectable>
                 <Table.Header>
@@ -84,20 +78,17 @@ const TableEventList = (props) => {
 
                                 <Table.Cell >
                                     <Button primary>
-                                        ...
-                                    </Button>
-                                </Table.Cell>     
-
-                                <Table.Cell>
-                                    <Button>
                                         Edit
                                     </Button>
-                                </Table.Cell> 
+                                </Table.Cell>
 
-                                                
-                            
-                                {/* <Table.Cell>{JSON.stringify(it)}</Table.Cell> */}
-                            </Table.Row>   
+                                <Table.Cell>
+                                    <Button onClick={()=>{props.openNewLink(it.id)}}>
+                                        Scan
+                                    </Button>
+                                </Table.Cell>
+
+                            </Table.Row>
                         )
                     })}
 

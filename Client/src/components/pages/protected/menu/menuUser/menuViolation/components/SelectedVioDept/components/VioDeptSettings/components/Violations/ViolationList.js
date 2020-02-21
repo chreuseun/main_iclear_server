@@ -14,6 +14,7 @@ const ViolationList = (props) => {
 
     const [didMount, setDidMount] = useState(false);
     const [vioDept, setVioDept] = useState([]);
+    const [modalAddOpen, setModalAddOpen] = useState(false);
 
     useEffect(() => {
 
@@ -63,10 +64,8 @@ const ViolationList = (props) => {
                 };
                 
                 const violationDept = await axios.get(`${baseURL}/api/violation/user/${location.state.dept}/violations`, header)
-
-                
-                    setVioDept(violationDept.data.data || [])
-                
+                    setVioDept(violationDept.data.data || []);
+                    setModalAddOpen(false);
 
             } catch(err) {
                 console.log(err)
@@ -77,15 +76,21 @@ const ViolationList = (props) => {
         fetchData();
     }
 
+    const openModalMethod = () => {
+        setModalAddOpen(true);
+    }
+
     return(
         <React.Fragment>  
             <div>
                 <Menu secondary>
                     <Menu.Menu position='right'>
                         <Menu.Item>
-                            
+                            <Button primary
+                            onClick={ ()=>{openModalMethod()} }
+                            >Create Violation</Button>
                             {/* click to display Modal Insert new violation */}
-                            <FormInsertViolation onClose={onClose}/>
+                           { modalAddOpen && <FormInsertViolation onClose={onClose}/> }
                             
                         </Menu.Item>
                         

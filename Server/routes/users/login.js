@@ -119,7 +119,12 @@ router.post('/getaccounts', (req, res) => {
     let arg = {
         res,
         token : req.headers.authorization,
-        params : {}
+        params : {
+            text: req.query.text || '',
+            type: req.query.type || '',
+            locked: req.query.locked || '',
+            state: req.query.state || ''
+        }
     }
 
     getaccounts(arg);

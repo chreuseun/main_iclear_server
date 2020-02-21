@@ -53,10 +53,8 @@ function ManageUsers(props) {
     if(!didMount) {
         return null
     }
-    
 
     const { match, location, history } = props
-    
 
     const RefreshUserList = async(isMember, acc_id)=>{
         try{

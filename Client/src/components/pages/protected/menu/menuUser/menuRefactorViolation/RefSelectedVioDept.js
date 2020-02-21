@@ -21,8 +21,6 @@ const NavbarUser = (props) => {
         setDidMount(true);
         setIsLoading(true);
 
-        console.log('NavbarAdmin:  ','useEffect - Data');
-
         const getUserDetails = () => {
 
             const fetchData = async() => {
@@ -59,7 +57,7 @@ const NavbarUser = (props) => {
         getUserDetails();
 
         return () => (UpdateHooks=false);
-    },[])
+    },[]);
 
     if(!didMount) {
         return null

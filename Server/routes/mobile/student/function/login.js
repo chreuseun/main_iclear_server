@@ -11,15 +11,14 @@ const StudentLogin = async({res, params}) => {
     let token;
     let sqlResult;
 
-    // Do a mysql Query here :)
+    // Do a mysql Query here :)  SELECT IF username exist
     try{
         sqlResult = await query(_sql.login, [params.username]);
 
-    }catch(err){
+    }catch(err){    
         error = true;
     }
 
-    
     // Compare password to hash
     try{
         bcryptResult = await hashBcrypt(sqlResult[0].password, params.password);
@@ -51,6 +50,11 @@ const StudentLogin = async({res, params}) => {
             }
 
             token=await signJWT(payload);
+
+            // const readToken = await jwtVerify( `Bearer ${token}`);
+            
+            // console.log(readToken);
+
         } else {error=true;}
     }catch(err){
         error = true;
@@ -58,7 +62,7 @@ const StudentLogin = async({res, params}) => {
 
     error ? 
     res.sendStatus(401) : 
-    res.json({ data: {token}})
+    res.json({ data: {msg:'okay',token, data: sqlResult[0]}})
 }
 
 let _sql= {
