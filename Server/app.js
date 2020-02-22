@@ -2,24 +2,13 @@
 const express = require('express');
 var bodyParser = require('body-parser')
 var cors = require('cors');
-const path = require('path');
 
-const ipAdd = {
-    workable:`172.51.1.64`, 
-    malis:`192.168.254.179`,
-    marick:`192.168.100.10`,
-    localhost: `127.0.0.1`,
-    maam_tejada: `192.168.43.15`,
-    thesis:`192.168.43.68`
-}
+const ipAdd = require('./config/ipaddress');
 
-const ip_v4 = ipAdd.maam_tejada;
-
-var error = {message: "error"}
+const ip_v4 = ipAdd;
 
 // APP
 const app = express();
-
 
 // var htmlpath = path.join(__dirname, '/public');
 
@@ -56,6 +45,8 @@ app.use(endPointWebApp, require('./routes/subjectClass/subjectClass')); // Regis
 // ROUTES - MOBILE APPLICATION :)
 app.use(mobile, require('./routes/mobile/student/mob_student'));
 app.use(mobile, require('./routes/mobile/clearance/mob_clearance'));
+app.use(mobile, require('./routes/mobile/violation/violation'));
+app.use(mobile, require('./routes/mobile/violationClass/violationClass'));
 
 app.use('/',require('./routes/test/test')) // TEST FOR TESTING  
 

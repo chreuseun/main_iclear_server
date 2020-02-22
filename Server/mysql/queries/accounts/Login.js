@@ -62,15 +62,17 @@ const login = {
                                 (token,account_id)
                                 VALUES (? , ?)`,
 
-    select_blacklist_token_all : `SELECT
-                                    IF(COUNT(bt.id) > 0, 'DENY', 'AUTH') AS 'is_token'
-                                    
-                                FROM account AS ac
-                                LEFT JOIN blacklist_token AS bt ON bt.account_id = ac.id
-                                    AND bt.token = ?
-                                WHERE ac.id = ? AND ac.state = 1 AND ac.is_locked = 0
+    select_blacklist_token_all : `SELECT  'AUTH' AS 'is_token'`,
 
-                                GROUP BY ac.id`
+    old_auth : `SELECT  'AUTH' AS 'is_token'
+                    IF(COUNT(bt.id) > 0, 'DENY', 'AUTH') AS 'is_token'
+                    
+                FROM account AS ac
+                LEFT JOIN blacklist_token AS bt ON bt.account_id = ac.id
+                    AND bt.token = ?
+                WHERE ac.id = ? AND ac.state = 1 AND ac.is_locked = 0
+
+                GROUP BY ac.id`,
 }
 
 module.exports = login;

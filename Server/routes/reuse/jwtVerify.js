@@ -24,7 +24,6 @@ const jwtVerify = (token) => {
                     }
                 })
             } else {
-                // console.log('error in token format')
                 reject(null)
             }
         })

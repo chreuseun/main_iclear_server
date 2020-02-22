@@ -1,5 +1,4 @@
 // Student Login for mobile app
-var jwtVerify = require('../../../reuse/jwtVerify'); // verify token from client
 var query = require('../../../reuse/query'); // MySQL query from sql 
 var hashBcrypt = require('../../../reuse/hashBcrypt'); // HashBcrypt
 var signJWT = require('../../../reuse/signJWT'); // signJWT creating Token
@@ -50,10 +49,6 @@ const StudentLogin = async({res, params}) => {
             }
 
             token=await signJWT(payload);
-
-            // const readToken = await jwtVerify( `Bearer ${token}`);
-            
-            // console.log(readToken);
 
         } else {error=true;}
     }catch(err){

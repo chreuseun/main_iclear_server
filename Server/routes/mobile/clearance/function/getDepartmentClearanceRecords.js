@@ -5,29 +5,31 @@ var query = require('../../../reuse/query')
 
 
 const getDepartmentClearanceRecords = async ({res, token, params}) => {
-    
-    let error  = false;
+
+    const {semesterId, acadYearId} = params;
+    console.log(params);
     let jwtResult;
     let sqlResult;
 
     try{
         jwtResult= await jwtVerify(token);
-        console.log(`RESULTS: jwtResult: `, jwtResult);
     } catch(err) {
         return(res.sendStatus(401))
     }
 
     try{
-            sqlResult = await query(_sql.getDepartmentClearanceRecords, [jwtResult.decoded.username]);
+        sqlResult = await query(_sql.getDepartmentClearanceRecords, [jwtResult.decoded.username, semesterId, acadYearId]);
     } catch (err){
         return(res.sendStatus(401))
     }
-    return res.json({ msg:'okay', title:`clearance record of student by username`,data: sqlResult[1] || []});
+    return res.json({ msg:'okay', title:`clearance record of student by username`,data: sqlResult[3] || []});
 }
 
 const _sql = {
   getDepartmentClearanceRecords : `
                                   SET @username := ?;
+                                  SET @semesterId := ?;
+                                  SET @acadYearId := ?;
 
                                   SELECT
                                     s.username,
@@ -76,7 +78,8 @@ const _sql = {
                                   LEFT JOIN account AS a_by ON a_by.id = ci.account_id_by
                                   LEFT JOIN account AS a_status ON a_status.id = ci.account_id_status
 
-                                  WHERE s.username = @username;`
+                                  WHERE s.username = @username AND ci.semester_id LIKE @semesterId AND ci.acad_year_id LIKE @acadYearId`,
+
 }
 
 module.exports =  getDepartmentClearanceRecords;

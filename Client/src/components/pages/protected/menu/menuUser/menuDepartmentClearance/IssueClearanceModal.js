@@ -16,7 +16,7 @@ const ModalScrollingExample = (props) => {
 
     useEffect( () => {
 
-        console.log(props.studentInfo)
+        console.log('STUDENT INFO              : ',props.studentInfo)
        
         setDidMount(true);
         let xa = true;
@@ -104,7 +104,7 @@ const ModalScrollingExample = (props) => {
                     `${props.studentInfo.s_username}${location.state.dept}${actYr}${actSem}${it.context}`,
                     location.state.dept,
                     actYr,
-                    actSem,
+                    props.studentInfo.s_sem_id == 4 ?  props.studentInfo.s_sem_id : actSem ,
                     it.context,
                     props.userDetails.id,
                     props.studentInfo.s_crs,
