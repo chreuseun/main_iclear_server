@@ -1,7 +1,13 @@
 const router = require('express').Router();
 
 router.get('/violationClass' , async(req, res)=>{
-    const getViolation = require('./functions/getViolationClass');
+  const {semesterId, acadYearId} = req.query;
+
+  console.log(req.query);
+
+  const getViolation = require('./functions/getViolationClass');
+
+
 
     const token = req.headers.authorization;
 
@@ -9,7 +15,8 @@ router.get('/violationClass' , async(req, res)=>{
         res,
         token,
         params : {
-          // Query for acadYearId, semesterId
+          semesterId: semesterId || '%%',
+          acadYearId: acadYearId || '%%',
         }
     }
 

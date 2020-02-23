@@ -5,6 +5,8 @@ var query = require('../../../reuse/query')
 
 const getViolation = async ({res, token, params}) => {
 
+    const {semesterId, acadYearId} = params;
+
     console.log(params);
     let jwtResult;
     let sqlResult;
@@ -16,17 +18,19 @@ const getViolation = async ({res, token, params}) => {
     }
 
     try{
-        sqlResult = await query(_sql.getViolationClass, [jwtResult.decoded.username]);
+        sqlResult = await query(_sql.getViolationClass, [jwtResult.decoded.username, semesterId, acadYearId]);
     } catch (err){
         return(res.sendStatus(401))
     }
 
-    return res.json({ msg:'okay', title:`get subject teacher clearance record for the student`, dataLength: sqlResult[1].length || 0, data: sqlResult[1] || []});
+    return res.json({ msg:'okay', title:`get subject teacher clearance record for the student`, dataLength: sqlResult[3].length || 0, data: sqlResult[3] || []});
 }
 
 const _sql = {
   getViolationClass: `
   SET @username := ?;
+  SET @semesterId := ?;
+  SET @acadYearId := ?;
 
   SELECT 
     ci.id AS ci_id,
@@ -50,12 +54,12 @@ const _sql = {
 
   FROM class_issue AS ci
   JOIN class AS c ON c.id = ci.class_id
+    AND ci.student_username = @username
   JOIN acad_year ay ON ay.id = ci.acad_year_id
+    AND ay.id LIKE @acadYearId
   JOIN semester sem ON sem.id = ci.semester_id
-  LEFT JOIN account a ON a.id = c.teacher_account_id
-
-  WHERE ci.student_username = @username;`,
-
+    AND sem.id LIKE @semesterId
+  LEFT JOIN account a ON a.id = c.teacher_account_id`,
 }
 
 module.exports =  getViolation;

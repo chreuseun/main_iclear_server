@@ -10,7 +10,9 @@ router.get('/violation' , async(req, res)=>{
         token,
         params : {
           mode: req.query.mode,
-        }
+          semesterId: req.query.semesterId || '%%' ,
+          acadYearId: req.query.acadYearId || '%%',
+        },
     }
 
     getViolation(args);
