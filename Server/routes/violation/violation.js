@@ -258,6 +258,35 @@ router.get('/violation/user/:deptVioId/violations/student/records/:std', (req, r
     getStudentViolationByUsername(args)
 
     console.log( `Methed: ${req.route.stack[0].method}  ${req.route.path}` );
+});
+
+// 2020-02-25 -  GET all sanctions of a violation class_id
+router.get('/violation/user/:deptVioId/violations/sanction', (req, res) => {
+
+    const getViolationSanction = require('./functions/getViolationSanctionsByClassId')
+
+    let token = req.headers.authorization
+
+    let {
+        name,
+        desc,
+        cls
+    } = req.body
+
+    console.log(req.body)
+
+    args = {
+        res, 
+        token ,
+        params:[
+            req.params.class_id,
+            req.params.deptVioId
+        ]
+    }
+
+    getViolationSanction(args)
+
+    console.log( `Methed: ${req.route.stack[0].method}  ${req.route.path}` );
 })
 
 // TEST TEST TEST TEST TEST TEST TEST 

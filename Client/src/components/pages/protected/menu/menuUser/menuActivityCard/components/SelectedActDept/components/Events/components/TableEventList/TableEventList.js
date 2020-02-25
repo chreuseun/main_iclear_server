@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { Grid, Header, Button, Table, Menu, Message, Segment, Modal, Form, Loader, Dimmer } from 'semantic-ui-react';
-import { withRouter, Link} from 'react-router-dom';
+import React, { useEffect} from 'react';
+import {Button, Table} from 'semantic-ui-react';
+import { withRouter } from 'react-router-dom';
 import baseURL from '../../../../../../../../../../../../res/baseuri';
 import axios from 'axios';
 
 const TableEventList = (props) => {
     
-    const {location, match, history } = props;
-    const [load, setLoad] = useState(false);
+    const {location, history } = props;
 
     useEffect(()=>{ 
         
@@ -74,13 +73,7 @@ const TableEventList = (props) => {
                                 <Table.Cell>{it.ay_name}</Table.Cell>
                                 <Table.Cell>{it.sem_name}</Table.Cell>
                                 <Table.Cell>{it.student_department}</Table.Cell>  
-                                <Table.Cell>{it.lastname}, {it.firstname} {it.middlename}</Table.Cell>    
-
-                                <Table.Cell >
-                                    <Button primary>
-                                        Edit
-                                    </Button>
-                                </Table.Cell>
+                                <Table.Cell>{it.lastname}, {it.firstname} {it.middlename}</Table.Cell>
 
                                 <Table.Cell>
                                     <Button onClick={()=>{props.openNewLink(it.id)}}>
@@ -92,7 +85,6 @@ const TableEventList = (props) => {
                         )
                     })}
 
-                                
                 </Table.Body>
             </Table>
 

@@ -102,7 +102,6 @@ const ModalScrollingExample = (props) => {
     )
 }
 
-
 // SUB COMPONENTS
 const ScannerComponent = (props) => {
 
@@ -139,10 +138,8 @@ const ScannerComponent = (props) => {
             setScanMsg(fetchActivity.data.data);
             setScanHistory(fetchAttendanceRecords.data.data);
             setBarcode('');
-            alert('Okay')
 
         }catch(err){
-            alert('error')
         }
 
     }

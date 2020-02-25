@@ -1,7 +1,8 @@
 import React, {useEffect} from 'react';
 import {  Route, Switch, Redirect } from 'react-router-dom'
-import { Menu as men  } from 'semantic-ui-react';
 
+// Test page
+import Test from './../src/components/pages/test/test';
 
 // < -COMPONENTS- >
 import Login from '../src/components/pages/login/login'
@@ -36,14 +37,12 @@ import Scanner from './components/pages/protected/menu/menuUser/menuActivityCard
 // Class (Overhaul)
 import NewSelectedSubject from './components/pages/protected/menu/menuTeacher/NewSubject/SelectedSubject.js/SelectedSubject';
 
-const  App = (props) => {
+const  App = () => {
 
   useEffect(()=>{
     console.log('App.js - useEffect')
   },[])
   
-  LocalDataCheck();
-
   // redirect to Login Screen
   const RedirectToLogin = () => {
     return(
@@ -105,26 +104,13 @@ const  App = (props) => {
 
           <Route exact path={'/scanner'} render={(props) => <Scanner {...props} />}  />
           {/* USER */}
-          <Route exact path={'/test'} render={()=><SamplePage/>} />
-          <Route exact path={'/test/scan'} render={()=><SamplePage/>} />
+          <Route exact path={'/test'} render={()=><Test/>} />
           <Route path='*' exact={true} render={ (props) => <RedirectToLogin {...props}/> }/>
 
         </Switch>
       </div>  
 
   );
-}
-
-const LocalDataCheck = () => {
-  console.log('Token: ' ,localStorage.getItem('x'))
-}
-
-const SamplePage = (props) => {
-  return(
-    <div>
-      {props.text}
-    </div>
-  )
 }
 
 export default App;
