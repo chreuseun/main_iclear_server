@@ -1,16 +1,18 @@
 import React,{ useEffect, useState, useRef} from 'react';
-import { Button, Header, Menu, Input, Table, Form, Select, Container ,Image} from 'semantic-ui-react';
+import { Button, Header,  Input, Table, Form, Select} from 'semantic-ui-react';
 import axios from 'axios';
 import { withRouter } from 'react-router-dom';
 import baseURL from '../../../../../res/baseuri';
-import ReactToPrint from 'react-to-print';
-import logo from './../../../../../res/assets/dyci.jpg';
+
+// FOR PRINTING
+import StudentListPrintOut from './../../../../printOuts/Students/StudentListPrintOut';
+import  PrintButton from './../../../../sturcture/atoms/PrintButton';
+
 
 const StudentList = (props) => {
 
-    const {match, history, location} = props;
+    const {history} = props;
     const componentToPrint = useRef();
-    const [load, setLoad] = useState(true);
     const [student, setStudent ] = useState([]);
     const [opCourse, setOpCourse] = useState([]);
     const [opYrLvl, setOpYrLvl] = useState([]);
@@ -117,6 +119,10 @@ const StudentList = (props) => {
 
     return(
         <div style={{marginBottom:16}}>
+            <div style={{display:'none'}}>
+                <StudentListPrintOut data={student} title={'Student List'} ref={componentToPrint}/>
+            </div>
+
             <Header
                 as='h2'
                 content='Student Records' 
@@ -189,14 +195,8 @@ const StudentList = (props) => {
 
 
                 </Form>
-
                 
-
-                <ReactToPrint
-                    trigger={() => <Button secondary>Print</Button>}
-                    content={() => componentToPrint.current}
-                />
-
+                <PrintButton componentToPrint={componentToPrint}/>
                 <hr/>
             </div>
 
@@ -233,106 +233,9 @@ const StudentList = (props) => {
                     </Table.Body>
                 </Table>
             </div>
-            
-            <div style={{display:'none'}}>
-                <StudentListPrintOut student={student} ref={componentToPrint}/>
-            </div>
-            
         </div>
     )
 
 };
-
-class StudentListPrintOut extends React.Component {
-
-    render () {
-        const {student=[], data=[]}= this.props 
-
-        return (
-            <>
-                <PrintOut student={student}/>
-            </>
-        )
-    }
-}
-
-const PrintOut = ({student=[]}) => {
-    
-    var today  = new Date().toLocaleDateString("en-US")
-
-    return(
-            <div style={{margin:'auto', fontFamily:'arial'}}>
-                {/* SCHOOL NAME */}
-                <div style={{display:'flex',flexDirection:'row',justifyContent:'center'}}>
-                        
-                    <div style={{display:'flex', flexDirection:'row',alignItems:'center',textAlign:'center',}}>
-                        <img src={logo} alt={'logo'}style={{width:50, height:50}}/>
-
-                        <div style={{marginLeft: 10}}>
-                            <span style={{textAlign:'center', fontWeight:'bold',fontSize:'24sp'}}>Dr.Yanga's Colleges Incorporated</span>
-                            <br/>
-                            <small>Wakas, Bocaue, Bulacan #3016</small>
-                        </div>
-                        {/* <span style={{textAlign:'center', fontWeight:'bold',fontSize:'20sp'}}>
-                            
-                            Dr.Yanga's Colleges Incorporated
-                        </span> */}
-                    </div>
-                  
-                        {/* <br/>
-                        <s`mall>Wakas, Bocaue, Bulacan #3016</small> */}
-                </div>
-                
-               
-
-                <h4 style={{textAlign:'center'}}>
-                    Student List
-                </h4>
-
-
-                <span>
-                    Printed at: <strong>{today}</strong>
-                </span>
-
-                <hr/>
-                {/* Table */}
-                <div style={{borderColor:'#272727', borderWidth:1/3}}>
-                    <Table >
-                        <Table.Header>
-                        <Table.Row>
-                            <Table.HeaderCell>Username</Table.HeaderCell>
-                            <Table.HeaderCell>Name</Table.HeaderCell>
-                            <Table.HeaderCell>Course</Table.HeaderCell>
-                            <Table.HeaderCell>Section</Table.HeaderCell>
-                            <Table.HeaderCell>Yearlevel</Table.HeaderCell>
-                            <Table.HeaderCell>SchoolYear</Table.HeaderCell>
-                        </Table.Row>
-                        </Table.Header>
-
-                        <Table.Body>
-
-
-                            {student.map((it,ix)=>{
-                                return(
-                                    <Table.Row>
-                                        <Table.Cell>{it.username}</Table.Cell>
-                                        <Table.Cell>{`${it.studlname}, ${it.studfname}, ${it.studmname}`}</Table.Cell>
-                                        <Table.Cell>{it.course}</Table.Cell>
-                                        <Table.Cell>{it.section}</Table.Cell>
-                                        <Table.Cell>{it.yearlevel}</Table.Cell>
-                                        <Table.Cell>{`${it.sem_name} | ${it.ay_name}`}</Table.Cell>
-                                    </Table.Row>
-                                )
-                            })}
-                        
-                        </Table.Body>
-                    </Table>
-                </div>
-            </div>
-
-      
-
-    )
-}
 
 export default withRouter(StudentList);
