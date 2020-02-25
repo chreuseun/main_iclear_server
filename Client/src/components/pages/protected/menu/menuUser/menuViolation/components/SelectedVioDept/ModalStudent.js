@@ -4,6 +4,7 @@ import { withRouter} from 'react-router-dom';
 import baseURL from '../../../../../../../../res/baseuri';
 import axios from 'axios';
 
+import ClassanctionList from '../.../../../../menuViolation/components/SelectedVioDept/components/VioDeptSettings/components/Class/ViolationClassNoAddSanction';
 
 const ModalStudent = (props) => {
 
@@ -14,6 +15,8 @@ const ModalStudent = (props) => {
     const [violations, setViolations] = useState([]);
     const [showList, setShowList] = useState(true);
     const [showListRecord, setShowListRecord] = useState(true);
+    const [showSanctionList, setShowSanctionList] = useState(true);
+
     const [violationRecords, setViolationRecords] =useState([]);
 
     const [isGroup, setIsGroup] = useState(false);
@@ -58,6 +61,11 @@ const ModalStudent = (props) => {
     // button to Show/Hide Violation List
     const onViolationListButton = () => {
         setShowList(!showList)
+    }
+
+    // button to Show/Hide SANCTION List
+    const onSanctionListButton = () => {
+        setShowSanctionList(!showSanctionList)
     }
 
     const onGroup = () => {
@@ -117,6 +125,7 @@ const ModalStudent = (props) => {
         <Modal size='fullscreen'    
             onOpen={()=>{refreshContents()}}      
             trigger={            
+                // student  datails
                 <Table.Row  >
                     
                     <Table.Cell>{s_username}</Table.Cell>
@@ -137,9 +146,9 @@ const ModalStudent = (props) => {
             </Modal.Header>
 
             <Modal.Content>
-     
+            
                 <div>
-                    {/* student details */}
+                    {/* CARD student details */}
                     <div>
                        
                             <Card>
@@ -170,6 +179,39 @@ const ModalStudent = (props) => {
                                 </Card.Content> */}
                             </Card>
                     </div>
+
+                    {/* Click to Show SANCTION List */}
+                    <Button secondary 
+                        style={{marginTop:'20px'}}
+                        onClick={onSanctionListButton}>
+                            Sanction List
+                    </Button>
+                    
+                       {/* Violation List */}
+                       <Transition visible={showSanctionList} animation='scale' duration={500}>
+                        <div>
+                            <Divider horizontal>
+                                <Header as='h4'>
+                                        Sanction List
+                                </Header>
+                            </Divider>
+
+                            <Table style={{ overflowX:'scroll'}} selectable padded >
+                                {/* <SanctionRecordTable/> */}
+
+                                <ClassanctionList/>
+                            </Table>
+                        </div>
+                    
+                    </Transition>
+                                      
+
+
+                    <br/>
+
+
+
+
 
                     {/* Click to Show Violation List */}
                     <Button secondary 
@@ -278,6 +320,42 @@ const ModalStudent = (props) => {
     )
 }
 
+const SanctionRecordTable = (props) => {
+
+    const violationRecords = props.violationRecords || [];
+
+    return(
+        <React.Fragment>
+            <Table.Header>
+                <Table.Row>
+                    <Table.HeaderCell>Violation</Table.HeaderCell>
+                    <Table.HeaderCell>Yr.</Table.HeaderCell>
+                    <Table.HeaderCell>Section</Table.HeaderCell>
+                    <Table.HeaderCell>Course</Table.HeaderCell>
+                    <Table.HeaderCell>Sem-S.Y.</Table.HeaderCell>
+                    <Table.HeaderCell>Issued On</Table.HeaderCell>
+                </Table.Row>
+            </Table.Header>
+
+            <Table.Body>
+                {violationRecords.map((it, ix)=>{
+                    return(
+                        <Table.Row key={it.id}>
+                            <Table.Cell style={{maxWidth:'300px'}}>{it.v_name}</Table.Cell>
+                            <Table.Cell>{it.yearlevel}</Table.Cell>
+                            <Table.Cell>{it.section}</Table.Cell>                                            
+                            <Table.Cell>{it.course}</Table.Cell>
+                            <Table.Cell>{it.sem_name}, {it.ay_name}</Table.Cell>
+                            <Table.Cell>{it.issued_on} {it.time}</Table.Cell>
+                        </Table.Row>
+                    )
+                })}
+            </Table.Body>
+
+        </React.Fragment>
+    )
+}
+
 const ViolationRecordHeaderBreakDown = (props) => {
     return(
         <React.Fragment>
@@ -345,14 +423,36 @@ const ViolationRecordHeaderGrouped = (props) => {
 }
 
 
-const MessageEmpty =  () => {
+const ClassSubMenu = () => {
     return(
-        <Message warning>
-            <Message.Header>Sorry, no violation records for this student.</Message.Header>
-            <p>0 Results found</p>
-        </Message>
+
+        <React.Fragment>
+            <Header as='h3'>
+                Class
+                <Header.Subheader>
+                    Manage your account settings and set email preferences
+                </Header.Subheader>
+            </Header>
+
+            {/* <ClassList/> */}
+
+        </React.Fragment>
+
+        
+
+
     )
 }
+
+
+// const MessageEmpty =  () => {
+//     return(
+//         <Message warning>
+//             <Message.Header>Sorry, no violation records for this student.</Message.Header>
+//             <p>0 Results found</p>
+//         </Message>
+//     )
+// }
 
 
 export default withRouter(ModalStudent)

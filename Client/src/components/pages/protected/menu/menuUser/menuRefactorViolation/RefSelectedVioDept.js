@@ -73,6 +73,7 @@ const NavbarUser = (props) => {
         history.push(path)
     }
 
+    // MENU BAR TOP NAVBAR
     return(
         <React.Fragment>
 

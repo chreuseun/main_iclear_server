@@ -10,6 +10,7 @@
     "react-icons": "^3.8.0",
     "react-router-dom": "^5.0.1",
     "react-scripts": "3.1.2",
+    "react-to-print": "^2.5.1",
     "semantic-ui-react": "^0.88.1"
   },
   "scripts": {

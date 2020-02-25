@@ -1,16 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Button, Modal, Menu, Message } from 'semantic-ui-react';
+import { Table, Button, Modal, Message } from 'semantic-ui-react';
 import { withRouter,} from 'react-router-dom';
 import axios from 'axios';
 import baseURL from '../../../../../../../../../../../../res/baseuri';
 
-// ModalAddSanction
-import ModalAddSanction from './components/ModalAddSanction'
-
-
 const ClassList = (props) => {
 
-    const { location ,match, history, showBUtton } = props
+    const { location ,match, history } = props
 
     const [didMount, setDidMount] = useState(false);
     const [classList, setClassList] = useState([]);
@@ -59,21 +55,7 @@ const ClassList = (props) => {
     }
 
     return(
-        <React.Fragment>   
-            {/* Button Add Class */}
-            {/* <div>
-                <Menu secondary>
-                    <Menu.Menu position='right'>
-                        <Menu.Item>
-                            <Button animated='fade' primary>
-                                <Button.Content visible>{'Create Class'}</Button.Content>
-                                <Button.Content hidden> {'Create Class'}</Button.Content>
-                            </Button>
-                        </Menu.Item>
-                        
-                    </Menu.Menu>
-                </Menu>
-            </div>   */}
+        <React.Fragment>
 
             {/* Table of class list*/}
             <Table compact='very'>
@@ -121,10 +103,10 @@ const ClassRow = (props) => {
                             name={`${props.rowData.id}`}  
                             onClick={props.editOnClick.bind(this, props.rowData.id)}
                             secondary
-                        >Edit</Button>
+                        >Offence level</Button>
                     }
                 >
-                    <Modal.Header>Sanctions: {props.rowData.name} {props.rowData.id}</Modal.Header>
+                    <Modal.Header>Sanctions: {props.rowData.name}</Modal.Header>
                     <Modal.Content>
                         <SanctionList {...props}/>
                     </Modal.Content>
@@ -182,35 +164,6 @@ const SanctionList = (props) => {
 
     },[])
 
-
-    const onModalClose = () => {
-        const fetchData = async() => {
-            try{
-            
-                const header = {
-                    headers: {
-                        authorization : localStorage.getItem('x')
-                    }
-                };
-
-                const classSanction = await axios.get(`${baseURL}/api/violation/user/${location.state.dept}/violations/sanction/${props.rowData.id}`, header)
-      
-                console.log(classSanction.data.data  || '')
-                
-                    setList(classSanction.data.data || [])
-              
-
-            } catch(err) {
-                console.log(err)
-                history.push('/')
-            }
-        }
-
-        fetchData();
-    }
-
-
-
     const DataTable = () => {
         return(
             <Table selectable compact='very'>
@@ -248,17 +201,6 @@ const SanctionList = (props) => {
     
     return(
         <React.Fragment>
-            
-            {/* Button Add Sanctions */}
-            <div>
-                <Menu secondary>
-                    <Menu.Menu position='right'>
-                        <Menu.Item>
-                                <ModalAddSanction {...props} onClose={onModalClose}/>
-                        </Menu.Item>                        
-                    </Menu.Menu>
-                </Menu>
-            </div>  
 
             {list && list.length > 0 ? 
                 <DataTable/>:
