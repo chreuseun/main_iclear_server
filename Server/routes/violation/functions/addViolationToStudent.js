@@ -96,8 +96,6 @@ let _sql = {
                             AND violation_id = @vio  LIMIT 1) , true, false));`
 }
 
-
-
 module.exports =  AddViolationToStudent;
 
 

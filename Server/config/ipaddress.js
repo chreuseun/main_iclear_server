@@ -13,5 +13,4 @@ const iplist = {
   thesis:`192.168.43.68`
 }
 
-
-module.exports = iplist.maam_tejada;
+module.exports = iplist.malis;
